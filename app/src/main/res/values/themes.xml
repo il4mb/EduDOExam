@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.EduDOExam" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.EduDOExam" parent="Theme.Material3.Light.NoActionBar">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:fontWeight">500</item>
+
+        <item name="backgroundColor">#30455E</item>
+        <item name="colorPrimary">@color/primary_600</item>
+        <item name="android:textColor">@color/secondary_800</item>
+
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
 </resources>
