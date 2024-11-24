@@ -28,7 +28,7 @@ EduDoExam is an Android application designed to provide a platform for managing 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/eduDoExam.git
+   git clone https://github.com/il4mb/eduDoExam.git
    Open the project in Android Studio:
 
 2. **Open Android Studio**:
