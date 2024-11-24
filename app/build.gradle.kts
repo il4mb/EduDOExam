@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.capstone.edudoexam"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.capstone.edudoexam"
@@ -65,6 +65,11 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.preference)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

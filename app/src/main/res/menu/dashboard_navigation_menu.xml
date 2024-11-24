@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:enabled="true"
+        android:icon="@drawable/baseline_home_filled_24"
+        android:title="@string/nav_home"/>
+    <item
+        android:id="@+id/nav_exams"
+        android:enabled="true"
+        android:icon="@drawable/baseline_menu_book_24"
+        android:title="@string/nav_exams"/>
+    <item
+        android:id="@+id/nav_history"
+        android:enabled="true"
+        android:icon="@drawable/baseline_access_time_filled_24"
+        android:title="@string/nav_history"/>
+    <item
+        android:id="@+id/nav_settings"
+        android:enabled="true"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="@string/nav_settings"/>
+</menu>

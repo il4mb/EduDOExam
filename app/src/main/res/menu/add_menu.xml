@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_create_exam"
+        android:icon="@drawable/file_circle_plus_solid"
+        android:title="Create Exam"
+        android:actionLayout="@layout/view_menu_item"/>
+    <item
+        android:id="@+id/menu_join_exam"
+        android:icon="@drawable/join_exam"
+        android:title="Join Exam"
+        android:actionLayout="@layout/view_menu_item"/>
+</menu>
