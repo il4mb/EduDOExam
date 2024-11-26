@@ -3,7 +3,7 @@
     <PreferenceCategory app:title="Theme">
 
         <SwitchPreferenceCompat
-            app:key="dark_mode"
+            app:key="@string/pref_dark_mode"
             app:title="Dark Mode"
             app:defaultValue="false"
             app:summaryOff="Enable dark theme"
@@ -14,7 +14,7 @@
     <PreferenceCategory app:title="Notification">
 
         <SwitchPreferenceCompat
-            app:key="upcoming_notification"
+            app:key="@string/pref_upcoming_notification"
             app:title="Upcoming"
             app:summary="notifications for upcoming exams"/>
 

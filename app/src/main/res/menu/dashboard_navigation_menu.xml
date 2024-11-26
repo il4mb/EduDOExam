@@ -11,10 +11,10 @@
         android:icon="@drawable/baseline_menu_book_24"
         android:title="@string/nav_exams"/>
     <item
-        android:id="@+id/nav_history"
+        android:id="@+id/nav_histories"
         android:enabled="true"
         android:icon="@drawable/baseline_access_time_filled_24"
-        android:title="@string/nav_history"/>
+        android:title="@string/nav_histories"/>
     <item
         android:id="@+id/nav_settings"
         android:enabled="true"

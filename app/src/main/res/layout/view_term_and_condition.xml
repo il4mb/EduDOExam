@@ -32,7 +32,7 @@
             android:text="Term and conditions"
             android:layout_marginStart="8dp"
             android:textStyle="bold"
-            android:textColor="@color/primary_600"/>
+            android:textColor="?colorPrimaryVariant"/>
     </LinearLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
-import com.capstone.edudoexam.R
 import com.capstone.edudoexam.databinding.FragmentLoginBinding
-import com.capstone.edudoexam.ui.dashboard.DashboardActivity
+import com.capstone.edudoexam.ui.dashboard.DashboardActivityOld
 
 
 class LoginFragment : Fragment() {
@@ -25,7 +23,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             loginButton.setOnClickListener {
-                val intent = Intent(context, DashboardActivity::class.java).apply {
+                val intent = Intent(context, DashboardActivityOld::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
                 startActivity(intent)

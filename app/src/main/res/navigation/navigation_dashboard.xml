@@ -8,58 +8,65 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.capstone.edudoexam.ui.dashboard.home.HomeFragment"
-        android:label="Home"
+        android:label="@string/app_name"
+        android:subtitle="@string/app_moto"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_examFragment"
-            app:destination="@id/nav_exams" />
-        <action
-            android:id="@+id/action_homeFragment_to_historyFragment"
-            app:destination="@id/nav_history" />
-        <action
-            android:id="@+id/action_homeFragment_to_settingFragment"
-            app:destination="@id/nav_settings" />
+            android:id="@+id/action_nav_home_to_nav_profile"
+            app:destination="@id/nav_profile"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/slide_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out"/>
     </fragment>
+
     <fragment
         android:id="@+id/nav_exams"
-        android:name="com.capstone.edudoexam.ui.dashboard.exam.ExamFragment"
-        android:label="Exam"
-        tools:layout="@layout/fragment_exam" >
-        <action
-            android:id="@+id/action_examFragment_to_historyFragment"
-            app:destination="@id/nav_history" />
-        <action
-            android:id="@+id/action_examFragment_to_homeFragment"
-            app:destination="@id/nav_home" />
-        <action
-            android:id="@+id/action_examFragment_to_settingFragment"
-            app:destination="@id/nav_settings" />
+        android:name="com.capstone.edudoexam.ui.dashboard.exams.ExamsFragment"
+        android:label="Exams"
+        tools:layout="@layout/fragment_exams" >
     </fragment>
+
     <fragment
-        android:id="@+id/nav_history"
-        android:name="com.capstone.edudoexam.ui.dashboard.history.HistoryFragment"
+        android:id="@+id/nav_histories"
+        android:name="com.capstone.edudoexam.ui.dashboard.histories.HistoriesFragment"
         android:label="History"
-        tools:layout="@layout/fragment_history" >
+        tools:layout="@layout/fragment_histories" >
         <action
-            android:id="@+id/action_historyFragment_to_settingFragment"
-            app:destination="@id/nav_settings" />
-        <action
-            android:id="@+id/action_historyFragment_to_examFragment"
-            app:destination="@id/nav_exams" />
+            android:id="@+id/action_nav_histories_to_nav_history"
+            app:destination="@id/nav_history"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/slide_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out"/>
     </fragment>
+
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.capstone.edudoexam.ui.dashboard.settings.SettingsFragment"
-        android:label="Setting"
-        tools:layout="@layout/fragment_setting" >
-        <action
-            android:id="@+id/action_settingFragment_to_homeFragment"
-            app:destination="@id/nav_home" />
-        <action
-            android:id="@+id/action_settingFragment_to_historyFragment"
-            app:destination="@id/nav_history" />
-        <action
-            android:id="@+id/action_settingFragment_to_examFragment"
-            app:destination="@id/nav_exams" />
+        android:label="Settings">
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.capstone.edudoexam.ui.dashboard.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_profile_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="com.capstone.edudoexam.ui.dashboard.histories.ExamResultFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_exam_result" />
+
+    <fragment
+        android:id="@+id/nav_exam_detail"
+        android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamFragment"
+        android:label="Exam Detail"
+        tools:layout="@layout/fragment_exam_detail" />
+
 </navigation>

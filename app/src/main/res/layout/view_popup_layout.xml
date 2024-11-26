@@ -22,20 +22,20 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/file_circle_plus_solid"
-                app:tint="#E29841"/>
+                app:tint="?colorSecondary"/>
             <TextView
                 android:layout_marginStart="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Create Exam"
                 android:textStyle="bold"
-                android:textColor="#E29841"/>
+                android:textColor="?colorSecondary"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#C7C7C7"/>
+            android:background="@color/gray_light"/>
 
         <LinearLayout
             android:id="@+id/action_join"
@@ -49,14 +49,14 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/join_exam"
-                app:tint="@color/primary_600"/>
+                app:tint="?colorPrimary"/>
             <TextView
                 android:layout_marginStart="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Join Exam"
                 android:textStyle="bold"
-                android:textColor="@color/primary_600"/>
+                android:textColor="?colorPrimary"/>
         </LinearLayout>
 
     </LinearLayout>

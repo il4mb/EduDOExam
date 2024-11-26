@@ -5,14 +5,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardActivity">
+    tools:context=".ui.dashboard.DashboardActivityOld">
 
     <com.google.android.material.appbar.AppBarLayout
+        style="@style/Theme.EduDOExam.AppBarLayout"
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@drawable/rounded_bottom_corner"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="@string/app_name"
-            app:titleTextColor="@color/white" >
+            app:titleTextColor="?android:textColor">
 
             <include android:id="@+id/menu_layout"
                 android:layout_width="wrap_content"
@@ -32,12 +31,38 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/join_exam_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="18dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Join Exam"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/outline_prompt_suggestion_24">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="true"
+        android:clipChildren="true"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

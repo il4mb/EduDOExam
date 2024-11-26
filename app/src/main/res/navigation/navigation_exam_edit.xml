@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_exam_edit"
+    app:startDestination="@id/nav_questions_exam">
+
+    <fragment
+        android:id="@+id/nav_questions_exam"
+        android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.questions.QuestionsExamFragment"
+        android:label="fragment_questions_exam"
+        tools:layout="@layout/fragment_questions_exam" />
+    <fragment
+        android:id="@+id/nav_students_exam"
+        android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.studens.StudentsExamFragment"
+        android:label="fragment_students_exam"
+        tools:layout="@layout/fragment_students_exam" />
+</navigation>
