@@ -68,5 +68,10 @@
         android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamFragment"
         android:label="Exam Detail"
         tools:layout="@layout/fragment_exam_detail" />
+    <fragment
+        android:id="@+id/nav_form_question"
+        android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.questions.FormQuestionFragment"
+        android:label="Form Question"
+        tools:layout="@layout/fragment_form_question" />
 
 </navigation>

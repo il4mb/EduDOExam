@@ -8,9 +8,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.QuestionDiffCallback
 import com.capstone.edudoexam.databinding.FragmentQuestionsExamBinding
@@ -72,10 +74,16 @@ class QuestionsExamFragment : Fragment(),
         }
 
         // Initialize RecyclerView with ItemTouchHelper
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = genericAdapter
-            itemTouchHelper = ItemTouchHelper(itemTouchCallback).also { it.attachToRecyclerView(this) }
+        binding.apply {
+            recyclerView.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = genericAdapter
+                itemTouchHelper = ItemTouchHelper(itemTouchCallback).also { it.attachToRecyclerView(this) }
+            }
+
+            floatingActionButton.setOnClickListener {
+                findNavController().navigate(R.id.nav_form_question)
+            }
         }
 
         // Add sample data to the ViewModel
