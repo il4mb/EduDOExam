@@ -83,7 +83,7 @@ class QuestionNode(
                 width = android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
                 height = android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
                 isFocusable = true
-                animationStyle = R.style.popup_window_animation
+                // animationStyle = R.style.popup_window_animation
                 setBackgroundDrawable(ColorDrawable())
             }
 

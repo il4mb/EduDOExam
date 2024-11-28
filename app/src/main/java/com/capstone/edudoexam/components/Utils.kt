@@ -3,6 +3,7 @@ package com.capstone.edudoexam.components
 import android.content.Context
 import android.content.res.Resources
 import android.util.TypedValue
+import androidx.core.content.ContextCompat
 
 class Utils {
 
@@ -18,8 +19,15 @@ class Utils {
 
         fun getAttr(context: Context, attr: Int): Int {
             val typedValue = TypedValue()
-            context.theme.resolveAttribute(attr, typedValue, true)
-            return typedValue.data
+            val theme = context.theme
+            if (theme.resolveAttribute(attr, typedValue, true)) {
+                return if (typedValue.resourceId != 0) {
+                    ContextCompat.getColor(context, typedValue.resourceId) // Get color from resource
+                } else {
+                    typedValue.data // Return raw color value
+                }
+            }
+            return 0
         }
     }
 }

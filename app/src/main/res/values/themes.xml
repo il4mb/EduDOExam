@@ -15,9 +15,9 @@
 
     </style>
 
-    <style name="popup_window_animation">
-        <item name="android:windowEnterAnimation">@anim/popup_anim</item>
-        <item name="android:windowExitAnimation">@anim/popdown_anim</item>
+    <style name="PopupAnimationStyle">
+        <item name="android:windowEnterAnimation">@anim/popup_show</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
 

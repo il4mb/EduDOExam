@@ -199,7 +199,7 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
             width = LinearLayout.LayoutParams.WRAP_CONTENT
             height = LinearLayout.LayoutParams.WRAP_CONTENT
             isFocusable = true
-            animationStyle = R.style.popup_window_animation
+            //animationStyle = R.style.popup_window_animation
             setBackgroundDrawable(ColorDrawable())
         }
 

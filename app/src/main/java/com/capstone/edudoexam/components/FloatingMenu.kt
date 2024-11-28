@@ -7,11 +7,13 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils.Companion.dp
@@ -28,13 +30,15 @@ class FloatingMenu(
 
     private val roundedBackground: GradientDrawable by lazy {
         GradientDrawable().apply {
-            color = ColorStateList.valueOf(if(Utils.isDarkMode(context))
-                Color.parseColor("#111111")
+            val bgColor = if(Utils.isDarkMode(context))
+                getAttr(context, android.R.attr.colorBackground)
             else
-                Color.parseColor("#DDDDDD")
-            )
+                getAttr(context, android.R.attr.colorBackground)
+            val strokeColor = getAttr(context, android.R.attr.textColor)
+
+            color = ColorStateList.valueOf(bgColor)
             cornerRadius = 16f
-            setStroke(1.dp, Color.argb(0.5f, 0.5f,0.5f,0.5f))
+            setStroke(1.dp, Color.argb(50, Color.red(strokeColor), Color.green(strokeColor), Color.blue(strokeColor)))
         }
     }
 
@@ -58,13 +62,12 @@ class FloatingMenu(
             width = LinearLayout.LayoutParams.WRAP_CONTENT
             height = LinearLayout.LayoutParams.WRAP_CONTENT
             isFocusable = true
-            animationStyle = R.style.popup_window_animation
+            animationStyle = R.style.PopupAnimationStyle
             elevation = 4f
 
             setBackgroundDrawable(ColorDrawable())
         }
     }
-
 
     fun addItem(text: String) : FloatingMenuItem {
         return FloatingMenuItem(context).apply {
@@ -73,7 +76,7 @@ class FloatingMenu(
         }
     }
 
-    private fun inflateItem() {
+    private fun renderChildren() {
         container.removeAllViews()
         items.forEach {
             container.addView(it)
@@ -83,13 +86,24 @@ class FloatingMenu(
 
     fun show() {
 
-        inflateItem()
+        renderChildren()
         val location = IntArray(2)
         anchor.getLocationOnScreen(location)
         popUp.showAtLocation(container, Gravity.NO_GRAVITY, location[0] + xOffset, location[1] + yOffset)
     }
 
-    class FloatingMenuItem(context: Context): LinearLayout(context) {
+    fun hide() {
+        container.animate()
+            .alpha(0f)
+            .scaleX(0.8f)
+            .scaleY(0.8f)
+            .setDuration(200)
+            .withEndAction { popUp.dismiss() }
+            .start()
+    }
+
+
+    class FloatingMenuItem(context: Context): LinearLayout(context), View.OnTouchListener {
 
         private val prefixIcon: ImageView by lazy {
             ImageView(context).apply {
@@ -105,7 +119,7 @@ class FloatingMenu(
                 field = value?.mutate()
                 if(field != null) {
                     prefixIcon.apply {
-                        DrawableCompat.setTint(field!!, getAttr(context, android.R.attr.textColor))
+                        DrawableCompat.setTint(field!!, color)
                         setImageDrawable(icon)
                         visibility = View.VISIBLE
                     }
@@ -116,7 +130,6 @@ class FloatingMenu(
                     }
                 }
             }
-
 
         private val textView: TextView by lazy {
             TextView(context).apply {
@@ -137,6 +150,15 @@ class FloatingMenu(
                 textView.text = field
             }
 
+        @ColorInt
+        var color: Int = getAttr(context, android.R.attr.textColor)
+            set(value) {
+                field = value
+                textView.setTextColor(field)
+                prefixIcon.drawable.apply {
+                    DrawableCompat.setTint(this, field)
+                }
+            }
 
         init {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
@@ -146,6 +168,25 @@ class FloatingMenu(
             addView(prefixIcon)
             addView(textView)
 
+            setOnTouchListener(this)
+        }
+
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+            animate()
+                .setDuration(200)
+                .scaleX(0.9f)
+                .scaleY(0.9f)
+                .withEndAction {
+                    animate()
+                        .setDuration(200)
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .start()
+                }
+                .start()
+
+            return true
         }
     }
 }

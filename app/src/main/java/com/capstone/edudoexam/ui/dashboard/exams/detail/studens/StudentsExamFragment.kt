@@ -1,5 +1,6 @@
 package com.capstone.edudoexam.ui.dashboard.exams.detail.studens
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -75,6 +76,7 @@ class StudentsExamFragment :
 
                         addItem("Remove").apply {
                             icon = ContextCompat.getDrawable(context, R.drawable.baseline_person_remove_24)
+                            color = Color.RED
                         }
                         addItem("Block").apply {
                             icon = ContextCompat.getDrawable(context, R.drawable.baseline_remove_circle_24)
