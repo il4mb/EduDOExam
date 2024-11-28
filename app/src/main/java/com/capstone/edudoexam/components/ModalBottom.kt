@@ -1,11 +1,13 @@
 package com.capstone.edudoexam.components
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.view.children
+import androidx.fragment.app.FragmentManager
 import com.capstone.edudoexam.databinding.ViewModalBottomBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -74,7 +76,6 @@ class ModalBottom : BottomSheetDialogFragment() {
         }
     }
 
-
     fun setAcceptHandler(text: String, callback: () -> Boolean) {
         acceptAction = Action(text, callback)
     }
@@ -105,4 +106,6 @@ class ModalBottom : BottomSheetDialogFragment() {
         val text: String,
         val callback: () -> Boolean
     )
+
+
 }

@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.FloatingMenu
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.UserDiffCallback
 import com.capstone.edudoexam.databinding.FragmentStudentsExamBinding
@@ -24,7 +27,7 @@ class StudentsExamFragment :
     private val viewModel: StudentsExamViewModel by viewModels()
     private val genericAdapter:  GenericListAdapter<User, ViewItemUserBinding> by lazy {
         GenericListAdapter(
-            inflateBinding = ViewItemUserBinding::inflate,
+            ViewItemUserBinding::class.java,
             onItemBindCallback = this,
             diffCallback = UserDiffCallback()
         )
@@ -52,7 +55,7 @@ class StudentsExamFragment :
         return binding.root
     }
 
-    override fun onViewBind(binding: ViewItemUserBinding, item: User) {
+    override fun onViewBind(binding: ViewItemUserBinding, item: User, position: Int) {
         binding.apply {
             userName.text = item.name
             userEmail.text = item.email
@@ -64,6 +67,21 @@ class StudentsExamFragment :
                 ).apply {
                     setMargins(0, 0, 0, 18)
                     layoutParams = this
+                }
+                setOnClickListener {
+                    FloatingMenu(requireContext(), it).apply {
+                        xOffset = it.width / 2
+                        yOffset = it.height / 2
+
+                        addItem("Remove").apply {
+                            icon = ContextCompat.getDrawable(context, R.drawable.baseline_person_remove_24)
+                        }
+                        addItem("Block").apply {
+                            icon = ContextCompat.getDrawable(context, R.drawable.baseline_remove_circle_24)
+                            setOnClickListener {  }
+                        }
+                    }
+                        .show()
                 }
             }
         }

@@ -2,19 +2,22 @@ package com.capstone.edudoexam.ui.dashboard.exams.detail.questions
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.FloatingMenu
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.QuestionDiffCallback
+import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.databinding.FragmentQuestionsExamBinding
 import com.capstone.edudoexam.databinding.ViewItemQuestionBinding
 import com.capstone.edudoexam.models.Question
@@ -30,35 +33,28 @@ class QuestionsExamFragment : Fragment(),
 
     private val genericAdapter: GenericListAdapter<Question, ViewItemQuestionBinding> by lazy {
         GenericListAdapter(
-            inflateBinding = ViewItemQuestionBinding::inflate,
-            onItemBindCallback = this,
-            diffCallback = QuestionDiffCallback()
+            ViewItemQuestionBinding::class.java,
+             this,
+            QuestionDiffCallback()
         )
     }
 
     private lateinit var itemTouchHelper: ItemTouchHelper
 
-    private val itemTouchCallback =
-        object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
+    private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
             val fromPosition = viewHolder.adapterPosition
             val toPosition = target.adapterPosition
-
-            // Notify ViewModel to update data
             viewModel.moveItem(fromPosition, toPosition)
 
-            // Notify adapter about the move
-            genericAdapter.notifyItemMoved(fromPosition, toPosition)
+            recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
+            recyclerView.adapter?.notifyItemChanged(fromPosition, false)
+            recyclerView.adapter?.notifyItemChanged(toPosition, false)
+
             return true
         }
 
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            // No action needed for swipe
-        }
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) { }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -68,12 +64,10 @@ class QuestionsExamFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Observe questions and update the adapter
         viewModel.questions.observe(viewLifecycleOwner) { questions ->
             genericAdapter.submitList(questions)
         }
 
-        // Initialize RecyclerView with ItemTouchHelper
         binding.apply {
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -86,7 +80,6 @@ class QuestionsExamFragment : Fragment(),
             }
         }
 
-        // Add sample data to the ViewModel
         for (i in 1 until 5) {
             viewModel.addQuestion(
                 Question(
@@ -107,18 +100,32 @@ class QuestionsExamFragment : Fragment(),
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onViewBind(binding: ViewItemQuestionBinding, item: Question) {
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
+    override fun onViewBind(binding: ViewItemQuestionBinding, item: Question, position: Int) {
+        Log.d("QuestionsExamFragment", "onViewBind: ${item.order}")
         binding.apply {
             questionDescription.text = item.description
+            orderNumber.text = "${item.order}."
 
-            // Handle drag gesture
-            orderHandle.setOnTouchListener { _, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    // Start drag
-                    // itemTouchHelper.startDrag(binding)
+            root.apply {
+                layoutParams = (root.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    setMargins(0, 0, 0, 8.dp)
                 }
-                false
+                setOnClickListener {
+                    FloatingMenu(requireContext(), it).apply {
+                        xOffset = it.width / 2
+                        yOffset = it.height / 2
+
+                        addItem("Edit").apply {
+                            icon = ContextCompat.getDrawable(context, R.drawable.baseline_edit_24)
+                        }
+                        addItem("Remove").apply {
+                            icon = ContextCompat.getDrawable(context, R.drawable.baseline_delete_24)
+                            setOnClickListener {  }
+                        }
+                    }
+                        .show()
+                }
             }
         }
     }

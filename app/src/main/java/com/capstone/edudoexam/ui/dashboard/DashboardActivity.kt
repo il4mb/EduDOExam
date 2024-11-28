@@ -44,7 +44,7 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
 
     private lateinit var startRotateAnim: Animation
     private lateinit var endRotateAnim: Animation
-    lateinit var binding: ActivityDashboard2Binding
+    private lateinit var binding: ActivityDashboard2Binding
     private lateinit var appBarInitialBg: Drawable
     private lateinit var sharedViewModel: SharedViewModel
 
@@ -266,4 +266,7 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
         }
     }
 
+    fun getBinding(): ActivityDashboard2Binding {
+        return binding
+    }
 }

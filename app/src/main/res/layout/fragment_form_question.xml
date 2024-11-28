@@ -36,15 +36,17 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/duration_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="15dp"
-                    android:text="10 Minute"
+                    android:text="3:00 Minute"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <ImageView
+                    android:id="@+id/duration_picker_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
@@ -76,6 +78,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/image_card"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="14dp"

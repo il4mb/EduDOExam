@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.ui.dashboard.exams
+package com.capstone.edudoexam.ui.dashboard.home
 
 import android.os.Bundle
 import android.view.View
@@ -9,12 +9,12 @@ import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.AppFragment
 import com.capstone.edudoexam.components.ExamDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
-import com.capstone.edudoexam.databinding.FragmentExamsBinding
+import com.capstone.edudoexam.databinding.FragmentHomeBinding
 import com.capstone.edudoexam.databinding.ViewItemExamBinding
 import com.capstone.edudoexam.models.Exam
 
-class ExamsFragment :
-    AppFragment<FragmentExamsBinding, ExamsViewModel>(FragmentExamsBinding::inflate),
+class HomeFragment :
+    AppFragment<FragmentHomeBinding, HomeViewModel>(FragmentHomeBinding::inflate),
     GenericListAdapter.ItemBindListener<Exam, ViewItemExamBinding> {
 
     private var data: ArrayList<Exam> = ArrayList()
@@ -27,15 +27,15 @@ class ExamsFragment :
             onItemBindCallback = this,
             diffCallback = ExamDiffCallback()
         )
-        for(i in 1..15) {
+        for(i in 1..30) {
             data.add(
                 Exam(
                     "DUMMY-$i",
-                    "November 25, 2024 at 1:32:29 PM UTC+7",
-                    "November 23, 2024 at 5:05:56 PM UTC+7",
-                    "XT63TAP4XA",
-                    "Ujian Tengah Semester ${(i+1)/10}",
-                    "Kelas ${(i+1)/6}")
+                "November 25, 2024 at 1:32:29 PM UTC+7",
+                "November 23, 2024 at 5:05:56 PM UTC+7",
+                "XT63TAP4XA",
+                "Ujian Tengah Semester ${(i+1)/10}",
+                "Kelas ${(i+1)/6}")
             )
         }
     }
@@ -50,18 +50,17 @@ class ExamsFragment :
                 adapter = listAdapter
                 layoutManager = LinearLayoutManager(requireContext())
             }
+            listAdapter.submitList(data)
         }
-
-        // trigger view model
-        viewModel.store(data)
     }
 
     override fun onViewBind(binding: ViewItemExamBinding, item: Exam, position: Int) {
+
         binding.apply {
             codeTextView.text = item.id
-            titleView.text = item.title
+            titleView.text    = item.title
             subtitleView.text = item.subTitle
-            dateTime.text = item.startDate
+            dateTime.text     = item.startDate
             codeCopyButton.setOnClickListener {
                 viewModel.store(data)
                 showToast("Code Copied")
@@ -70,7 +69,6 @@ class ExamsFragment :
                 it.bottomMargin = 35
                 root.layoutParams = it
             }
-
             root.setOnClickListener {
                 findNavController().navigate(R.id.nav_exam_detail)
             }

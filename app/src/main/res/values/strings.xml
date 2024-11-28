@@ -19,4 +19,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="nav_histories">Histories</string>
+    <string name="title_permission_denied">Permission Denied</string>
+    <string name="description_permission_capture_denied">Capture images requires camera access permission, otherwise this feature cannot be used.</string>
+    <string name="get_it">Get it</string>
 </resources>

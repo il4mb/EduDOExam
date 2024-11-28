@@ -57,7 +57,7 @@
         <LinearLayout
             android:id="@+id/summary_layout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:orientation="horizontal"
             android:clipChildren="false"
             android:clipToPadding="false"

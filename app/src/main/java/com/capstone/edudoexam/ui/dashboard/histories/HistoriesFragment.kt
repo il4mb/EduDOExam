@@ -25,7 +25,7 @@ class HistoriesFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         listAdapter = GenericListAdapter(
-            inflateBinding = ViewItemHistoryBinding::inflate,
+            ViewItemHistoryBinding::class.java,
             onItemBindCallback = this,
             diffCallback = ExamResultDiffCallback()
         )
@@ -60,9 +60,8 @@ class HistoriesFragment :
     }
 
 
-
     @SuppressLint("SetTextI18n")
-    override fun onViewBind(binding: ViewItemHistoryBinding, item: ExamResult) {
+    override fun onViewBind(binding: ViewItemHistoryBinding, item: ExamResult, position: Int) {
 
         binding.apply {
 

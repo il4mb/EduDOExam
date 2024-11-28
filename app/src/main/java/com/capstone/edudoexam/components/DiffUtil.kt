@@ -53,10 +53,11 @@ class UserDiffCallback : DiffUtil.ItemCallback<User>() {
 
 class QuestionDiffCallback : DiffUtil.ItemCallback<Question>() {
     override fun areItemsTheSame(oldItem: Question, newItem: Question): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.id == newItem.id // Assuming id is unique
     }
 
     override fun areContentsTheSame(oldItem: Question, newItem: Question): Boolean {
-        return oldItem == newItem
+        return oldItem.order == newItem.order && oldItem.description == newItem.description
+        // Ensure to compare the 'order' field to trigger a rebind when the order changes
     }
 }

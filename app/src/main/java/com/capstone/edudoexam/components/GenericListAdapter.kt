@@ -6,35 +6,43 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.capstone.edudoexam.components.GenericListAdapter.ItemBindListener
+import java.lang.reflect.Method
 
 /**
  * @param T the item class
- * @param VB the ViewBinding inflation
+ * @param V the ViewBinding java.class
+ * @param viewBindingClass the ViewBinding java.class
+ * @param onItemBindCallback the item binding listener
+ * @param diffCallback the DiffUtil.ItemCallback
  */
-open class GenericListAdapter<T, VB : ViewBinding>(
-    private val inflateBinding: (LayoutInflater, ViewGroup, Boolean) -> VB,
-    private val onItemBindCallback: ItemBindListener<T, VB>,
+open class GenericListAdapter<T: Any, V : ViewBinding>(
+    private val viewBindingClass: Class<V>,
+    private val onItemBindCallback: ItemBindListener<T, V>,
     diffCallback: DiffUtil.ItemCallback<T>
-) : ListAdapter<T, GenericListAdapter.CustomViewHolder<VB>>(diffCallback)
-{
+) : ListAdapter<T, GenericListAdapter.GenericViewHolder<V>>(diffCallback) {
 
-    override fun onBindViewHolder(holder: CustomViewHolder<VB>, position: Int) {
+    override fun onBindViewHolder(holder: GenericViewHolder<V>, position: Int) {
         val item = getItem(position)
-        onItemBindCallback.onViewBind(holder.binding, item)
+        onItemBindCallback.onViewBind(holder.binding, item, position)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenericViewHolder<V> {
+        val binding = getInflateBinding()(null, LayoutInflater.from(parent.context), parent, false) as V
+        return GenericViewHolder(binding)
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder<VB> {
-        val binding = inflateBinding(LayoutInflater.from(parent.context), parent, false)
-        return CustomViewHolder(binding)
+    class GenericViewHolder< V : ViewBinding>(
+        val binding: V
+    ) : RecyclerView.ViewHolder(binding.root)
+
+    private fun getInflateBinding(): Method {
+        return viewBindingClass.getMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
     }
 
-    class CustomViewHolder<VB : ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root)
-
-    /**
-     * <T> Item
-     */
+    // Interface for item binding
     interface ItemBindListener<T, VB : ViewBinding> {
-        fun onViewBind(binding: VB, item: T)
+        fun onViewBind(binding: VB, item: T, position: Int)
     }
 }
