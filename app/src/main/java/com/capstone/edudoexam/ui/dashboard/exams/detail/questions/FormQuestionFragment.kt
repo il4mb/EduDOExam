@@ -15,12 +15,15 @@ import androidx.core.view.setPadding
 import androidx.navigation.fragment.findNavController
 import com.capstone.edudoexam.components.AppFragment
 import com.capstone.edudoexam.components.DialogBottom
+import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.databinding.FragmentFormQuestionBinding
 
-class FormQuestionFragment
-    : AppFragment<FragmentFormQuestionBinding, FormViewModel>(FragmentFormQuestionBinding::inflate) {
+class FormQuestionFragment : AppFragment<FragmentFormQuestionBinding>(FragmentFormQuestionBinding::class.java) {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
+    }
 
     @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

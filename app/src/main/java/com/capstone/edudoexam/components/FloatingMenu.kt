@@ -25,8 +25,9 @@ class FloatingMenu(
 ) {
 
     private val items: ArrayList<FloatingMenuItem> = arrayListOf()
-    var xOffset = 100
-    var yOffset = 200
+    var xOffset = 0
+    var yOffset = 0
+    var onDismissCallback: (() -> Unit)? = null
 
     private val roundedBackground: GradientDrawable by lazy {
         GradientDrawable().apply {
@@ -65,6 +66,9 @@ class FloatingMenu(
             animationStyle = R.style.PopupAnimationStyle
             elevation = 4f
 
+            setOnDismissListener {
+                onDismissCallback?.invoke()
+            }
             setBackgroundDrawable(ColorDrawable())
         }
     }
@@ -83,7 +87,6 @@ class FloatingMenu(
         }
     }
 
-
     fun show() {
 
         renderChildren()
@@ -101,7 +104,6 @@ class FloatingMenu(
             .withEndAction { popUp.dismiss() }
             .start()
     }
-
 
     class FloatingMenuItem(context: Context): LinearLayout(context), View.OnTouchListener {
 
@@ -156,7 +158,11 @@ class FloatingMenu(
                 field = value
                 textView.setTextColor(field)
                 prefixIcon.drawable.apply {
-                    DrawableCompat.setTint(this, field)
+                    try {
+                        DrawableCompat.setTint(this, field)
+                    } catch (_: Throwable) {
+                        // silent is perfect
+                    }
                 }
             }
 
@@ -174,7 +180,7 @@ class FloatingMenu(
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
 
             animate()
-                .setDuration(200)
+                .setDuration(150)
                 .scaleX(0.9f)
                 .scaleY(0.9f)
                 .withEndAction {
@@ -186,7 +192,7 @@ class FloatingMenu(
                 }
                 .start()
 
-            return true
+            return false
         }
     }
 }

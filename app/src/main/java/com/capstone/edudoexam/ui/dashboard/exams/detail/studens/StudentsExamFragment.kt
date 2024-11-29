@@ -1,6 +1,5 @@
 package com.capstone.edudoexam.ui.dashboard.exams.detail.studens
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.DialogBottom
 import com.capstone.edudoexam.components.FloatingMenu
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.UserDiffCallback
+import com.capstone.edudoexam.components.Utils.Companion.dp
+import com.capstone.edudoexam.components.Utils.Companion.getColor
 import com.capstone.edudoexam.databinding.FragmentStudentsExamBinding
 import com.capstone.edudoexam.databinding.ViewItemUserBinding
+import com.capstone.edudoexam.databinding.ViewModalAddUserBinding
 import com.capstone.edudoexam.models.User
 
 class StudentsExamFragment :
@@ -41,6 +44,7 @@ class StudentsExamFragment :
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = genericAdapter
             }
+            floatingActionButton.setOnClickListener { addUserHandler() }
         }
 
         viewModel.apply {
@@ -57,6 +61,7 @@ class StudentsExamFragment :
     }
 
     override fun onViewBind(binding: ViewItemUserBinding, item: User, position: Int) {
+
         binding.apply {
             userName.text = item.name
             userEmail.text = item.email
@@ -66,26 +71,101 @@ class StudentsExamFragment :
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    setMargins(0, 0, 0, 18)
+                    setMargins(0, 0, 0, 18.dp)
                     layoutParams = this
                 }
-                setOnClickListener {
-                    FloatingMenu(requireContext(), it).apply {
-                        xOffset = it.width / 2
-                        yOffset = it.height / 2
-
-                        addItem("Remove").apply {
-                            icon = ContextCompat.getDrawable(context, R.drawable.baseline_person_remove_24)
-                            color = Color.RED
-                        }
-                        addItem("Block").apply {
-                            icon = ContextCompat.getDrawable(context, R.drawable.baseline_remove_circle_24)
-                            setOnClickListener {  }
-                        }
-                    }
-                        .show()
+                actionButton.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener { showItemMenu(item, actionButton) }
                 }
             }
         }
+    }
+
+    private fun showItemMenu(item: User, anchor: View) {
+        anchor.animate()
+            .rotation(180f)
+            .setDuration(150)
+            .start()
+
+        FloatingMenu(requireContext(), anchor).apply {
+
+            val floatingMenu = this
+
+            onDismissCallback = {
+                anchor.animate()
+                    .rotation(0f)
+                    .setDuration(150)
+                    .start()
+            }
+
+            xOffset = -300
+            yOffset = 80
+
+            addItem("Remove").apply {
+                icon = ContextCompat.getDrawable(
+                    context,
+                    R.drawable.baseline_person_remove_24
+                )
+                color = getColor(context, R.color.danger)
+                setOnClickListener {
+                    floatingMenu.hide()
+                    actionRemoveHandler(item)
+                }
+            }
+
+            addItem("Block").apply {
+                icon = ContextCompat.getDrawable(
+                    context,
+                    R.drawable.baseline_remove_circle_24
+                )
+                color = getColor(context, R.color.waring)
+                setOnClickListener {
+                    floatingMenu.hide()
+                    actionBlockHandler(item)
+                }
+            }
+        }.show()
+    }
+
+    private fun actionBlockHandler(item: User) {
+        DialogBottom.Builder(requireActivity()).apply {
+            color = getColor(requireContext(), R.color.waring)
+            title = "Are you sure?"
+            message = "Are you sure you want to block user from this exam?\nUser detail:\nName\t: ${item.name}\nEmail\t: ${item.email}\n"
+            acceptText = "Block"
+            acceptHandler = {
+
+                true
+            }
+        }.show()
+    }
+
+    private fun actionRemoveHandler(item: User) {
+
+        DialogBottom.Builder(requireActivity()).apply {
+            color = getColor(requireContext(), R.color.danger)
+            title = "Are you sure?"
+            message = "Are you sure you want to remove user from this exam?\nUser detail:\nName\t: ${item.name}\nEmail\t: ${item.email}\nThis action cannot be undone."
+            acceptText = "Remove"
+            acceptHandler = {
+
+                true
+            }
+        }.show()
+
+    }
+
+    private fun addUserHandler() {
+        DialogBottom.Builder(requireActivity()).apply {
+            title   = "Add User"
+            message = "Please enter email user, make sure user has ben registered."
+            setLayout(ViewModalAddUserBinding::class.java) { binding, dialog ->
+                binding.apply {
+                    inputEmail
+                }
+            }
+            acceptText = "Add"
+        }.show()
     }
 }

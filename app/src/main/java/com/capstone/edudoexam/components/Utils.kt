@@ -2,6 +2,7 @@ package com.capstone.edudoexam.components
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Color
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 
@@ -29,5 +30,19 @@ class Utils {
             }
             return 0
         }
+
+        fun getColor(context: Context, color: Int): Int {
+            return ContextCompat.getColor(context, color)
+        }
+
+        fun getColorLuminance(color: Int): Int {
+            val r = Color.red(color) / 255.0
+            val g = Color.green(color) / 255.0
+            val b = Color.blue(color) / 255.0
+
+            val luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+            return if (luminance > 0.5) Color.BLACK else Color.WHITE
+        }
+
     }
 }

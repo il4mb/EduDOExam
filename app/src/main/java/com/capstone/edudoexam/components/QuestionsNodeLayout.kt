@@ -2,18 +2,11 @@ package com.capstone.edudoexam.components
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
-import android.widget.PopupWindow
 import androidx.core.content.withStyledAttributes
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.databinding.ViewPopupLayoutBinding
 
 class QuestionsNodeLayout @JvmOverloads constructor(
     context: Context,

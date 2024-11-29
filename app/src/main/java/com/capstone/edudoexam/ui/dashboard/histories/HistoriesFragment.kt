@@ -13,9 +13,10 @@ import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.databinding.FragmentHistoriesBinding
 import com.capstone.edudoexam.databinding.ViewItemHistoryBinding
 import com.capstone.edudoexam.models.ExamResult
+import com.capstone.edudoexam.ui.dashboard.exams.ExamsViewModel
 
 class HistoriesFragment :
-    AppFragment<FragmentHistoriesBinding, HistoriesViewModel>(FragmentHistoriesBinding::inflate),
+    AppFragment<FragmentHistoriesBinding>(FragmentHistoriesBinding::class.java),
     GenericListAdapter.ItemBindListener<ExamResult, ViewItemHistoryBinding>
 {
 
@@ -47,7 +48,8 @@ class HistoriesFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.histories.observe(viewLifecycleOwner) {
+        getParentActivity().showNavBottom()
+        getViewModel(HistoriesViewModel::class.java).histories.observe(viewLifecycleOwner) {
             listAdapter.submitList(it)
         }
         binding.apply {
@@ -56,7 +58,7 @@ class HistoriesFragment :
                 layoutManager = LinearLayoutManager(requireContext())
             }
         }
-        viewModel.store(data)
+        getViewModel(HistoriesViewModel::class.java).store(data)
     }
 
 
@@ -82,7 +84,7 @@ class HistoriesFragment :
 
     private fun navigateToHistory(examHistory: ExamResult) {
 
-        findNavController().navigate(R.id.nav_history, Bundle().apply {
+        findNavController().navigate(R.id.action_nav_histories_to_nav_history, Bundle().apply {
             putParcelable(ExamResultFragment.ARGS_ID, examHistory)
         })
     }

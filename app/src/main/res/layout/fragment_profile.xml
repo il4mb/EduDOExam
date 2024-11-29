@@ -7,53 +7,18 @@
     tools:context=".ui.dashboard.profile.ProfileFragment"
     app:layoutDescription="@xml/fragment_profile_scene">
 
-    <com.google.android.material.appbar.AppBarLayout
-        style="@style/Theme.EduDOExam.AppBarLayout"
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="75dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_gravity="center_horizontal"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:cardCornerRadius="50dp">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/man" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:id="@+id/userId_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="X48S5d8sAX"
-            android:gravity="center"
-            android:layout_marginBottom="25dp"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="18dp"
         android:layout_marginHorizontal="18dp"
         android:hint="Email"
         android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout">
+        app:layout_constraintTop_toTopOf="parent">
         <androidx.appcompat.widget.AppCompatEditText
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="durianbohong@gmail.com"/>

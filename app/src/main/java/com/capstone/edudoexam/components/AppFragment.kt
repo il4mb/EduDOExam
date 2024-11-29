@@ -22,11 +22,10 @@ import com.capstone.edudoexam.databinding.ViewModalPickImageBinding
 import com.capstone.edudoexam.ui.dashboard.DashboardActivity
 import com.capstone.edudoexam.ui.dashboard.SharedViewModel
 import java.io.File
+import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 
-abstract class AppFragment<T : ViewBinding, VM : ViewModel>(
-    private val inflateBinding: (LayoutInflater, ViewGroup?, Boolean) -> T
-) : Fragment() {
+abstract class AppFragment<T : ViewBinding>(private val viewBindingClass: Class<T>) : Fragment() {
 
     private var imageUri: Uri? = null
     private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -96,23 +95,16 @@ abstract class AppFragment<T : ViewBinding, VM : ViewModel>(
         Log.d("IMAGE PICK", uri.toString())
     }
 
-
     private var _binding: T? = null
     protected val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by lazy {
         ViewModelProvider(requireActivity())[SharedViewModel::class.java]
     }
-    protected val viewModel: VM by lazy {
-        ViewModelProvider(this)[getViewModelClass()]
-    }
+
     protected var containerToBottomAppbar = true
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = inflateBinding(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = getInflateBinding()(null, inflater, container, false) as T
         sharedViewModel.topMargin.observe(viewLifecycleOwner) { margin ->
             val layoutParams = binding.root.layoutParams as ViewGroup.MarginLayoutParams
             layoutParams.topMargin = if(containerToBottomAppbar) margin else 0
@@ -126,10 +118,8 @@ abstract class AppFragment<T : ViewBinding, VM : ViewModel>(
         _binding = null
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun getViewModelClass(): Class<VM> {
-        return (javaClass.genericSuperclass as ParameterizedType)
-            .actualTypeArguments[1] as Class<VM>
+    private fun getInflateBinding(): Method {
+        return viewBindingClass.getMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
     }
 
     internal fun showToast(message: String) {
@@ -138,15 +128,23 @@ abstract class AppFragment<T : ViewBinding, VM : ViewModel>(
         }
     }
 
-    internal fun getParentBinding() : ActivityDashboard2Binding {
-
-        if(requireActivity() is DashboardActivity) {
-            return (requireActivity() as DashboardActivity).getBinding()
-        }
-        throw IllegalStateException("Parent activity is not DashboardActivity")
+    internal fun getParentActivity() : DashboardActivity {
+        return requireActivity() as DashboardActivity
     }
 
+    internal fun getParentBinding() : ActivityDashboard2Binding? {
 
-    internal val Int.dp: Int get() = (this * requireContext().resources.displayMetrics.density).toInt()
+        try {
+            if (requireActivity() is DashboardActivity) {
+                return (requireActivity() as DashboardActivity).getBinding()
+            }
+        } catch (_: Throwable) { }
+
+        return null
+    }
+
+    internal fun <T: ViewModel> getViewModel(viewModelClass: Class<T>): T {
+        return ViewModelProvider(requireActivity())[viewModelClass]
+    }
 
 }

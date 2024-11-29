@@ -21,7 +21,7 @@ import com.google.android.material.tabs.TabLayout
 import kotlin.math.abs
 
 class DetailExamFragment :
-    AppFragment<FragmentExamDetailBinding, DetailExamViewModel>(FragmentExamDetailBinding::inflate),
+    AppFragment<FragmentExamDetailBinding>(FragmentExamDetailBinding::class.java),
     TabLayout.OnTabSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,6 +39,8 @@ class DetailExamFragment :
             }
             tabLayout.addOnTabSelectedListener(this@DetailExamFragment)
         }
+
+        getParentActivity().hideNavBottom()
     }
 
     class ViewPagerAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {

@@ -14,7 +14,7 @@ import com.capstone.edudoexam.databinding.FragmentExamResultBinding
 import com.capstone.edudoexam.models.ExamResult
 
 class ExamResultFragment :
-    AppFragment<FragmentExamResultBinding, ExamResultViewModel>(FragmentExamResultBinding::inflate),
+    AppFragment<FragmentExamResultBinding>(FragmentExamResultBinding::class.java),
     QuestionsNodeLayout.ItemNodeListener {
 
     private lateinit var history: ExamResult

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.ui.dashboard.DashboardActivity
 import com.capstone.edudoexam.ui.dashboard.SharedViewModel
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -41,6 +42,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (requireActivity() is DashboardActivity) {
+            (requireActivity() as DashboardActivity).showNavBottom()
+        }
 
         sharedViewModel.topMargin.observe(viewLifecycleOwner) { marginTop ->
             (view.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {

@@ -1,20 +1,33 @@
 package com.capstone.edudoexam.ui.dashboard.home
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.AppFragment
 import com.capstone.edudoexam.components.ExamDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
+import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.databinding.FragmentHomeBinding
 import com.capstone.edudoexam.databinding.ViewItemExamBinding
 import com.capstone.edudoexam.models.Exam
+import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class HomeFragment :
-    AppFragment<FragmentHomeBinding, HomeViewModel>(FragmentHomeBinding::inflate),
+    AppFragment<FragmentHomeBinding>(FragmentHomeBinding::class.java),
     GenericListAdapter.ItemBindListener<Exam, ViewItemExamBinding> {
 
     private var data: ArrayList<Exam> = ArrayList()
@@ -42,7 +55,9 @@ class HomeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.exams.observe(viewLifecycleOwner) {
+
+        getParentActivity().showNavBottom()
+        getViewModel(HomeViewModel::class.java).exams.observe(viewLifecycleOwner) {
             listAdapter.submitList(it)
         }
         binding.apply {
@@ -50,6 +65,22 @@ class HomeFragment :
                 adapter = listAdapter
                 layoutManager = LinearLayoutManager(requireContext())
             }
+        }
+
+        lifecycleScope.launch {
+            delay(500)
+            getParentActivity().apply {
+                addMenu(R.drawable.man) {
+                    findNavController().navigate(R.id.action_nav_home_to_nav_profile)
+                }
+                this.getBinding().appBarLayout.addContentView(JoinExamFormLayout(requireContext()).apply {
+
+                    setOnClickListener {
+                        findNavController().navigate(R.id.action_nav_home_to_nav_exam_detail)
+                    }
+                })
+            }
+
             listAdapter.submitList(data)
         }
     }
@@ -62,16 +93,63 @@ class HomeFragment :
             subtitleView.text = item.subTitle
             dateTime.text     = item.startDate
             codeCopyButton.setOnClickListener {
-                viewModel.store(data)
+                getViewModel(HomeViewModel::class.java).store(data)
                 showToast("Code Copied")
             }
-            (root.layoutParams as MarginLayoutParams).let {
-                it.bottomMargin = 35
-                root.layoutParams = it
+            root.apply {
+
+                (layoutParams as MarginLayoutParams).let {
+                    it.bottomMargin = 35
+                    layoutParams = it
+                }
+
+                setOnClickListener {
+                    findNavController().navigate(R.id.action_nav_home_to_nav_exam_detail)
+                }
             }
-            root.setOnClickListener {
-                findNavController().navigate(R.id.nav_exam_detail)
+        }
+    }
+
+
+
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    class JoinExamFormLayout @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+    ) : LinearLayout(context, attrs, defStyleAttr) {
+
+        private val textInputLayout: TextInputLayout by lazy {
+            TextInputLayout(context).apply {
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                hint = "Join Exam"
+                endIconMode = TextInputLayout.END_ICON_CUSTOM
+                endIconDrawable = context.getDrawable(R.drawable.outline_prompt_suggestion_24)
+                boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+
+                setBoxCornerRadii(14.dp.toFloat(), 14.dp.toFloat(), 14.dp.toFloat(), 14.dp.toFloat())
+                addView(EditText(this.context).apply {
+                    layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                    setPadding(12.dp, 0, 12.dp, 0)
+                    //background   = ContextCompat.getDrawable(context, R.drawable.rounded_frame)
+                })
             }
+        }
+
+        init {
+            // Set layout orientation and padding
+            orientation = HORIZONTAL
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            setPadding(
+                resources.getDimensionPixelSize(R.dimen.dp_14),
+                resources.getDimensionPixelSize(R.dimen.dp_14),
+                resources.getDimensionPixelSize(R.dimen.dp_14),
+                resources.getDimensionPixelSize(R.dimen.dp_18)
+            )
+
+            // Add the TextInputLayout to the LinearLayout
+            addView(textInputLayout)
         }
     }
 }

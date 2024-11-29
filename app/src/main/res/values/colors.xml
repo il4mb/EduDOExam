@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="danger">#CC2A1F</color>
+    <color name="waring">#d48326</color>
     <color name="primary_light">#5A9FFB</color>
     <color name="primary_dark">#3065AF</color>
 
@@ -17,5 +19,4 @@
     <color name="light">#BBBBBB</color>
     <color name="transparent">#00000000</color>
 
-    <color name="mtrl_textinput_default_box_stroke_color">#fff</color>
 </resources>

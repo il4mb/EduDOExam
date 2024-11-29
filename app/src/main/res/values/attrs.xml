@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="AppBarLayout">
+        <attr name="title" format="string" />
+        <attr name="subtitle" format="string" />
+    </declare-styleable>
     <declare-styleable name="QuestionsNodeLayout">
         <attr name="questionLength" format="integer" />
     </declare-styleable>

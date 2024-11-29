@@ -29,12 +29,19 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewbinding.ViewBinding
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils.Companion.dp
+import com.capstone.edudoexam.components.Utils.Companion.getAttr
+import com.capstone.edudoexam.components.Utils.Companion.getColorLuminance
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import java.lang.reflect.Method
 
 class DialogBottom : BottomSheetDialogFragment() {
 
+    var themeColor: Int = 0
+        set(value) {
+            field = value
+            updateUI()
+        }
 
     var title: String = ""
         set(value) {
@@ -160,7 +167,7 @@ class DialogBottom : BottomSheetDialogFragment() {
 
             val textColor = getAttr(context, android.R.attr.textColor)
 
-            titleView.setTextColor(textColor)
+            titleView.setTextColor(themeColor)
             messageView.setTextColor(textColor)
 
             titleView.text = title.takeIf { it.isNotEmpty() } ?: run {
@@ -181,7 +188,8 @@ class DialogBottom : BottomSheetDialogFragment() {
             }
 
             acceptButton.apply {
-                backgroundTintList = ColorStateList.valueOf(textColor)
+                backgroundTintList = ColorStateList.valueOf(themeColor)
+                setTextColor(getColorLuminance(themeColor))
                 text = acceptText
                 visibility = if (isAcceptActionButtonVisible) View.VISIBLE else View.GONE
             }
@@ -199,12 +207,6 @@ class DialogBottom : BottomSheetDialogFragment() {
                 messageView.visibility = View.VISIBLE
             }
         }
-    }
-
-    fun getAttr(context: Context, attr: Int): Int {
-        val typedValue = TypedValue()
-        context.theme.resolveAttribute(attr, typedValue, true)
-        return typedValue.data
     }
 
     class LayoutBindHelper<T : ViewBinding> {
@@ -226,6 +228,7 @@ class DialogBottom : BottomSheetDialogFragment() {
 
     class Builder(private val activity: FragmentActivity): DialogBottomProperty {
 
+        var color: Int = getAttr(activity, android.R.attr.textColor)
         override var title: String = ""
         override var message: String = ""
         override var isCancelable: Boolean = true
@@ -246,6 +249,7 @@ class DialogBottom : BottomSheetDialogFragment() {
 
         fun build(): DialogBottom {
             val dialog = DialogBottom()
+            dialog.themeColor = color
             dialog.title = title
             dialog.message = message
             dialog.isCancelable = isCancelable
@@ -270,13 +274,13 @@ class DialogBottom : BottomSheetDialogFragment() {
 
          val titleView: TextView by lazy {
             TextView(context).apply {
-                setPadding(0, 16.dp, 0, 5.dp)
+                setPadding(0, 5.dp, 0, 5.dp)
                 layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
                 textSize = 22f
                 typeface = resources.getFont(R.font.montserrat_semi_bold)
             }
         }
-         val messageView: TextView by lazy {
+        val messageView: TextView by lazy {
             TextView(context).apply {
                 setPadding(0, 0, 0, 16.dp)
                 layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -284,7 +288,7 @@ class DialogBottom : BottomSheetDialogFragment() {
                 typeface = resources.getFont(R.font.montserrat_regular)
             }
         }
-         val acceptButton: MaterialButton by lazy {
+        val acceptButton: MaterialButton by lazy {
             MaterialButton(context).apply {
                 text = "Accept"
                 typeface = resources.getFont(R.font.montserrat_bold)
@@ -294,7 +298,7 @@ class DialogBottom : BottomSheetDialogFragment() {
                 }
             }
         }
-         val cancelButton: MaterialButton by lazy {
+        val cancelButton: MaterialButton by lazy {
             MaterialButton(context).apply {
                 text = "Cancel"
                 typeface = resources.getFont(R.font.montserrat_bold)

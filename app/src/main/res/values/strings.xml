@@ -22,4 +22,5 @@
     <string name="title_permission_denied">Permission Denied</string>
     <string name="description_permission_capture_denied">Capture images requires camera access permission, otherwise this feature cannot be used.</string>
     <string name="get_it">Get it</string>
+    <string name="user_email">User Email</string>
 </resources>

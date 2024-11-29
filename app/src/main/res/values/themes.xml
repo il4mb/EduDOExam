@@ -30,6 +30,7 @@
 
     <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxStrokeColor">?colorPrimaryVariant</item>
+        <item name="strokeColor">#000000</item>
         <item name="boxStrokeWidth">1dp</item>
         <item name="boxCornerRadiusBottomEnd">14dp</item>
         <item name="boxCornerRadiusTopEnd">14dp</item>
