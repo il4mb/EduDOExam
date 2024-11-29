@@ -1,12 +1,12 @@
 package com.capstone.edudoexam.components
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
@@ -14,11 +14,13 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.children
-import androidx.core.view.postDelayed
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.google.android.material.appbar.AppBarLayout as AppBarLayoutMaterial
 
+@SuppressLint("ObjectAnimatorBinding")
 class AppBarLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -64,74 +66,82 @@ class AppBarLayout @JvmOverloads constructor(
                 addRule(RelativeLayout.CENTER_VERTICAL)
                 setMargins(0, 0, 16.dp, 0)
             })
+            background = ColorDrawable()
+            elevation = 0f
         }
     }
 
-    private val container: LinearLayout by lazy {
-        LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
+    private val container: FrameLayout by lazy {
+        FrameLayout(context).apply {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            background = ColorDrawable()
+            elevation = 0f
         }
     }
 
     fun addMenu(@DrawableRes icon: Int, @ColorInt color: Int, onClick: (View) -> Unit) : View? {
+        TransitionManager.beginDelayedTransition(menuLayout, ChangeBounds())
         return menuLayout.addMenu(icon, color)?.apply {
             setOnClickListener(onClick)
         }
     }
 
-    fun addMenu(@DrawableRes icon: Int, onClick: (View) -> Unit) : View?{
-        return menuLayout.addMenu(icon)?.apply {
-            setOnClickListener(onClick)
-        }
-    }
-
     fun removeAllMenus() {
+        TransitionManager.beginDelayedTransition(menuLayout, ChangeBounds())
         menuLayout.removeAllViews()
     }
 
-    fun addContentView(view: View) {
-        view.apply {
-            alpha = 0f
-            translationY = -20f
-        }
-        container.addView(view.apply {
-            animateIn(view)
-        })
-    }
+    fun addContentView(view: View?) {
+        view?.let { newView ->
+            newView.alpha = 0.6f
+            newView.translationY = -20f
 
-    fun removeAllContentViews() {
-        val children = container.children.toList()
-        children.forEachIndexed { index, child ->
-            child.postDelayed({
-                animateOut(child) { container.removeView(child) }
-            }, index * 50L)
-        }
-    }
+            container.addView(newView)
 
-    private fun animateIn(v: View) {
-        v.apply {
-            translationY = -10f
-            alpha = 0f
-            animate()
-                .setDuration(200)
+            newView.animate()
                 .translationY(0f)
                 .alpha(1f)
+                .setDuration(300)
                 .start()
+
+            val oldViews = container.children.toList()
+            if (oldViews.size > 1) {
+                val oldView = oldViews[0]
+                animateOut(oldView) {
+                    container.removeView(oldView)
+                }
+            }
+        } ?: run {
+            removeAllContentViews()
         }
     }
+
+    fun removeAllContentViews(finished: (() -> Unit)? = null) {
+        val children = container.children.toList()
+        children.forEach { child ->
+            animateOut(child) {
+                TransitionManager.beginDelayedTransition(container, ChangeBounds())
+                container.removeView(child)
+                if (child == children.last()) {
+                    finished?.invoke()
+                }
+            }
+        }
+    }
+
     private fun animateOut(v: View, onAnimationEnd: () -> Unit) {
         v.animate()
-            .setDuration(200)
+            .setDuration(280)
+            .translationY(-20f)
             .alpha(0f)
-            .translationY(-10f)
-            .setInterpolator(AccelerateDecelerateInterpolator())
-            .withEndAction { onAnimationEnd() }
+            .withEndAction {
+                onAnimationEnd()
+            }
             .start()
     }
 
     init {
-        // Add toolbar and container to the AppBarLayout
+
         addView(relativeLayout)
         addView(container)
 
@@ -140,5 +150,6 @@ class AppBarLayout @JvmOverloads constructor(
             title = getString(R.styleable.AppBarLayout_title) ?: ""
             subtitle = getString(R.styleable.AppBarLayout_subtitle) ?: ""
         }
+        elevation = 0f
     }
 }

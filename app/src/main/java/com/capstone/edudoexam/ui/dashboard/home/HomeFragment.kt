@@ -2,20 +2,17 @@ package com.capstone.edudoexam.ui.dashboard.home
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.AppFragment
+import com.capstone.edudoexam.components.BaseFragment
 import com.capstone.edudoexam.components.ExamDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.Utils.Companion.dp
@@ -27,7 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeFragment :
-    AppFragment<FragmentHomeBinding>(FragmentHomeBinding::class.java),
+    BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::class.java),
     GenericListAdapter.ItemBindListener<Exam, ViewItemExamBinding> {
 
     private var data: ArrayList<Exam> = ArrayList()
@@ -35,6 +32,9 @@ class HomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        isBottomNavigationVisible = true
+
         listAdapter = GenericListAdapter(
             ViewItemExamBinding::class.java,
             onItemBindCallback = this,
@@ -51,15 +51,17 @@ class HomeFragment :
                 "Kelas ${(i+1)/6}")
             )
         }
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getParentActivity().showNavBottom()
         getViewModel(HomeViewModel::class.java).exams.observe(viewLifecycleOwner) {
             listAdapter.submitList(it)
         }
+
         binding.apply {
             recyclerView.apply {
                 adapter = listAdapter
@@ -68,17 +70,12 @@ class HomeFragment :
         }
 
         lifecycleScope.launch {
-            delay(500)
+            delay(300)
             getParentActivity().apply {
+                showNavBottom()
                 addMenu(R.drawable.man) {
                     findNavController().navigate(R.id.action_nav_home_to_nav_profile)
                 }
-                this.getBinding().appBarLayout.addContentView(JoinExamFormLayout(requireContext()).apply {
-
-                    setOnClickListener {
-                        findNavController().navigate(R.id.action_nav_home_to_nav_exam_detail)
-                    }
-                })
             }
 
             listAdapter.submitList(data)
@@ -110,7 +107,9 @@ class HomeFragment :
         }
     }
 
-
+    override fun onAppbarContentView(): View {
+        return JoinExamFormLayout(requireContext())
+    }
 
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -132,7 +131,7 @@ class HomeFragment :
                 addView(EditText(this.context).apply {
                     layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
                     setPadding(12.dp, 0, 12.dp, 0)
-                    //background   = ContextCompat.getDrawable(context, R.drawable.rounded_frame)
+                    //background = ContextCompat.getDrawable(context, R.drawable.rounded_frame)
                 })
             }
         }

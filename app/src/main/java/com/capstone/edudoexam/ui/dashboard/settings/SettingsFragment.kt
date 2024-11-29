@@ -44,7 +44,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
 
         if (requireActivity() is DashboardActivity) {
-            (requireActivity() as DashboardActivity).showNavBottom()
+            (requireActivity() as DashboardActivity).apply {
+                showNavBottom()
+                getAppbar().apply {
+                    removeAllMenus()
+                    removeAllContentViews()
+                }
+            }
         }
 
         sharedViewModel.topMargin.observe(viewLifecycleOwner) { marginTop ->

@@ -7,16 +7,15 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.AppFragment
+import com.capstone.edudoexam.components.BaseFragment
 import com.capstone.edudoexam.components.ExamResultDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.databinding.FragmentHistoriesBinding
 import com.capstone.edudoexam.databinding.ViewItemHistoryBinding
 import com.capstone.edudoexam.models.ExamResult
-import com.capstone.edudoexam.ui.dashboard.exams.ExamsViewModel
 
 class HistoriesFragment :
-    AppFragment<FragmentHistoriesBinding>(FragmentHistoriesBinding::class.java),
+    BaseFragment<FragmentHistoriesBinding>(FragmentHistoriesBinding::class.java),
     GenericListAdapter.ItemBindListener<ExamResult, ViewItemHistoryBinding>
 {
 
@@ -25,6 +24,8 @@ class HistoriesFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isBottomNavigationVisible = true
+
         listAdapter = GenericListAdapter(
             ViewItemHistoryBinding::class.java,
             onItemBindCallback = this,

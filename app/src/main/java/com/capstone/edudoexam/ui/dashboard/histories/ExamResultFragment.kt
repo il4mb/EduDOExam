@@ -5,8 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.TextView
-import com.capstone.edudoexam.components.AppFragment
+import com.capstone.edudoexam.components.BaseFragment
 import com.capstone.edudoexam.components.QuestionNode
 import com.capstone.edudoexam.components.QuestionsNodeLayout
 import com.capstone.edudoexam.components.ResultCard
@@ -14,7 +13,7 @@ import com.capstone.edudoexam.databinding.FragmentExamResultBinding
 import com.capstone.edudoexam.models.ExamResult
 
 class ExamResultFragment :
-    AppFragment<FragmentExamResultBinding>(FragmentExamResultBinding::class.java),
+    BaseFragment<FragmentExamResultBinding>(FragmentExamResultBinding::class.java),
     QuestionsNodeLayout.ItemNodeListener {
 
     private lateinit var history: ExamResult

@@ -12,12 +12,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.AppFragment
+import com.capstone.edudoexam.components.BaseFragment
 import com.capstone.edudoexam.components.ExamDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
@@ -29,7 +28,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ExamsFragment :
-    AppFragment<FragmentExamsBinding>(FragmentExamsBinding::class.java),
+    BaseFragment<FragmentExamsBinding>(FragmentExamsBinding::class.java),
     GenericListAdapter.ItemBindListener<Exam, ViewItemExamBinding> {
 
     private val startRotateAnim: Animation by lazy {
@@ -43,6 +42,9 @@ class ExamsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        isBottomNavigationVisible = true
+
         listAdapter = GenericListAdapter(
             ViewItemExamBinding::class.java,
             onItemBindCallback = this,
@@ -59,6 +61,7 @@ class ExamsFragment :
                     "Kelas ${(i+1)/6}")
             )
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

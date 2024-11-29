@@ -2,26 +2,18 @@ package com.capstone.edudoexam.ui.dashboard.exams.detail
 
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.AppFragment
+import com.capstone.edudoexam.components.BaseFragment
 import com.capstone.edudoexam.databinding.FragmentExamDetailBinding
-import com.capstone.edudoexam.ui.dashboard.exams.ExamsFragment
 import com.capstone.edudoexam.ui.dashboard.exams.detail.questions.QuestionsExamFragment
 import com.capstone.edudoexam.ui.dashboard.exams.detail.studens.StudentsExamFragment
-import com.capstone.edudoexam.ui.dashboard.histories.HistoriesFragment
-import com.capstone.edudoexam.ui.dashboard.home.HomeFragment
-import com.capstone.edudoexam.ui.dashboard.settings.SettingsFragment
 import com.google.android.material.tabs.TabLayout
-import kotlin.math.abs
 
 class DetailExamFragment :
-    AppFragment<FragmentExamDetailBinding>(FragmentExamDetailBinding::class.java),
+    BaseFragment<FragmentExamDetailBinding>(FragmentExamDetailBinding::class.java),
     TabLayout.OnTabSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

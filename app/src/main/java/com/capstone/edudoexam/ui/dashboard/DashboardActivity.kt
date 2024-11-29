@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -23,10 +24,16 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.AppBarLayout
 import com.capstone.edudoexam.components.ModalBottom
 import com.capstone.edudoexam.databinding.ActivityDashboard2Binding
+import com.capstone.edudoexam.ui.dashboard.profile.ProfileFragment.UserBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
 
@@ -83,19 +90,20 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
     }
 
     override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
+
         _binding.apply {
+
             resetUI()
+            // TransitionManager.beginDelayedTransition(appBarLayout, ChangeBounds())
             appBarLayout.removeAllMenus()
-            appBarLayout.removeAllContentViews()
-            sharedViewModel.updateTopMargin(appBarLayout.height)
 
             when (destination.id) {
                 R.id.nav_home -> {
-                    appBarLayout.title = getString(R.string.app_name)
+                    appBarLayout.title    = getString(R.string.app_name)
                     appBarLayout.subtitle = getString(R.string.app_moto)
                 }
                 else -> {
-                    appBarLayout.title = destination.label.toString()
+                    appBarLayout.title    = destination.label.toString()
                     appBarLayout.subtitle = ""
                 }
             }
@@ -108,12 +116,8 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
        }
     }
 
-
-    fun addMenu(@DrawableRes icon: Int, @ColorInt color: Int, onClick: (View) -> Unit) {
+    fun addMenu(@DrawableRes icon: Int, @ColorInt color: Int = 0, onClick: (View) -> Unit) {
         _binding.appBarLayout.addMenu(icon, color, onClick)
-    }
-    fun addMenu(@DrawableRes icon: Int, onClick: (View) -> Unit) {
-        _binding.appBarLayout.addMenu(icon, 0, onClick)
     }
 
     fun hideNavBottom() {
@@ -153,7 +157,7 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
         } catch (_: Throwable) {}
     }
 
-    fun getBinding(): ActivityDashboard2Binding {
-        return _binding
+    fun getAppbar() : AppBarLayout {
+        return _binding.appBarLayout
     }
 }

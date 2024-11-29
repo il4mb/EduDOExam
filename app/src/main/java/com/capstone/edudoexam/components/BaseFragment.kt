@@ -13,20 +13,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.databinding.ActivityDashboard2Binding
 import com.capstone.edudoexam.databinding.ViewModalPickImageBinding
 import com.capstone.edudoexam.ui.dashboard.DashboardActivity
 import com.capstone.edudoexam.ui.dashboard.SharedViewModel
 import java.io.File
 import java.lang.reflect.Method
-import java.lang.reflect.ParameterizedType
 
-abstract class AppFragment<T : ViewBinding>(private val viewBindingClass: Class<T>) : Fragment() {
+abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class<T>) : Fragment() {
 
+    internal var isBottomNavigationVisible = false
     private var imageUri: Uri? = null
     private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
@@ -101,16 +102,32 @@ abstract class AppFragment<T : ViewBinding>(private val viewBindingClass: Class<
         ViewModelProvider(requireActivity())[SharedViewModel::class.java]
     }
 
-    protected var containerToBottomAppbar = true
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = getInflateBinding()(null, inflater, container, false) as T
         sharedViewModel.topMargin.observe(viewLifecycleOwner) { margin ->
             val layoutParams = binding.root.layoutParams as ViewGroup.MarginLayoutParams
-            layoutParams.topMargin = if(containerToBottomAppbar) margin else 0
+            layoutParams.topMargin = margin
             binding.root.layoutParams = layoutParams
         }
+
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStart(owner: LifecycleOwner) {
+                super.onStart(owner)
+                getParentActivity().getAppbar().apply {
+                    addContentView(onAppbarContentView())
+                }
+                if(isBottomNavigationVisible) {
+                    getParentActivity().showNavBottom()
+                } else {
+                    getParentActivity().hideNavBottom()
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -132,19 +149,11 @@ abstract class AppFragment<T : ViewBinding>(private val viewBindingClass: Class<
         return requireActivity() as DashboardActivity
     }
 
-    internal fun getParentBinding() : ActivityDashboard2Binding? {
-
-        try {
-            if (requireActivity() is DashboardActivity) {
-                return (requireActivity() as DashboardActivity).getBinding()
-            }
-        } catch (_: Throwable) { }
-
-        return null
-    }
-
     internal fun <T: ViewModel> getViewModel(viewModelClass: Class<T>): T {
         return ViewModelProvider(requireActivity())[viewModelClass]
     }
 
+    internal open fun onAppbarContentView() : View? {
+        return null
+    }
 }

@@ -5,22 +5,16 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.view.Gravity.CENTER
 import android.view.Gravity.CENTER_HORIZONTAL
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.lifecycleScope
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.AppFragment
+import com.capstone.edudoexam.components.BaseFragment
 import com.capstone.edudoexam.databinding.FragmentProfileBinding
 import com.google.android.material.card.MaterialCardView
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-class ProfileFragment : AppFragment<FragmentProfileBinding>(FragmentProfileBinding::class.java) {
-
+class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::class.java) {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,18 +22,21 @@ class ProfileFragment : AppFragment<FragmentProfileBinding>(FragmentProfileBindi
         // containerToBottomAppbar = false
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        lifecycleScope.launch {
-            delay(500)
-            getParentActivity().apply {
-                this.getBinding().appBarLayout.addContentView(UserBarLayout(requireContext()))
-            }
-        }
+//        lifecycleScope.launch {
+//            delay(300)
+//            getParentActivity().apply {
+//                getBinding().appBarLayout.addContentView(UserBarLayout(requireContext()))
+//            }
+//        }
     }
 
+    override fun onAppbarContentView(): View {
+        return UserBarLayout(requireContext())
+    }
 
 
     class UserBarLayout @JvmOverloads constructor(

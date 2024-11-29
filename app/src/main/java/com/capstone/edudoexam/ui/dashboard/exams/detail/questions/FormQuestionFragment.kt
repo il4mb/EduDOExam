@@ -13,12 +13,12 @@ import androidx.activity.addCallback
 import androidx.core.view.get
 import androidx.core.view.setPadding
 import androidx.navigation.fragment.findNavController
-import com.capstone.edudoexam.components.AppFragment
+import com.capstone.edudoexam.components.BaseFragment
 import com.capstone.edudoexam.components.DialogBottom
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.databinding.FragmentFormQuestionBinding
 
-class FormQuestionFragment : AppFragment<FragmentFormQuestionBinding>(FragmentFormQuestionBinding::class.java) {
+class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentFormQuestionBinding::class.java) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
