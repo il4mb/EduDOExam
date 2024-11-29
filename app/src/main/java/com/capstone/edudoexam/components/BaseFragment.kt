@@ -57,7 +57,15 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
         }
     }
 
-    internal fun pickImageFromCamera() {
+    private var _binding: T? = null
+
+    protected val binding get() = _binding!!
+
+    private val sharedViewModel: SharedViewModel by lazy {
+        ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+    }
+
+    private fun pickImageFromCamera() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
             val uniqueFileName = "IMAGE-${System.currentTimeMillis()}.jpg"
@@ -70,7 +78,7 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
         }
     }
 
-    internal fun pickImageFromGallery() {
+    private fun pickImageFromGallery() {
         pickImageLauncher.launch("image/*")
     }
 
@@ -94,12 +102,6 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
 
     internal open fun onImageResult(result: Boolean, uri: Uri) {
         Log.d("IMAGE PICK", uri.toString())
-    }
-
-    private var _binding: T? = null
-    protected val binding get() = _binding!!
-    private val sharedViewModel: SharedViewModel by lazy {
-        ViewModelProvider(requireActivity())[SharedViewModel::class.java]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

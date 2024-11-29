@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.databinding.FragmentRegisterBinding
+import com.capstone.edudoexam.ui.welcome.WelcomeActivity
 
 
 class RegisterFragment : Fragment() {
@@ -26,6 +27,10 @@ class RegisterFragment : Fragment() {
                 Navigation.findNavController(view).popBackStack(R.id.nav_index, true)
             }
         }
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        (requireActivity() as WelcomeActivity).setLoading(isLoading)
     }
 
 }

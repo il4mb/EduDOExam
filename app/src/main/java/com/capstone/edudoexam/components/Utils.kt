@@ -1,10 +1,22 @@
 package com.capstone.edudoexam.components
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.Utils.Companion.dp
+import com.capstone.edudoexam.components.Utils.Companion.getAttr
+import com.google.android.material.snackbar.Snackbar as DefaultSnackbar
 
 class Utils {
 
@@ -43,6 +55,81 @@ class Utils {
             val luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
             return if (luminance > 0.5) Color.BLACK else Color.WHITE
         }
-
     }
+}
+
+class Snackbar private constructor() {
+
+    private var anchorView: View? = null
+
+    companion object {
+        fun with(view: View): Snackbar {
+            return Snackbar().apply {
+                anchorView = view
+            }
+        }
+
+        const val LENGTH_SHORT = DefaultSnackbar.LENGTH_SHORT
+        const val LENGTH_LONG = DefaultSnackbar.LENGTH_LONG
+    }
+
+    fun show(message: String, length: Int) {
+
+        anchorView?.apply {
+            val snackbar = DefaultSnackbar.make(this, message, length)
+            snackbar.view.post {
+                (snackbar.view as FrameLayout).apply {
+                    background = ContextCompat.getDrawable(this.context, R.drawable.rounded_frame)
+                }
+                val snackbarHeight = snackbar.view.height
+                val translationY = (snackbarHeight*2)
+                snackbar.view.y = translationY.toFloat()
+            }
+            snackbar.show()
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    fun show(title: String, message: String, length: Int) {
+        anchorView?.apply {
+            val snackbar = DefaultSnackbar.make(this, "", length) // Empty message since we're replacing the view
+
+            snackbar.view.post {
+                val context = this.context
+
+                val titleView = TextView(context).apply {
+                    text = title
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                    setTextColor(getAttr(context, android.R.attr.colorBackground))
+                    typeface = ResourcesCompat.getFont(context, R.font.montserrat_semi_bold)
+                }
+
+                val messageView = TextView(context).apply {
+                    text = message
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    setTextColor(getAttr(context, android.R.attr.colorBackground))
+                }
+
+                val customLayout = LinearLayout(context).apply {
+                    orientation = LinearLayout.VERTICAL
+                    setPadding(16.dp, 16.dp, 16.dp, 16.dp)
+                    addView(titleView)
+                    addView(messageView)
+                }
+
+                (snackbar.view as DefaultSnackbar.SnackbarLayout).apply {
+                    addView(customLayout, 0)
+                }
+
+                // Adjust Y position (optional - this centers Snackbar vertically)
+                snackbar.view.post {
+                    val snackbarHeight = snackbar.view.height
+                    snackbar.view.y = ((snackbarHeight * 2) - (snackbarHeight / 4)).toFloat()
+                }
+            }
+
+            snackbar.show()
+        }
+    }
+
 }

@@ -32,6 +32,8 @@
         style="@style/Theme.EduDOExam.AppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="true"
+        android:clipChildren="true"
         android:gravity="end"
         android:elevation="0dp"
         app:title="@string/app_name"

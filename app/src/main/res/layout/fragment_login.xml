@@ -52,6 +52,7 @@
             android:layout_marginBottom="12dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
@@ -66,6 +67,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
@@ -87,6 +89,15 @@
             android:paddingVertical="14dp"
             android:layout_marginBottom="14dp"
             android:text="Login"/>
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:id="@+id/skip_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="14dp"
+            android:layout_marginBottom="14dp"
+            android:text="Skip Login"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

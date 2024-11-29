@@ -17,8 +17,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.BaseFragment
+import com.capstone.edudoexam.components.DialogBottom
 import com.capstone.edudoexam.components.ExamDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
+import com.capstone.edudoexam.components.ModalBottom
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
 import com.capstone.edudoexam.databinding.FragmentExamsBinding
 import com.capstone.edudoexam.databinding.ViewItemExamBinding
@@ -80,7 +82,7 @@ class ExamsFragment :
         }
 
         lifecycleScope.launch {
-            delay(500)
+            delay(300)
             getParentActivity().apply {
                 addMenu(
                     R.drawable.baseline_add_24,
@@ -138,14 +140,28 @@ class ExamsFragment :
         }
         binding.actionCreate.setOnClickListener {
             popUp.dismiss()
-            //createExam()
+            createExam()
         }
 
         binding.actionJoin.setOnClickListener {
             popUp.dismiss()
-            //joinExam()
+            joinExam()
         }
 
         v.startAnimation(startRotateAnim)
+    }
+
+    private fun createExam() {
+        DialogBottom.Builder(requireActivity()).apply {
+            title = "Accept User Terms and Conditions"
+            acceptText = "Accept"
+        }.show()
+    }
+
+    private fun joinExam() {
+        DialogBottom.Builder(requireActivity()).apply {
+            title = "Please Enter Exam Code"
+            acceptText = "Join"
+        }.show()
     }
 }

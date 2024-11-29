@@ -2,6 +2,8 @@ package com.capstone.edudoexam.components
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.Gravity
@@ -12,6 +14,7 @@ import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.children
 import androidx.transition.ChangeBounds
@@ -27,6 +30,47 @@ class AppBarLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppBarLayoutMaterial(context, attrs, defStyleAttr) {
 
+    val toolbar: Toolbar by lazy {
+        Toolbar(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            background = ColorDrawable()
+            elevation = 0f
+        }
+    }
+
+    private val menuLayout: MenuLayout by lazy {
+        MenuLayout(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.END
+            }
+            elevation = 0f
+        }
+    }
+
+    private val relativeLayout: RelativeLayout by lazy {
+        RelativeLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            addView(toolbar, RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+            addView(menuLayout, RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_END)
+                addRule(RelativeLayout.CENTER_VERTICAL)
+                setMargins(0, 0, 0.dp, 0)
+            })
+            elevation = 0f
+        }
+    }
+
+    private val container: FrameLayout by lazy {
+        FrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            elevation = 0f // Explicitly set container elevation to zero
+        }
+    }
+
+
     var title: String
         get() = toolbar.title.toString()
         set(value) {
@@ -39,45 +83,6 @@ class AppBarLayout @JvmOverloads constructor(
             toolbar.subtitle = value
         }
 
-    val toolbar: Toolbar by lazy {
-        Toolbar(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-            background = ColorDrawable() // Consider setting a default color if required
-        }
-    }
-
-    private val menuLayout: MenuLayout by lazy {
-        MenuLayout(context).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.END
-            }
-        }
-    }
-
-    private val relativeLayout: RelativeLayout by lazy {
-        RelativeLayout(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-            addView(toolbar, RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
-            addView(menuLayout, RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
-                addRule(RelativeLayout.ALIGN_PARENT_END)
-                addRule(RelativeLayout.CENTER_VERTICAL)
-                setMargins(0, 0, 16.dp, 0)
-            })
-            background = ColorDrawable()
-            elevation = 0f
-        }
-    }
-
-    private val container: FrameLayout by lazy {
-        FrameLayout(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-            background = ColorDrawable()
-            elevation = 0f
-        }
-    }
 
     fun addMenu(@DrawableRes icon: Int, @ColorInt color: Int, onClick: (View) -> Unit) : View? {
         TransitionManager.beginDelayedTransition(menuLayout, ChangeBounds())
@@ -145,11 +150,10 @@ class AppBarLayout @JvmOverloads constructor(
         addView(relativeLayout)
         addView(container)
 
-        // Load custom attributes
         context.withStyledAttributes(attrs, R.styleable.AppBarLayout) {
             title = getString(R.styleable.AppBarLayout_title) ?: ""
             subtitle = getString(R.styleable.AppBarLayout_subtitle) ?: ""
         }
-        elevation = 0f
+        outlineProvider = null
     }
 }

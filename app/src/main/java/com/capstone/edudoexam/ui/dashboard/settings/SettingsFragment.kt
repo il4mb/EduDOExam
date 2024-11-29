@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -20,44 +22,58 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
-        findPreference<SwitchPreferenceCompat>(getString(R.string.pref_dark_mode))?.let {
-            it.setOnPreferenceChangeListener { _, newValue ->
+        setupSwitchPreference(
+            key = getString(R.string.pref_dark_mode),
+            onChange = { newValue ->
                 val isDarkMode = newValue as Boolean
-                if (isDarkMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
+                AppCompatDelegate.setDefaultNightMode(
+                    if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES
+                    else AppCompatDelegate.MODE_NIGHT_NO
+                )
                 true
             }
-        }
+        )
 
-        findPreference<SwitchPreferenceCompat>(getString(R.string.pref_upcoming_notification))?.let {
-            it.setOnPreferenceChangeListener { _, newValue ->
-
+        setupSwitchPreference(
+            key = getString(R.string.pref_upcoming_notification),
+            onChange = { newValue ->
+                // Add logic to handle notification preferences here
                 true
             }
+        )
+    }
+
+    private fun setupSwitchPreference(key: String, onChange: (newValue: Any) -> Boolean) {
+        findPreference<SwitchPreferenceCompat>(key)?.setOnPreferenceChangeListener { _, newValue ->
+            onChange(newValue)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (requireActivity() is DashboardActivity) {
-            (requireActivity() as DashboardActivity).apply {
-                showNavBottom()
-                getAppbar().apply {
-                    removeAllMenus()
-                    removeAllContentViews()
+        viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStart(owner: LifecycleOwner) {
+                super.onStart(owner)
+                (requireActivity() as? DashboardActivity)?.apply {
+                    showNavBottom()
+                    configureAppBar()
                 }
             }
-        }
+        })
 
         sharedViewModel.topMargin.observe(viewLifecycleOwner) { marginTop ->
             (view.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
                 topMargin = marginTop
                 view.layoutParams = this
             }
+        }
+    }
+
+    private fun DashboardActivity.configureAppBar() {
+        getAppbar().apply {
+            removeAllMenus()
+            removeAllContentViews()
         }
     }
 }
