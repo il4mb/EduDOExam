@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <declare-styleable name="InputTextEdit">
+        <attr name="hint" format="string" />
+
+        <attr name="inputType" format="integer">
+            <enum name="inputTypeText" value="1" />
+            <enum name="inputTypeEmail" value="32" />
+            <enum name="inputTypePassword" value="129" />
+        </attr>
+
+        <attr name="maxLines" format="integer" />
+        <attr name="maxLength" format="integer" />
+        <attr name="startIcon" format="reference"/>
+        <attr name="endIcon" format="reference"/>
+
+    </declare-styleable>
+
+    <declare-styleable name="InputGenderRadio">
+        <attr name="gender" format="integer"/>
+    </declare-styleable>
+
     <declare-styleable name="AppBarLayout">
         <attr name="title" format="string" />
         <attr name="subtitle" format="string" />
     </declare-styleable>
+
     <declare-styleable name="QuestionsNodeLayout">
         <attr name="questionLength" format="integer" />
     </declare-styleable>
+
     <declare-styleable name="ResultCard">
         <attr name="label" format="string"/>
         <attr name="score" format="integer"/>
     </declare-styleable>
+
 </resources>

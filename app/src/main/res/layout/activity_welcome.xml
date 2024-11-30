@@ -5,12 +5,24 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context=".ui.welcome.WelcomeActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pattern_background"
+        android:background="?android:colorBackground" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         app:navGraph="@navigation/navigation_welcome"
         app:defaultNavHost="true"
         android:name="androidx.navigation.fragment.NavHostFragment" />
@@ -19,5 +31,6 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:id="@+id/loading_layout"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

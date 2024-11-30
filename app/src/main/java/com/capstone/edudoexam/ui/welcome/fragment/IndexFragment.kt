@@ -23,10 +23,10 @@ class IndexFragment : Fragment() {
 
         binding.apply {
             loginButton.setOnClickListener {
-                Navigation.findNavController(view).navigate(R.id.nav_login)
+                Navigation.findNavController(view).navigate(R.id.action_nav_index_to_nav_login)
             }
             registerButton.setOnClickListener{
-                Navigation.findNavController(view).navigate(R.id.nav_register)
+                Navigation.findNavController(view).navigate(R.id.action_nav_index_to_nav_register)
             }
         }
     }

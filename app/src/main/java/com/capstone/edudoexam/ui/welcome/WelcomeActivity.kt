@@ -25,6 +25,8 @@ class WelcomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        enableEdgeToEdge()
+
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val isDarkMode = sharedPref.getBoolean(getString(R.string.pref_dark_mode), false)
         if (isDarkMode) {
@@ -35,15 +37,7 @@ class WelcomeActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
         setContentView(_binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v: View, insets: WindowInsetsCompat ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         setLoading(false)
 
     }

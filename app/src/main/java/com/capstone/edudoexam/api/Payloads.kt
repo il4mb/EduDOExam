@@ -2,6 +2,7 @@ package com.capstone.edudoexam.api
 
 data class RegisterPayload(
     val name: String,
+    val gender: Int,
     val email: String,
     val password: String
 )

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/transparent"
     tools:context=".ui.welcome.login.LoginFragment">
 
     <TextView
@@ -33,10 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="-100dp"
         android:orientation="vertical"
-        android:layout_marginHorizontal="25dp"
+        android:layout_marginHorizontal="22dp"
         android:background="@drawable/rounded_frame"
-        android:backgroundTint="?android:colorBackground"
-        android:paddingHorizontal="18dp"
+        android:paddingHorizontal="22dp"
         android:paddingVertical="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

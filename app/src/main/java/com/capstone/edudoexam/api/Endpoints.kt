@@ -15,13 +15,13 @@ import retrofit2.http.Query
 
 interface AuthEndpoints {
 
-    @POST("register")
+    @POST("auth/register")
     fun register(
         @Body body: RegisterPayload
     ): Call<Response>
 
 
-    @POST("login")
+    @POST("auth/login")
     fun login(
         @Body body: LoginPayload
     ): Call<ResponseLogin>
