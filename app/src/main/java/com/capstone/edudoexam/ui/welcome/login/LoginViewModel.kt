@@ -1,5 +1,6 @@
 package com.capstone.edudoexam.ui.welcome.login
 
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import com.capstone.edudoexam.api.ApiViewModel
 import com.capstone.edudoexam.api.AuthEndpoints
@@ -13,8 +14,8 @@ class LoginViewModel : ApiViewModel<ResponseLogin>() {
     private val _response: MutableLiveData<ResponseLogin> = MutableLiveData()
     val response: MutableLiveData<ResponseLogin> = _response
 
-    fun doLogin(email: String, password: String) {
-        Client.beginWith(AuthEndpoints::class.java)
+    fun doLogin(fragment: FragmentActivity, email: String, password: String) {
+        Client.beginWith(fragment, AuthEndpoints::class.java)
             .login(LoginPayload(email, password))
             .enqueue(this)
     }

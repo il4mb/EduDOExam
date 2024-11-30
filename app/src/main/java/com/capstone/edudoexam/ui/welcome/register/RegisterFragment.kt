@@ -89,6 +89,7 @@ class RegisterFragment : Fragment() {
             registerButton.setOnClickListener {
                 setLoading(true)
                 viewModel.doRegister(
+                    requireActivity(),
                     inputName.text,
                     genderRadio.gender,
                     inputEmail.text,

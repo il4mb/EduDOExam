@@ -1,6 +1,7 @@
 package com.capstone.edudoexam.models
 
 import android.content.Context
+import androidx.preference.PreferenceManager
 
 data class User(
     val id: String,
@@ -12,12 +13,16 @@ data class User(
     companion object {
         const val TOKEN_REF = "auth-token"
 
-        fun getCurrentUser(context: Context): User? {
-            val sharedPref = context.getSharedPreferences(TOKEN_REF, Context.MODE_PRIVATE)
-            val id = sharedPref.getString("id", null)
-            val name = sharedPref.getString("name", null)
-            val email = sharedPref.getString("email", null)
-            val gender = sharedPref.getInt("gender", -1)
+        fun getAuthToken(context: Context): String? {
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+            return sharedPref.getString(TOKEN_REF, null)
+        }
+        fun setAuthToken(context: Context, token: String) {
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+            with(sharedPref.edit()) {
+                putString(TOKEN_REF, token)
+                commit()
+            }
         }
     }
 }

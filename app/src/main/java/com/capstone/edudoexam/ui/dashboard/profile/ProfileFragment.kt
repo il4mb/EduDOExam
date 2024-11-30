@@ -17,27 +17,9 @@ import com.google.android.material.card.MaterialCardView
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::class.java) {
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // containerToBottomAppbar = false
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-//        lifecycleScope.launch {
-//            delay(300)
-//            getParentActivity().apply {
-//                getBinding().appBarLayout.addContentView(UserBarLayout(requireContext()))
-//            }
-//        }
-    }
-
     override fun onAppbarContentView(): View {
         return UserBarLayout(requireContext())
     }
-
 
     class UserBarLayout @JvmOverloads constructor(
         context: Context,

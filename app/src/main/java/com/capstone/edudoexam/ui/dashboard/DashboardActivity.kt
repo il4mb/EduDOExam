@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
 
+    // private val userSession
 
     private val _binding: ActivityDashboard2Binding by lazy {
         ActivityDashboard2Binding.inflate(layoutInflater)
