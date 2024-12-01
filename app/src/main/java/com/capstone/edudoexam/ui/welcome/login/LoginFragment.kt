@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.capstone.edudoexam.api.AuthInterceptor
+import com.capstone.edudoexam.api.payloads.Login
 import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.databinding.FragmentLoginBinding
 import com.capstone.edudoexam.ui.dashboard.DashboardActivity
@@ -27,18 +28,15 @@ class LoginFragment : Fragment() {
             lifecycleScope.launch {
                 delay(400)
                 setLoading(false)
-                if (response.error) {
-                    Snackbar
-                        .with(binding.root)
-                        .show("Login Failed", response.message, Snackbar.LENGTH_LONG)
-                } else {
-                    Snackbar
-                        .with(binding.root)
-                        .show("Login Success", response.message, Snackbar.LENGTH_LONG)
-                    AuthInterceptor.saveToken(requireActivity(), response.token!!)
-                    startActivity(Intent(requireContext(), DashboardActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    })
+                if (!response.error){
+                    Snackbar.with(binding.root).show("Login Success", response.message, Snackbar.LENGTH_LONG)
+                    lifecycleScope.launch {
+                        delay(400)
+                        AuthInterceptor.saveToken(requireActivity(), response.token!!)
+                        startActivity(Intent(requireContext(), DashboardActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
+                    }
                 }
             }
         }
@@ -49,12 +47,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            loginButton.setOnClickListener {
-                val email = inputEmail.editText?.text.toString()
-                val password = inputPassword.editText?.text.toString()
-                viewModel.doLogin(requireActivity(), email, password)
-                setLoading(true)
-            }
+            loginButton.setOnClickListener { doLogin() }
             skipLoginButton.setOnClickListener {
                 val intent = Intent(context, DashboardActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -63,6 +56,27 @@ class LoginFragment : Fragment() {
                 activity?.finish()
             }
         }
+    }
+
+    private fun doLogin() {
+        val email = binding.inputEmail.editText?.text.toString()
+        val password = binding.inputPassword.editText?.text.toString()
+        viewModel.withLogin(requireActivity())
+            .onError {
+                lifecycleScope.launch {
+                    delay(400)
+                    setLoading(false)
+                    Snackbar
+                        .with(binding.root)
+                        .show(
+                            "Something went wrong",
+                            it.message,
+                            Snackbar.LENGTH_LONG
+                        )
+                }
+            }
+            .fetch { it.login(Login(email, password)) }
+        setLoading(true)
     }
 
     private fun setLoading(isLoading: Boolean) {

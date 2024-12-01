@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,21 +19,24 @@ import com.capstone.edudoexam.components.DialogBottom
 import com.capstone.edudoexam.components.FloatingMenu
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.QuestionDiffCallback
+import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getColor
 import com.capstone.edudoexam.databinding.FragmentQuestionsExamBinding
 import com.capstone.edudoexam.databinding.ViewItemQuestionBinding
 import com.capstone.edudoexam.models.Question
+import com.capstone.edudoexam.ui.dashboard.DashboardActivity
+import com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class QuestionsExamFragment : Fragment(),
+class QuestionsExamFragment(private val examId: String?) : Fragment(),
     GenericListAdapter.ItemBindListener<Question, ViewItemQuestionBinding> {
 
     private val binding: FragmentQuestionsExamBinding by lazy {
         FragmentQuestionsExamBinding.inflate(layoutInflater)
     }
-
-    private val viewModel: QuestionsExamViewModel by viewModels()
-
+    private val viewModel: DetailExamViewModel by viewModels()
     private val genericAdapter: GenericListAdapter<Question, ViewItemQuestionBinding> by lazy {
         GenericListAdapter(
             ViewItemQuestionBinding::class.java,
@@ -40,14 +44,12 @@ class QuestionsExamFragment : Fragment(),
             QuestionDiffCallback()
         )
     }
-
     private lateinit var itemTouchHelper: ItemTouchHelper
-
     private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
             val fromPosition = viewHolder.adapterPosition
             val toPosition = target.adapterPosition
-            viewModel.moveItem(fromPosition, toPosition)
+            // viewModel.moveItem(fromPosition, toPosition)
 
             recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
             recyclerView.adapter?.notifyItemChanged(fromPosition, false)
@@ -67,7 +69,11 @@ class QuestionsExamFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.questions.observe(viewLifecycleOwner) { questions ->
-            genericAdapter.submitList(questions)
+            lifecycleScope.launch {
+                delay(400)
+                setLoading(false)
+                genericAdapter.submitList(questions)
+            }
         }
 
         binding.apply {
@@ -82,41 +88,32 @@ class QuestionsExamFragment : Fragment(),
             }
         }
 
-        for (i in 1 until 5) {
-            viewModel.addQuestion(
-                Question(
-                    "$i",
-                    "John Doe $i",
-                    "This is a question $i",
-                    10,
-                    'A',
-                    i,
-                    mapOf(
-                        'A' to "Option $i.A",
-                        'B' to "Option $i.B",
-                        'C' to "Option $i.C",
-                        'D' to "Option $i.D"
-                    )
-                )
-            )
+        lifecycleScope.launch {
+            fetchQuestions()
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
-    override fun onViewBind(binding: ViewItemQuestionBinding, item: Question, position: Int) {
-        Log.d("QuestionsExamFragment", "onViewBind: ${item.order}")
-        binding.apply {
-            questionDescription.text = item.description
-            orderNumber.text = "${item.order}."
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            delay(400)
+            setLoading(false)
+            fetchQuestions()
+        }
+    }
 
-            root.apply {
-                layoutParams = (root.layoutParams as ViewGroup.MarginLayoutParams).apply {
-                    setMargins(0, 0, 0, 18.dp)
+    private fun fetchQuestions() {
+        setLoading(true)
+        examId?.let { examId ->
+            viewModel.withQuestions(requireActivity())
+                .onError {
+                    lifecycleScope.launch {
+                        delay(400)
+                        setLoading(false)
+                        Snackbar.with(binding.root).show("Something went wrong", it.message, Snackbar.LENGTH_LONG)
+                    }
                 }
-
-                actionButton.setOnClickListener { showItemMenu(item, actionButton) }
-
-            }
+                .fetch { it.getQuestions(examId) }
         }
     }
 
@@ -174,5 +171,29 @@ class QuestionsExamFragment : Fragment(),
                 true
             }
         }.show()
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        (requireActivity() is DashboardActivity).apply {
+            (requireActivity() as DashboardActivity).setLoading(isLoading)
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
+    override fun onViewBind(binding: ViewItemQuestionBinding, item: Question, position: Int) {
+
+        binding.apply {
+            questionDescription.text = item.description
+            orderNumber.text = "${item.order}."
+
+            root.apply {
+                layoutParams = (root.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    setMargins(0, 0, 0, 18.dp)
+                }
+
+                actionButton.setOnClickListener { showItemMenu(item, actionButton) }
+
+            }
+        }
     }
 }

@@ -30,12 +30,14 @@
         <activity
             android:name=".ui.dashboard.DashboardActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_dashboard" />
         <activity
             android:name=".ui.dashboard.DashboardActivityOld"
             android:exported="false" />
         <activity
             android:name=".ui.welcome.WelcomeActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -6,12 +6,11 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.api.AuthInterceptor
 import com.capstone.edudoexam.databinding.ActivityWelcomeBinding
 import com.capstone.edudoexam.ui.dashboard.DashboardActivity
 import kotlinx.coroutines.delay
@@ -35,11 +34,22 @@ class WelcomeActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
+        if(AuthInterceptor.getToken(this) != null) {
+            lifecycleScope.launch {
+                delay(200)
+                startActivity(Intent(this@WelcomeActivity, DashboardActivity::class.java))
+                finish()
+            }
+        }
+
         super.onCreate(savedInstanceState)
 
         setContentView(_binding.root)
-        setLoading(false)
 
+        lifecycleScope.launch {
+            delay(400)
+            setLoading(false)
+        }
     }
 
     fun goToDashboard(view: View?) {

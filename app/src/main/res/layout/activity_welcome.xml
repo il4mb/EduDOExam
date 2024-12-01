@@ -30,7 +30,8 @@
     <include layout="@layout/view_loading"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:id="@+id/loading_layout"/>
+        android:id="@+id/loading_layout"
+        android:background="#80000000" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

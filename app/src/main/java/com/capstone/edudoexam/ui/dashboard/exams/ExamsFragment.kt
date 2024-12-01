@@ -12,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,12 +21,13 @@ import com.capstone.edudoexam.components.BaseFragment
 import com.capstone.edudoexam.components.DialogBottom
 import com.capstone.edudoexam.components.ExamDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
-import com.capstone.edudoexam.components.ModalBottom
+import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
 import com.capstone.edudoexam.databinding.FragmentExamsBinding
 import com.capstone.edudoexam.databinding.ViewItemExamBinding
 import com.capstone.edudoexam.databinding.ViewPopupLayoutBinding
 import com.capstone.edudoexam.models.Exam
+import com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -36,43 +38,35 @@ class ExamsFragment :
     private val startRotateAnim: Animation by lazy {
         AnimationUtils.loadAnimation(requireContext(), R.anim.start_rotate)
     }
+
     private val endRotateAnim: Animation by lazy {
         AnimationUtils.loadAnimation(requireContext(), R.anim.end_rotate)
     }
-    private var data: ArrayList<Exam> = ArrayList()
-    private lateinit var listAdapter: GenericListAdapter<Exam, ViewItemExamBinding>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        isBottomNavigationVisible = true
-
-        listAdapter = GenericListAdapter(
+    private val listAdapter: GenericListAdapter<Exam, ViewItemExamBinding> by lazy {
+        GenericListAdapter(
             ViewItemExamBinding::class.java,
             onItemBindCallback = this,
             diffCallback = ExamDiffCallback()
         )
-        for(i in 1..15) {
-            data.add(
-                Exam(
-                    "DUMMY-$i",
-                    "November 25, 2024 at 1:32:29 PM UTC+7",
-                    "November 23, 2024 at 5:05:56 PM UTC+7",
-                    "XT63TAP4XA",
-                    "Ujian Tengah Semester ${(i+1)/10}",
-                    "Kelas ${(i+1)/6}")
-            )
-        }
+    }
 
+    private val viewModel: ExamsViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isBottomNavigationVisible = true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getParentActivity().showNavBottom()
-
-        getViewModel(ExamsViewModel::class.java).exams.observe(viewLifecycleOwner) {
-            listAdapter.submitList(it)
+        viewModel.exams.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                delay(600)
+                setLoading(false)
+                listAdapter.submitList(it)
+            }
         }
         binding.apply {
             recyclerView.apply {
@@ -89,7 +83,7 @@ class ExamsFragment :
                     getAttr(requireContext(), android.R.attr.textColor)
                 ) { toggleAddMenu(it) }
             }
-            getViewModel(ExamsViewModel::class.java).store(data)
+            fetchExams()
         }
     }
 
@@ -98,9 +92,8 @@ class ExamsFragment :
             codeTextView.text = item.id
             titleView.text = item.title
             subtitleView.text = item.subTitle
-            dateTime.text = item.startDate
+            dateTime.text = item.simplifiedStartDate
             codeCopyButton.setOnClickListener {
-                getViewModel(ExamsViewModel::class.java).store(data)
                 showToast("Code Copied")
             }
             (root.layoutParams as MarginLayoutParams).let {
@@ -109,11 +102,27 @@ class ExamsFragment :
             }
 
             root.setOnClickListener {
-                findNavController().navigate(R.id.action_nav_exams_to_nav_exam_detail)
+                if(item.isOwner) {
+                    findNavController().navigate(R.id.action_nav_exams_to_nav_exam_detail, Bundle().apply {
+                      putParcelable(DetailExamFragment.ARG_EXAM, item)
+                    })
+                }
             }
         }
     }
 
+    private fun fetchExams() {
+        setLoading(true)
+        viewModel.withExams(requireActivity())
+            .onError {
+                lifecycleScope.launch {
+                    delay(600)
+                    Snackbar.with(binding.root).show("Something went wrong", it.message, Snackbar.LENGTH_LONG)
+                    setLoading(false)
+                }
+            }
+            .fetch { it.getExams() }
+    }
 
     @SuppressLint("ServiceCast")
     private fun toggleAddMenu(v: View) {

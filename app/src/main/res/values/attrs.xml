@@ -14,6 +14,7 @@
         <attr name="maxLength" format="integer" />
         <attr name="startIcon" format="reference"/>
         <attr name="endIcon" format="reference"/>
+        <attr name="enabled" format="boolean" />
 
     </declare-styleable>
 

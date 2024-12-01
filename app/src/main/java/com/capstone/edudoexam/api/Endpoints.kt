@@ -1,31 +1,80 @@
 package com.capstone.edudoexam.api
 
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import com.capstone.edudoexam.api.payloads.QuestionPayload
+import com.capstone.edudoexam.api.payloads.Login
+import com.capstone.edudoexam.api.payloads.Register
+import com.capstone.edudoexam.api.payloads.UpdateProfile
+import com.capstone.edudoexam.api.response.Response
+import com.capstone.edudoexam.api.response.ResponseExams
+import com.capstone.edudoexam.api.response.ResponseLogin
+import com.capstone.edudoexam.api.response.ResponseQuestion
+import com.capstone.edudoexam.api.response.ResponseUser
+import com.capstone.edudoexam.api.response.ResponseUsers
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.Part
+import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 
 interface AuthEndpoints {
 
     @POST("auth/register")
     fun register(
-        @Body body: RegisterPayload
+        @Body body: Register
     ): Call<Response>
 
 
     @POST("auth/login")
     fun login(
-        @Body body: LoginPayload
+        @Body body: Login
     ): Call<ResponseLogin>
 }
+
+interface ProfileEndpoints {
+    @GET("profile")
+    fun getProfile(): Call<ResponseUser>
+
+    @PUT("profile")
+    fun updateProfile(
+        @Body body: UpdateProfile
+    ): Call<ResponseUser>
+}
+
+interface ExamsEndpoints {
+
+    @GET("exams/upcoming")
+    fun getUpcomingExam(): Call<ResponseExams>
+
+    @GET("exams")
+    fun getExams(): Call<ResponseExams>
+
+    @GET("exams/{examId}/questions")
+    fun getQuestions(
+        @Path("examId") examId: String
+    ): Call<ResponseQuestion>
+
+    @POST("exams/{examId}/questions")
+    fun addQuestion(
+        @Path("examId") examId: String,
+        @Body body: QuestionPayload
+    ): Call<ResponseQuestion>
+
+    @PUT("exams/{examId}/questions/{questionId}")
+    fun updateQuestion(
+        @Path("examId") examId: String,
+        @Path("questionId") questionId: String,
+        @Body body: QuestionPayload
+    ): Call<ResponseQuestion>
+
+    @GET("exams/{examId}/students")
+    fun getStudents(
+        @Path("examId") examId: String
+    ): Call<ResponseUsers>
+
+}
+
 
 //interface Endpoints {
 //

@@ -1,75 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.dashboard.profile.ProfileFragment"
-    app:layoutDescription="@xml/fragment_profile_scene">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_email"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:layout_marginHorizontal="18dp"
-        android:hint="Email"
-        android:enabled="false"
-        app:layout_constraintTop_toTopOf="parent">
-        <androidx.appcompat.widget.AppCompatEditText
+        app:layoutDescription="@xml/fragment_profile_scene">
 
+
+        <com.capstone.edudoexam.components.InputTextEdit
+            android:id="@+id/input_email"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="durianbohong@gmail.com"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintTop_toTopOf="parent"
+            app:hint="Email Address"
+            app:enabled="false"/>
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginHorizontal="18dp"
-        android:hint="Full Name"
-        app:layout_constraintTop_toBottomOf="@+id/input_email">
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.capstone.edudoexam.components.InputTextEdit
+            android:id="@+id/input_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Ilham B"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <RadioGroup
-        android:id="@+id/input_gender"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="18dp"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_name">
-
-        <RadioButton
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Male" />
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_18"
+            app:hint="Full Name"
+            app:layout_constraintTop_toBottomOf="@id/input_email"/>
 
-        <RadioButton
-            android:layout_width="wrap_content"
+
+        <com.capstone.edudoexam.components.InputGenderRadio
+            android:id="@+id/gender_radio"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Female" />
-    </RadioGroup>
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintTop_toBottomOf="@+id/input_name" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/save_button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Save Changes"
-        android:layout_marginBottom="75dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/save_changes"
+            android:layout_marginBottom="75dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+
+
+

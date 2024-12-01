@@ -43,7 +43,7 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
             dialog.setAcceptHandler(getString(R.string.get_it)) { true }
         }
     }
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    private val pickImageLauncher   = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             imageUri = it
             onImageResult(true, it)
@@ -132,9 +132,8 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onResume() {
+        super.onResume()
     }
 
     private fun getInflateBinding(): Method {
@@ -157,5 +156,9 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
 
     internal open fun onAppbarContentView() : View? {
         return null
+    }
+
+    internal fun setLoading(isLoading: Boolean) {
+        getParentActivity().setLoading(isLoading)
     }
 }

@@ -31,20 +31,20 @@ class HistoriesFragment :
             onItemBindCallback = this,
             diffCallback = ExamResultDiffCallback()
         )
-        for(i in 1..30) {
-            data.add(
-                ExamResult(
-                    "DUMMY-$i",
-                    "November 25, 2024 at 1:32:29 PM UTC+7",
-                    "November 23, 2024 at 5:05:56 PM UTC+7",
-                    "XT63TAP4XA",
-                    "Ujian Tengah Semester ${(i+1)/10}",
-                    "Kelas ${(i+1)/6}",
-                    0.82f,
-                    "passed"
-                    )
-            )
-        }
+//        for(i in 1..30) {
+//            data.add(
+//                ExamResult(
+//                    "DUMMY-$i",
+//                    "November 25, 2024 at 1:32:29 PM UTC+7",
+//                    "November 23, 2024 at 5:05:56 PM UTC+7",
+//                    "XT63TAP4XA",
+//                    "Ujian Tengah Semester ${(i+1)/10}",
+//                    "Kelas ${(i+1)/6}",
+//                    0.82f,
+//                    "passed"
+//                    )
+//            )
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,9 +68,9 @@ class HistoriesFragment :
 
         binding.apply {
 
-            title.text = item.title
-            subtitle.text = item.subTitle
-            dateTime.text = item.startDate
+//            title.text = item.title
+//            subtitle.text = item.subTitle
+//            dateTime.text = item.startDate.toString()
             score.text = "${(item.score * 100).toInt()}%"
             status.text = item.status
 

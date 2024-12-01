@@ -26,4 +26,7 @@
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
     <string name="gender">Gender</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="question">Question</string>
+    <string name="correct_option">Correct Option</string>
 </resources>

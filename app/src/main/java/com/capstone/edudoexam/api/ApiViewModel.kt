@@ -1,16 +1,21 @@
 package com.capstone.edudoexam.api
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.capstone.edudoexam.api.response.Response
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
 
 abstract class ApiViewModel<T: Any>: ViewModel(), Callback<T> {
 
+    val error: MutableLiveData<Response> = MutableLiveData()
+
     abstract fun onSuccess(response: T)
-    abstract fun onError(error: Response)
+    open fun onError(error: Response) {
+        this.error.postValue(error)
+    }
 
     override fun onResponse(call: Call<T>, response: retrofit2.Response<T>) {
         if(response.isSuccessful) {
@@ -34,3 +39,8 @@ abstract class ApiViewModel<T: Any>: ViewModel(), Callback<T> {
         onError(Response(true, "Error: ${t.message}"))
     }
 }
+
+
+
+
+

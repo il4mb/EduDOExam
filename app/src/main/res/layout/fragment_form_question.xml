@@ -7,6 +7,7 @@
     tools:context=".ui.dashboard.exams.detail.questions.FormQuestionFragment">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,17 +17,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
             android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingBottom="500dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_frame"
-                android:orientation="horizontal"
+                android:layout_marginHorizontal="14dp"
                 android:layout_marginTop="14dp"
-                android:layout_marginHorizontal="14dp">
+                android:background="@drawable/rounded_frame"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -58,12 +60,14 @@
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/question_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
                 android:layout_marginHorizontal="14dp"
+                android:layout_marginTop="14dp"
                 android:gravity="top"
-                android:hint="Question"
+                android:hint="@string/question"
+                app:boxBackgroundColor="?android:colorBackground"
                 app:boxCornerRadiusBottomEnd="14dp"
                 app:boxCornerRadiusBottomStart="14dp"
                 app:boxCornerRadiusTopEnd="14dp"
@@ -81,8 +85,8 @@
                 android:id="@+id/image_card"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_marginTop="14dp"
                 android:layout_marginHorizontal="14dp"
+                android:layout_marginTop="14dp"
                 app:cardCornerRadius="14dp">
 
                 <ImageView
@@ -94,19 +98,34 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
                 android:layout_marginHorizontal="14dp"
+                android:layout_marginTop="14dp"
                 android:text="Options :"
                 android:textSize="18sp" />
 
             <com.capstone.edudoexam.components.OptionsEditLayout
+                android:id="@+id/options_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="14dp"
-                android:layout_marginHorizontal="14dp"/>
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginTop="14dp" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_18"
+        android:layout_marginBottom="55dp"
+        android:elevation="5dp"
+        android:text="@string/save_changes"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

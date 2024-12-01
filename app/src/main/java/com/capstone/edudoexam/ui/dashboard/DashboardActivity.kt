@@ -6,17 +6,14 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -24,16 +21,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
-import androidx.transition.ChangeBounds
-import androidx.transition.TransitionManager
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.AppBarLayout
-import com.capstone.edudoexam.components.ModalBottom
 import com.capstone.edudoexam.databinding.ActivityDashboard2Binding
-import com.capstone.edudoexam.ui.dashboard.profile.ProfileFragment.UserBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
 
@@ -81,8 +72,9 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
                 val appBarHeight = _binding.appBarLayout.height
                 sharedViewModel.updateTopMargin(appBarHeight)
             }
-        }
 
+            setLoading(true)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -92,10 +84,10 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
 
     override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
 
+        setLoading(true)
         _binding.apply {
 
             resetUI()
-            // TransitionManager.beginDelayedTransition(appBarLayout, ChangeBounds())
             appBarLayout.removeAllMenus()
 
             when (destination.id) {
@@ -156,6 +148,56 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
                 }
             }
         } catch (_: Throwable) {}
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun setLoading(isLoading: Boolean) {
+        // Block touch events when loading
+        _binding.loadingLayout.root.setOnTouchListener { _, _ -> isLoading }
+
+        // Check the current visibility state to avoid redundant animations
+        if (isLoading && _binding.loadingLayout.root.visibility == View.VISIBLE) return
+        if (!isLoading && _binding.loadingLayout.root.visibility == View.GONE) return
+
+        if (isLoading) {
+            _binding.loadingLayout.root.visibility = View.VISIBLE
+            _binding.loadingLayout.loadingIndicatorContainer.apply {
+                // Reset for animation
+                alpha = 0f
+                scaleX = 2f
+                scaleY = 2f
+                translationX = 0.5f
+                translationY = 0.5f
+
+                // Animate in
+                animate()
+                    .setDuration(200)
+                    .alpha(1f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .translationX(0f)
+                    .translationY(0f)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .start()
+            }
+        } else {
+            _binding.loadingLayout.loadingIndicatorContainer.apply {
+                // Animate out
+                animate()
+                    .setDuration(200)
+                    .alpha(0f)
+                    .scaleX(2f)
+                    .scaleY(2f)
+                    .translationX(0.5f)
+                    .translationY(0.5f)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .withEndAction {
+                        // Set visibility to GONE after animation
+                        _binding.loadingLayout.root.visibility = View.GONE
+                    }
+                    .start()
+            }
+        }
     }
 
     fun getAppbar() : AppBarLayout {

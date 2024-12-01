@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.capstone.edudoexam.api.ApiViewModel
 import com.capstone.edudoexam.api.AuthEndpoints
 import com.capstone.edudoexam.api.Client
-import com.capstone.edudoexam.api.RegisterPayload
-import com.capstone.edudoexam.api.Response
+import com.capstone.edudoexam.api.response.Response
+import com.capstone.edudoexam.api.payloads.Register
 
 class RegisterViewModel: ApiViewModel<Response>() {
 
@@ -15,7 +15,7 @@ class RegisterViewModel: ApiViewModel<Response>() {
 
     fun doRegister(fragment: FragmentActivity, name: String, gender: Int, email: String, password: String) {
         Client.beginWith(fragment, AuthEndpoints::class.java)
-            .register(RegisterPayload(name, gender, email, password))
+            .register(Register(name, gender, email, password))
             .enqueue(this)
     }
 

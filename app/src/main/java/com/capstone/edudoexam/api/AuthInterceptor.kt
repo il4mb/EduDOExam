@@ -3,6 +3,7 @@ package com.capstone.edudoexam.api
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
+import com.capstone.edudoexam.ui.dashboard.DashboardActivity
 import com.capstone.edudoexam.ui.welcome.WelcomeActivity
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -49,7 +50,7 @@ class AuthInterceptor(private val fragment: FragmentActivity) : Interceptor {
         if (response.code == 401) {
 
             clearToken(fragment)
-            if(fragment is WelcomeActivity) {
+            if(fragment is DashboardActivity) {
                 fragment.startActivity(Intent(fragment, WelcomeActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 })

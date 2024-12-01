@@ -29,7 +29,7 @@ open class InputTextEdit @JvmOverloads constructor(
         TextInputLayout(context).apply {
             layoutParams = LayoutParams(
                 LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT
+                LayoutParams.MATCH_PARENT
             )
             boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
             setBoxCornerRadii(14.dp.toFloat(), 14.dp.toFloat(), 14.dp.toFloat(), 14.dp.toFloat())
@@ -40,7 +40,7 @@ open class InputTextEdit @JvmOverloads constructor(
         TextInputEditText(textInputLayout.context).apply { // Use the context from textInputLayout
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             setHintTextColor(getAttr(context, android.R.attr.textColorHint))
@@ -91,6 +91,11 @@ open class InputTextEdit @JvmOverloads constructor(
                     editText.setLines(maxLines)
                     editText.maxLines = maxLines
                 }
+                val enabled = getBoolean(R.styleable.InputTextEdit_enabled, true)
+
+                if (!enabled) {
+                    setEnabled(false)
+                }
             } finally {
                 recycle()
             }
@@ -99,6 +104,18 @@ open class InputTextEdit @JvmOverloads constructor(
 
     fun onTextChanged(callback: () -> Unit) {
         onChangeRecycler.add(callback)
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        editText.isEnabled = enabled
+        textInputLayout.isEnabled = enabled
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        // Ensure the TextInputLayout stretches the full height
+        textInputLayout.layout(0, 0, width, height)
     }
 
     var hint: String

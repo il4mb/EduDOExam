@@ -1,6 +1,7 @@
 package com.capstone.edudoexam.components
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
@@ -8,6 +9,7 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,6 +24,12 @@ class Utils {
 
     companion object {
 
+        val String.CountWords: Int
+            get() {
+                val words = this.split("\\s+".toRegex())
+                    .filter { it.length >= 3 }
+                return words.size
+            }
         val Int.dp: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
         val Int.px: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 
@@ -54,6 +62,12 @@ class Utils {
 
             val luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
             return if (luminance > 0.5) Color.BLACK else Color.WHITE
+        }
+
+        fun hideKeyboard(activity: Activity) {
+            val view = activity.currentFocus ?: View(activity)
+            val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }

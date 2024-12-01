@@ -15,6 +15,11 @@ class InputGenderRadio @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
+    private var onGenderChanged: (() -> Unit)? = null
+    fun onGenderChanged(function: () -> Unit) {
+        onGenderChanged = function
+    }
+
     private val titleView: TextView by lazy {
         TextView(context).apply {
             text = resources.getString(R.string.gender)
@@ -77,6 +82,10 @@ class InputGenderRadio @JvmOverloads constructor(
             } finally {
                 recycle()
             }
+        }
+
+        radioGroup.setOnCheckedChangeListener { _, _ ->
+            onGenderChanged?.invoke()
         }
     }
 }

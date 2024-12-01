@@ -27,9 +27,9 @@ class ExamResultFragment :
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            titleView.text = history.title
-            subtitleView.text = history.subTitle
-            dateTimeView.text = history.startDate
+//            titleView.text = history.title
+//            subtitleView.text = history.subTitle
+//            dateTimeView.text = history.startDate.toString()
 
             animateTextView(correctAnswerCard, 0, 85, 600)
             animateTextView(wrongAnswerCard, 0, 15, 600)
