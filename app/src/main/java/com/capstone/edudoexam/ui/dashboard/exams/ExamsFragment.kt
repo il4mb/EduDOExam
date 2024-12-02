@@ -17,8 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.BaseFragment
-import com.capstone.edudoexam.components.DialogBottom
+import com.capstone.edudoexam.components.ui.BaseFragment
+import com.capstone.edudoexam.components.dialog.DialogBottom
 import com.capstone.edudoexam.components.ExamDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.Snackbar
@@ -104,7 +104,7 @@ class ExamsFragment :
             root.setOnClickListener {
                 if(item.isOwner) {
                     findNavController().navigate(R.id.action_nav_exams_to_nav_exam_detail, Bundle().apply {
-                      putParcelable(DetailExamFragment.ARG_EXAM, item)
+                        putString(DetailExamFragment.ARG_EXAM_ID, item.id)
                     })
                 }
             }
@@ -133,7 +133,6 @@ class ExamsFragment :
             width = LinearLayout.LayoutParams.WRAP_CONTENT
             height = LinearLayout.LayoutParams.WRAP_CONTENT
             isFocusable = true
-            //animationStyle = R.style.popup_window_animation
             setBackgroundDrawable(ColorDrawable())
         }
 

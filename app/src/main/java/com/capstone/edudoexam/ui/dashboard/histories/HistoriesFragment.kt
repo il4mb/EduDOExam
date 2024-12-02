@@ -7,7 +7,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.BaseFragment
+import com.capstone.edudoexam.components.ui.BaseFragment
 import com.capstone.edudoexam.components.ExamResultDiffCallback
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.databinding.FragmentHistoriesBinding

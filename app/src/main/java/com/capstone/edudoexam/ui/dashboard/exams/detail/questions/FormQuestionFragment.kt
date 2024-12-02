@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Rect
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -18,22 +17,29 @@ import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.capstone.edudoexam.components.BaseFragment
-import com.capstone.edudoexam.components.DialogBottom
+import com.capstone.edudoexam.api.payloads.QuestionPayload
+import com.capstone.edudoexam.api.response.Response
+import com.capstone.edudoexam.components.ui.BaseFragment
+import com.capstone.edudoexam.components.dialog.DialogBottom
 import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.Utils.Companion.CountWords
 import com.capstone.edudoexam.components.Utils.Companion.dp
+import com.capstone.edudoexam.components.dialog.InfoDialog
 import com.capstone.edudoexam.databinding.FragmentFormQuestionBinding
-import com.capstone.edudoexam.models.Question
+import com.capstone.edudoexam.models.QuestionOptions
 import com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentFormQuestionBinding::class.java),
     ViewTreeObserver.OnGlobalLayoutListener {
+
+    private val formState: FormStateData by lazy {
+        FormStateData(binding)
+    }
 
     private val isDescriptionValid: Boolean
         get() {
@@ -59,104 +65,123 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
             (binding.imageCard[0] as ImageView).setImageURI(Uri.parse(field))
         }
 
-    private val question: Question by lazy {
-        arguments?.let {
-            if (it.containsKey(ARGS_QUESTION)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    it.getParcelable(ARGS_QUESTION, Question::class.java) ?:
-                    Question("", "", "", null, 3.5, 'A', 0, mapOf()) // Default value if null
-                } else {
-                    @Suppress("DEPRECATION")
-                    it.getParcelable(ARGS_QUESTION) ?:
-                    Question("", "", "",  null,3.5, 'A', 0, mapOf()) // Default value if null
-                }
-            } else {
-                Question("", "", "",  null,3.5, 'A', 0, mapOf()) // Default value if key is not present
-            }
-        } ?: Question("", "", "", null,3.5, 'A', 0, mapOf()) // Default value if arguments is null
+    private var questionId: String = ""
+
+    private val examId: String by lazy {
+        arguments?.getString(ARGS_QUESTION_EXAM_ID)?: ""
     }
 
-    private val viewModel: DetailExamViewModel by viewModels()
+    private val viewModel: DetailExamViewModel by activityViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+         arguments?.apply {
+            questionId = getString(ARGS_QUESTION_ID) ?: ""
+        }
+    }
 
     @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.questions.observe(viewLifecycleOwner) { questions ->
+            Log.d("QUESTION ID", questionId)
+            try {
+                questions.find { it.id == questionId }?.let {
+                    binding.apply {
+                        formState.duration = it.duration
+                        formState.description = it.description
+                        formState.imageUri = it.image
+                        formState.options = it.options
+                        formState.correctOption = it.correctOption
+                        formState.order = it.order
+                    }
+                }
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+            lifecycleScope.launch {
+                delay(600)
+                setLoading(false)
+            }
+        }
+
         binding.apply {
             root.viewTreeObserver.addOnGlobalLayoutListener(this@FormQuestionFragment)
-            question.apply {
-                durationLabel.text = "${duration.asDurationFormatted} Minute"
-                questionDescription.editText?.setText(description)
-                optionsLayout.options = options.asQuestionOptions
-            }
-            durationPickerButton.setOnClickListener {
-                showDurationPicker()
-            }
+            durationPickerButton.setOnClickListener { showDurationPicker() }
             imageCard.setOnClickListener{
                 pickImageBooth()
             }
+            questionDescription.apply {
+                editText?.doOnTextChanged { _, _, _, _ ->
 
-            optionsLayout.apply {
-                setOnFocusChangeListener { v, hasFocus ->
-                    Log.d("Focus", "hasFocus: $hasFocus")
-                    if (hasFocus) {
-                        nestedScrollView.post {
-                            nestedScrollView.smoothScrollTo(0, nestedScrollView.bottom)
-                        }
-                    }
-                }
-                setOnChangedCallback { editText ->
-                    if(editText?.text.toString().isNotEmpty()) {
-                        editText?.error = null
+                    if(isDescriptionValid) {
+                        questionDescription.error = null
                     } else {
-                        editText?.error = "Option must be not empty"
-                    }
-                    nestedScrollView.post {
-                        nestedScrollView.smoothScrollTo(0, nestedScrollView.bottom)
+                        questionDescription.error = "Description must be at least 3 words"
                     }
                     validateForm()
                 }
-                correctOption = question.correctOption
             }
-
-            questionDescription.editText?.doOnTextChanged { _, _, _, _ ->
-
-                if(isDescriptionValid) {
-                    questionDescription.error = null
-                } else {
-                    questionDescription.error = "Description must be at least 3 words"
+            optionsLayout.apply {
+                setOnChangedCallback {
+                    validateForm()
                 }
-                validateForm()
             }
 
             saveButton.setOnClickListener {
-                if(question.examId.isEmpty()) {
-                    if(question.id.isEmpty()) {
-                        saveChanges()
-                    } else {
-                        updateChanges()
-                    }
+                if(questionId.isNotEmpty() && examId.isNotEmpty()) {
+                    updateQuestion()
+                } else {
+                    saveNewQuestion()
                 }
             }
         }
 
         lifecycleScope.launch {
-            delay(400)
+            delay(200)
             setLoading(false)
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-                val dialog = DialogBottom.Builder(requireActivity())
-                    .apply {
-                        title = "Are you sure?"
-                        message = "Do you really want to leave?, Changes will not be saved."
-                        dismissText = "Cancel"
-                        acceptText = "Confirm"
-                        dismissHandler = { true }
-                        acceptHandler = {
-                            findNavController().popBackStack()
-                            true
+            binding.apply {
+                questionDescription.requestFocus()
+                optionsLayout.apply {
+                    setOnFocusChangeListener { v, hasFocus ->
+                        Log.d("Focus", "hasFocus: $hasFocus")
+                        if (hasFocus) {
+                            nestedScrollView.post {
+                                nestedScrollView.smoothScrollTo(0, nestedScrollView.bottom)
+                            }
                         }
                     }
-                dialog.show()
+                    setOnChangedCallback { editText ->
+                        if(editText?.text.toString().isNotEmpty()) {
+                            editText?.error = null
+                        } else {
+                            editText?.error = "Option must be not empty"
+                        }
+                        nestedScrollView.post {
+                            nestedScrollView.smoothScrollTo(0, nestedScrollView.bottom)
+                        }
+                        validateForm()
+                    }
+                }
+            }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+
+                if (formIsValid()) {
+                    val dialog = DialogBottom.Builder(requireActivity())
+                        .apply {
+                            title = "Are you sure?"
+                            message = "Do you really want to leave?, Changes will not be saved."
+                            dismissText = "Cancel"
+                            acceptText = "Confirm"
+                            dismissHandler = { true }
+                            acceptHandler = {
+                                findNavController().popBackStack()
+                                true
+                            }
+                        }
+                    dialog.show()
+                } else findNavController().popBackStack()
             }
         }
     }
@@ -271,54 +296,153 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
     }
 
     private fun formIsValid(): Boolean {
-
+        // Calculate input duration in minutes
         val inputDuration = getDuration() / 60
 
-        return  isDurationValid && isDescriptionValid && isOptionValid && (
-                inputDuration != question.duration
-                || binding.questionDescription.editText?.text.toString().trim() != question.description.trim()
-                || (!imageUri.isNullOrEmpty() && imageUri != question.image)
-                || binding.optionsLayout.options.a.trim() != question.options['A']?.trim()
-                || binding.optionsLayout.options.b.trim() != question.options['B']?.trim()
-                || binding.optionsLayout.options.c.trim() != question.options['C']?.trim()
-                || binding.optionsLayout.options.d.trim() != question.options['D']?.trim())
+        // Validate if duration has changed
+        val isDurationChanged = inputDuration != formState.duration
+
+        // Validate if description has changed
+        val isDescriptionChanged = binding.questionDescription.editText?.text.toString().trim() != formState.description?.trim()
+
+        // Validate if the image URI has changed
+        val isImageChanged = !imageUri.isNullOrEmpty() && imageUri != formState.imageUri
+
+        // Validate if any of the options have changed
+        val areOptionsChanged = binding.optionsLayout.options.run {
+            a.trim() != formState.options?.get('A')?.trim() ||
+                    b.trim() != formState.options?.get('B')?.trim() ||
+                    c.trim() != formState.options?.get('C')?.trim() ||
+                    d.trim() != formState.options?.get('D')?.trim()
+        }
+
+        // Validate if the correct option has changed
+        val isCorrectOptionChanged = binding.optionsLayout.correctOption != formState.correctOption
+
+        // Combine all validations into a single condition
+        return isDurationValid && isDescriptionValid && isOptionValid &&
+                (isDurationChanged || isDescriptionChanged || isImageChanged || areOptionsChanged || isCorrectOptionChanged)
     }
 
-    private fun saveChanges() {
-        val duration = getDuration() / 60
+    private fun saveNewQuestion() {
+
+        val order = formState.order ?: 0
+        if(examId.isEmpty()) {
+            InfoDialog(requireActivity()).setMessage("Missing exam id").show()
+            return
+        }
+
+        val duration    = getDuration() / 60
         val description = binding.questionDescription.editText?.text.toString()
-        val options = binding.optionsLayout.options
+        val options     = binding.optionsLayout.options.asMap()
+        val correctOption = binding.optionsLayout.correctOption
 
+        val payload = QuestionPayload(description, imageUri, duration, correctOption, options, order)
 
         setLoading(true)
-        viewModel.withQuestions(requireActivity())
-            .onError {
-                lifecycleScope.launch {
-                    delay(400)
-                    Snackbar.with(binding.root)
-                        .show("Something went wrong", it.message, Snackbar.LENGTH_LONG)
-                    setLoading(false)
-                }
+        viewModel.withQuestion(requireActivity())
+            .onError { onErrorHandler(it) }
+            .onSuccess {
+                InfoDialog(requireActivity())
+                    .setTitle("Success")
+                    .setMessage("new question added to exam")
+                    .show()
+                questionId = it.question.id
             }
+            .fetch { it.addQuestion(examId, payload) }
 
     }
 
-    private fun updateChanges() {
+    private fun updateQuestion() {
+
+        val order = formState.order ?: 0
+        if(examId.isEmpty() || questionId.isEmpty()) {
+            InfoDialog(requireActivity()).setMessage("Missing Exam id or question id").show()
+            return
+        }
+
+        val duration    = getDuration() / 60
+        val description = binding.questionDescription.editText?.text.toString()
+        val options     = binding.optionsLayout.options.asMap()
+        val correctOption = binding.optionsLayout.correctOption
+
+        val payload = QuestionPayload(description, imageUri, duration, correctOption, options, order)
+
         setLoading(true)
         viewModel.withQuestions(requireActivity())
-            .onError {
-                lifecycleScope.launch {
-                    delay(400)
-                    Snackbar.with(binding.root)
-                        .show("Something went wrong", it.message, Snackbar.LENGTH_LONG)
-                    setLoading(false)
-                }
+            .onError { onErrorHandler(it) }
+            .onSuccess {
+                InfoDialog(requireActivity())
+                    .setMessage("Question updated")
+                    .show()
             }
+            .fetch { it.updateQuestion(examId, questionId, payload) }
 
+    }
+
+    private fun onErrorHandler(e: Response) {
+        lifecycleScope.launch {
+            delay(400)
+            setLoading(false)
+            InfoDialog(requireActivity())
+                .setTitle("Something went wrong")
+                .setMessage(e.message)
+                .show()
+        }
     }
 
     companion object {
-        const val ARGS_QUESTION: String = "question"
+        const val ARGS_QUESTION_EXAM_ID: String = "question-exam-id"
+        const val ARGS_QUESTION_ID: String = "question-id"
+
+        private val Double.asDurationFormatted: String
+            @SuppressLint("DefaultLocale")
+            get() {
+                val minutes = this.toInt() // Get the integer part of the number (minutes)
+                val seconds = ((this - minutes) * 60).toInt() // Calculate the remaining seconds
+                return String.format("%02d:%02d", minutes, seconds)
+            }
+
+       private val Map<Char, String>.asQuestionOptions: QuestionOptions
+            get() = QuestionOptions(
+                a = this['A'] ?: "",
+                b = this['B'] ?: "",
+                c = this['C'] ?: "",
+                d = this['D'] ?: ""
+            )
     }
 
+    class FormStateData(val binding: FragmentFormQuestionBinding) {
+
+        var duration : Double? = null
+            @SuppressLint("SetTextI18n")
+            set(value) {
+                field = value
+                binding.durationLabel.text = "${value?.asDurationFormatted} Minute"
+            }
+        var description : String? = null
+            set(value) {
+                field = value
+                binding.questionDescription.editText?.setText(value)
+            }
+        var imageUri : String? = null
+            set(value) {
+                field = value
+                if(field != null) (binding.imageCard[0] as ImageView).setImageURI(Uri.parse(field))
+                else (binding.imageCard[0] as ImageView).setImageURI(null)
+            }
+        var options : Map<Char, String>? = null
+            set(value) {
+                field = value?.apply {
+                    binding.optionsLayout.options = this.asQuestionOptions
+                }
+            }
+        var correctOption : Char? = null
+            set(value) {
+                field = value
+                binding.optionsLayout.correctOption = value?: 'A'
+            }
+        var order : Int? = null
+
+    }
 }

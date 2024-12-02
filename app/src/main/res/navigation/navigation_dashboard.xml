@@ -100,11 +100,31 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_exam_detail_to_nav_exam_config"
+            app:destination="@id/nav_exam_config"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/nav_form_question"
         android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.questions.FormQuestionFragment"
         android:label="Form Question"
         tools:layout="@layout/fragment_form_question" />
+    <fragment
+        android:id="@+id/nav_exam_config"
+        android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.config.ExamConfigFragment"
+        android:label="Exam Config"
+        tools:layout="@layout/fragment_exam_config" >
+        <action
+            android:id="@+id/action_nav_exam_config_to_nav_exam_detail"
+            app:destination="@id/nav_exam_detail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
 
 </navigation>

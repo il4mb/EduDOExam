@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.input
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,14 +6,10 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.text.InputType
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewParent
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Spinner
@@ -32,7 +28,7 @@ class OptionsEditLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    val checkIcon: Drawable? by lazy {
+    private val checkIcon: Drawable? by lazy {
         ContextCompat.getDrawable(context, R.drawable.baseline_check_circle_outline_24).apply {
             this?.setTint(ContextCompat.getColor(context, R.color.primary_light))
         }
@@ -97,7 +93,7 @@ class OptionsEditLayout @JvmOverloads constructor(
                     else -> 0
                 }
             )
-            highlightCorrectInput()
+            highlightCorrectInput(false)
         }
 
     private val spinnerOptions: Spinner by lazy {
@@ -161,7 +157,7 @@ class OptionsEditLayout @JvmOverloads constructor(
                 }
 
                 highlightCorrectInput()
-                onChangedCallback?.invoke(null) // Notify callback
+                onChangedCallback?.invoke(null)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -245,7 +241,7 @@ class OptionsEditLayout @JvmOverloads constructor(
         addView(rowLayout)
     }
 
-    private fun highlightCorrectInput() {
+    private fun highlightCorrectInput(focusToField: Boolean = true) {
         val editText = when (correctOption) {
             'A' -> aEditText
             'B' -> bEditText
@@ -255,7 +251,7 @@ class OptionsEditLayout @JvmOverloads constructor(
         }
         clearHighlight()
         editText?.apply {
-            requestFocus()
+            if(focusToField) requestFocus()
             endIconMode = TextInputLayout.END_ICON_CUSTOM
             endIconDrawable = checkIcon
         }

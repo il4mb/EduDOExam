@@ -12,11 +12,12 @@ import androidx.preference.PreferenceManager
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.api.AuthInterceptor
 import com.capstone.edudoexam.databinding.ActivityWelcomeBinding
+import com.capstone.edudoexam.ui.LoadingHandler
 import com.capstone.edudoexam.ui.dashboard.DashboardActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class WelcomeActivity : AppCompatActivity() {
+class WelcomeActivity : AppCompatActivity(), LoadingHandler {
 
     private val _binding: ActivityWelcomeBinding by lazy {
         ActivityWelcomeBinding.inflate(layoutInflater, null, false)
@@ -57,7 +58,7 @@ class WelcomeActivity : AppCompatActivity() {
         finish()
     }
 
-    fun setLoading(isLoading: Boolean) {
+    override fun setLoading(isLoading: Boolean) {
         if (isLoading) {
             _binding.loadingLayout.root.visibility = View.VISIBLE
             _binding.root.children.forEach {

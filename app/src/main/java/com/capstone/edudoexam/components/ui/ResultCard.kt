@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.ui
 
 import android.content.Context
 import android.util.AttributeSet

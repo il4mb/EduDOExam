@@ -1,33 +1,27 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.dialog
 
 import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.TypedValue
-import android.view.Display
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.view.WindowInsetsController
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.viewbinding.ViewBinding
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.Utils
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
 import com.capstone.edudoexam.components.Utils.Companion.getColorLuminance
@@ -61,7 +55,7 @@ class DialogBottom : BottomSheetDialogFragment() {
             updateUI()
         }
 
-    var dismissHandler: (() -> Boolean)? = null
+    var dismissHandler: ((DialogBottom) -> Boolean)? = null
 
     var acceptText: String = "Accept"
         set(value) {
@@ -69,7 +63,7 @@ class DialogBottom : BottomSheetDialogFragment() {
             updateUI()
         }
 
-    var acceptHandler: (() -> Boolean)? = null
+    var acceptHandler: ((DialogBottom) -> Boolean)? = null
 
     var isCancelActionButtonVisible = true
         set(value) {
@@ -83,13 +77,19 @@ class DialogBottom : BottomSheetDialogFragment() {
             updateUI()
         }
 
+    private var viewBinding: ViewBinding? = null
+        set(value) {
+            field = value
+            updateUI()
+        }
+
     private var layoutBindHelper: LayoutBindHelper<ViewBinding>? = null
 
     private val layout: DialogContainer by lazy {
         DialogContainer(requireContext()).apply {
             cancelButton.setOnClickListener {
                 if(dismissHandler != null) {
-                    if (dismissHandler!!.invoke()) {
+                    if (dismissHandler!!.invoke(this@DialogBottom)) {
                         dismiss()
                     }
                 } else {
@@ -97,7 +97,7 @@ class DialogBottom : BottomSheetDialogFragment() {
                 }
             }
             acceptButton.setOnClickListener {
-                if(acceptHandler?.invoke() == true) {
+                if(acceptHandler?.invoke(this@DialogBottom) == true) {
                     dismiss()
                 }
             }
@@ -194,17 +194,26 @@ class DialogBottom : BottomSheetDialogFragment() {
                 visibility = if (isAcceptActionButtonVisible) View.VISIBLE else View.GONE
             }
 
-            layoutBindHelper?.let { helper ->
-                helper.onInflateCallback?.let { callback ->
-                    val binding = helper.inflate?.invoke(null, layoutInflater, null, false) as? ViewBinding
-                    binding?.let { validBinding ->
-                        callback(validBinding, this@DialogBottom)
-                        frame = validBinding.root
+            if(viewBinding == null) {
+                layoutBindHelper?.let { helper ->
+                    helper.onInflateCallback?.let { callback ->
+                        val binding = helper.inflate?.invoke(
+                            null,
+                            layoutInflater,
+                            null,
+                            false
+                        ) as? ViewBinding
+                        binding?.let { validBinding ->
+                            callback(validBinding, this@DialogBottom)
+                            frame = validBinding.root
+                        }
                     }
+                } ?: run {
+                    titleView.visibility = View.VISIBLE
+                    messageView.visibility = View.VISIBLE
                 }
-            } ?: run {
-                titleView.visibility = View.VISIBLE
-                messageView.visibility = View.VISIBLE
+            } else {
+                frame = viewBinding!!.root
             }
         }
     }
@@ -219,9 +228,9 @@ class DialogBottom : BottomSheetDialogFragment() {
         var message: String
         var isCancelable: Boolean
         var dismissText: String
-        var dismissHandler: (() -> Boolean)?
+        var dismissHandler: ((DialogBottom) -> Boolean)?
         var acceptText: String
-        var acceptHandler: (() -> Boolean)?
+        var acceptHandler: ((DialogBottom) -> Boolean)?
         var isCancelActionButtonVisible: Boolean
         var isAcceptActionButtonVisible: Boolean
     }
@@ -233,11 +242,12 @@ class DialogBottom : BottomSheetDialogFragment() {
         override var message: String = ""
         override var isCancelable: Boolean = true
         override var dismissText: String = "Cancel"
-        override var dismissHandler: (() -> Boolean)? = null
+        override var dismissHandler: ((DialogBottom) -> Boolean)? = null
         override var acceptText: String = "Accept"
-        override var acceptHandler: (() -> Boolean)? = null
+        override var acceptHandler: ((DialogBottom) -> Boolean)? = null
         override var isCancelActionButtonVisible: Boolean = true
         override var isAcceptActionButtonVisible: Boolean = true
+
         private var layoutBindHelper: LayoutBindHelper<ViewBinding>? = null
 
         fun <T : ViewBinding> setLayout(viewBindingClass: Class<T>, callback: (binding: T, dialog: DialogBottom) -> Unit) {
@@ -245,6 +255,11 @@ class DialogBottom : BottomSheetDialogFragment() {
                 inflate = viewBindingClass.getMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
                 onInflateCallback = callback
             } as LayoutBindHelper<ViewBinding>
+        }
+
+        private var viewBinding: ViewBinding? = null
+        fun setLayout(viewBinding: ViewBinding) {
+            this.viewBinding = viewBinding
         }
 
         fun build(): DialogBottom {
@@ -258,6 +273,7 @@ class DialogBottom : BottomSheetDialogFragment() {
             dialog.acceptText = acceptText
             dialog.acceptHandler = acceptHandler
             dialog.layoutBindHelper = layoutBindHelper
+            dialog.viewBinding = viewBinding
             dialog.isCancelActionButtonVisible = isCancelActionButtonVisible
             dialog.isAcceptActionButtonVisible = isAcceptActionButtonVisible
             return dialog
@@ -326,6 +342,7 @@ class DialogBottom : BottomSheetDialogFragment() {
         var frame: View
             get() = hostFragment
             set(value) {
+                (value.parent as? ViewGroup)?.removeView(value)
                 hostFragment.removeAllViews()
                 hostFragment.addView(value)
             }

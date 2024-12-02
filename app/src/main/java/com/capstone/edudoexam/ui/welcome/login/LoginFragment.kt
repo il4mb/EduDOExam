@@ -48,19 +48,19 @@ class LoginFragment : Fragment() {
 
         binding.apply {
             loginButton.setOnClickListener { doLogin() }
-            skipLoginButton.setOnClickListener {
-                val intent = Intent(context, DashboardActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
-                startActivity(intent)
-                activity?.finish()
-            }
+//            skipLoginButton.setOnClickListener {
+//                val intent = Intent(context, DashboardActivity::class.java).apply {
+//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//                }
+//                startActivity(intent)
+//                activity?.finish()
+//            }
         }
     }
 
     private fun doLogin() {
-        val email = binding.inputEmail.editText?.text.toString()
-        val password = binding.inputPassword.editText?.text.toString()
+        val email = binding.inputEmail.text
+        val password = binding.inputPassword.text
         viewModel.withLogin(requireActivity())
             .onError {
                 lifecycleScope.launch {

@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.input
 
 import android.content.Context
 import android.text.InputType
@@ -13,6 +13,9 @@ class InputEmailLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : InputTextEdit(context, attrs, defStyleAttr) {
 
+    val isValid: Boolean
+        get() = android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
+
     init {
         hint = "Email"
         inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
@@ -22,10 +25,10 @@ class InputEmailLayout @JvmOverloads constructor(
         endIconMode = TextInputLayout.END_ICON_CLEAR_TEXT
 
         onTextChanged {
-            if(!android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()) {
-                error = "Invalid email address"
+            error = if(!isValid) {
+                "Invalid email address"
             } else {
-                error = ""
+                ""
             }
         }
     }

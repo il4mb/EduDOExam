@@ -2,21 +2,20 @@ package com.capstone.edudoexam.ui.dashboard.exams.detail.questions
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.DialogBottom
-import com.capstone.edudoexam.components.FloatingMenu
+import com.capstone.edudoexam.components.dialog.DialogBottom
+import com.capstone.edudoexam.components.ui.FloatingMenu
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.QuestionDiffCallback
 import com.capstone.edudoexam.components.Snackbar
@@ -30,13 +29,13 @@ import com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class QuestionsExamFragment(private val examId: String?) : Fragment(),
+class QuestionsExamFragment : Fragment(),
     GenericListAdapter.ItemBindListener<Question, ViewItemQuestionBinding> {
 
     private val binding: FragmentQuestionsExamBinding by lazy {
         FragmentQuestionsExamBinding.inflate(layoutInflater)
     }
-    private val viewModel: DetailExamViewModel by viewModels()
+    private val viewModel: DetailExamViewModel by activityViewModels()
     private val genericAdapter: GenericListAdapter<Question, ViewItemQuestionBinding> by lazy {
         GenericListAdapter(
             ViewItemQuestionBinding::class.java,
@@ -49,7 +48,6 @@ class QuestionsExamFragment(private val examId: String?) : Fragment(),
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
             val fromPosition = viewHolder.adapterPosition
             val toPosition = target.adapterPosition
-            // viewModel.moveItem(fromPosition, toPosition)
 
             recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
             recyclerView.adapter?.notifyItemChanged(fromPosition, false)
@@ -59,6 +57,12 @@ class QuestionsExamFragment(private val examId: String?) : Fragment(),
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) { }
+    }
+    private var examId: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        examId = arguments?.getString(ARG_EXAM_ID)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -84,25 +88,18 @@ class QuestionsExamFragment(private val examId: String?) : Fragment(),
             }
 
             floatingActionButton.setOnClickListener {
-                findNavController().navigate(R.id.action_nav_exam_detail_to_nav_form_question)
+                findNavController().navigate(R.id.action_nav_exam_detail_to_nav_form_question, Bundle().apply {
+                    putString(FormQuestionFragment.ARGS_QUESTION_EXAM_ID, examId)
+                })
             }
         }
 
         lifecycleScope.launch {
-            fetchQuestions()
+            doFetchQuestions()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        lifecycleScope.launch {
-            delay(400)
-            setLoading(false)
-            fetchQuestions()
-        }
-    }
-
-    private fun fetchQuestions() {
+    fun doFetchQuestions() {
         setLoading(true)
         examId?.let { examId ->
             viewModel.withQuestions(requireActivity())
@@ -156,7 +153,8 @@ class QuestionsExamFragment(private val examId: String?) : Fragment(),
 
     private fun actionEditHandler(item: Question) {
         findNavController().navigate(R.id.action_nav_exam_detail_to_nav_form_question, Bundle().apply {
-            putParcelable(FormQuestionFragment.ARGS_QUESTION, item)
+            putString(FormQuestionFragment.ARGS_QUESTION_ID, item.id)
+            putString(FormQuestionFragment.ARGS_QUESTION_EXAM_ID, examId)
         })
     }
 
@@ -196,4 +194,18 @@ class QuestionsExamFragment(private val examId: String?) : Fragment(),
             }
         }
     }
+
+
+    companion object {
+        private const val ARG_EXAM_ID = "exam_id"
+
+        fun newInstance(examId: String?): QuestionsExamFragment {
+            val fragment = QuestionsExamFragment()
+            val args = Bundle()
+            args.putString(ARG_EXAM_ID, examId)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
 }

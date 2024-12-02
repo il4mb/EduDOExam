@@ -107,7 +107,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
-                <com.capstone.edudoexam.components.InputTextEdit
+                <com.capstone.edudoexam.components.input.InputTextEdit
                     android:id="@+id/input_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -115,26 +115,26 @@
                     app:hint="Full Name"
                     app:startIcon="@drawable/baseline_person_24" />
 
-                <com.capstone.edudoexam.components.InputGenderRadio
+                <com.capstone.edudoexam.components.input.InputGenderRadio
                     android:id="@+id/gender_radio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_18"
                     app:gender="1" />
 
-                <com.capstone.edudoexam.components.InputEmailLayout
+                <com.capstone.edudoexam.components.input.InputEmailLayout
                     android:id="@+id/input_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_18" />
 
-                <com.capstone.edudoexam.components.InputPasswordLayout
+                <com.capstone.edudoexam.components.input.InputPasswordLayout
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_18" />
 
-                <com.capstone.edudoexam.components.InputTextEdit
+                <com.capstone.edudoexam.components.input.InputTextEdit
                     android:id="@+id/input_confirm_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

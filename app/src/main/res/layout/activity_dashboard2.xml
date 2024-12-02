@@ -1,58 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/pattern_background"
-        android:background="?android:colorBackground" />
+        android:layout_height="match_parent">
+        <fragment
+            android:id="@+id/nav_host_fragment_activity_dashboard"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toTopOf="@id/nav_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/navigation_dashboard" />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/windowBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:menu="@menu/dashboard_navigation_menu" />
+        <com.capstone.edudoexam.components.ui.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            style="@style/Theme.EduDOExam.AppBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="true"
+            android:clipChildren="true"
+            android:gravity="end"
+            android:elevation="0dp"
+            app:title="@string/app_name"
+            app:subtitle="@string/app_moto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <fragment
-        android:id="@+id/nav_host_fragment_activity_dashboard"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/navigation_dashboard" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:menu="@menu/dashboard_navigation_menu" />
-
-    <com.capstone.edudoexam.components.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        style="@style/Theme.EduDOExam.AppBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="true"
-        android:clipChildren="true"
-        android:gravity="end"
-        android:elevation="0dp"
-        app:title="@string/app_name"
-        app:subtitle="@string/app_moto"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/view_loading"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:id="@+id/loading_layout" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/no_connection_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include layout="@layout/layout_no_connection"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

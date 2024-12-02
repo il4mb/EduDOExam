@@ -17,21 +17,5 @@ data class Question(
 ): Parcelable {
 
 
-    val Double.asDurationFormatted: String
-        @SuppressLint("DefaultLocale")
-        get() {
-            val minutes = this.toInt() // Get the integer part of the number (minutes)
-            val seconds = ((this - minutes) * 60).toInt() // Calculate the remaining seconds
-            return String.format("%02d:%02d", minutes, seconds)
-        }
-
-
-    val Map<Char, String>.asQuestionOptions: QuestionOptions
-        get() = QuestionOptions(
-            a = this['A'] ?: "",
-            b = this['B'] ?: "",
-            c = this['C'] ?: "",
-            d = this['D'] ?: ""
-        )
 
 }

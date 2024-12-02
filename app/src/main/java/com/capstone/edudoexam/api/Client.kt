@@ -3,6 +3,7 @@ package com.capstone.edudoexam.api
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.capstone.edudoexam.api.response.Response
+import com.capstone.edudoexam.api.response.ResponseError
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -18,17 +19,17 @@ import java.lang.ref.WeakReference
  */
 class Client<T, R>(private val activity: FragmentActivity, private val clazz: Class<T>) : Callback<R> {
 
-    private var onSuccessCallback: ((R) -> Unit)? = null
-    private var onErrorCallback: ((error: Response) -> Unit)? = null
+    private var onSuccessCallback: MutableList<((R) -> Unit)> = mutableListOf()
+    private var onErrorCallback: MutableList<((error: ResponseError) -> Unit)> = mutableListOf()
 
     fun onSuccess(callback: (R) -> Unit): Client<T, R> {
 
-        onSuccessCallback = callback
+        onSuccessCallback.add(callback)
         return this
     }
 
-    fun onError(callback: (error: Response) -> Unit): Client<T, R> {
-        onErrorCallback = callback
+    fun onError(callback: (error: ResponseError) -> Unit): Client<T, R> {
+        onErrorCallback.add(callback)
         return this
     }
 
@@ -38,29 +39,35 @@ class Client<T, R>(private val activity: FragmentActivity, private val clazz: Cl
 
     override fun onResponse(call: Call<R>, response: retrofit2.Response<R>) {
         if(response.isSuccessful) {
-            response.body()?.let {
-                onSuccessCallback?.invoke(it)
+            response.body()?.let { res ->
+                onSuccessCallback.forEach{
+                    it.invoke(res)
+                }
             }
         } else {
             val errorBody = response.errorBody()?.string()
             try {
                 val errorResponse = Gson().fromJson(errorBody, Response::class.java)
-                onErrorCallback?.invoke(errorResponse)
-
+                onErrorCallback.forEach {
+                    it.invoke(ResponseError.from(response.code(), errorResponse))
+                }
             } catch (e: Exception) {
-                Log.e("API_ERROR", "Failed to parse error body: $errorBody", e)
-                onErrorCallback?.invoke(Response(true, "Failed to parse error body: $errorBody"))
+                onErrorCallback.forEach{
+                    it.invoke(ResponseError(true, e.message ?: "Unknown Error", response.code()))
+                }
             }
         }
     }
 
     override fun onFailure(call: Call<R>, t: Throwable) {
-        onErrorCallback?.invoke(Response(true, "Error: ${t.message}"))
+        onErrorCallback.forEach {
+            it.invoke(ResponseError(true, t.message ?: "Unknown Error", -1))
+        }
     }
 
     companion object {
 
-        private const val BASE_URL = "http://192.168.100.6:5000/api/"
+        private const val BASE_URL = "http://192.168.20.28:5000/api/"
         private var activityReference: WeakReference<FragmentActivity>? = null
         private var retrofitInstance: Retrofit? = null
 
@@ -82,7 +89,7 @@ class Client<T, R>(private val activity: FragmentActivity, private val clazz: Cl
         private fun buildClient(activity: FragmentActivity): OkHttpClient {
             return OkHttpClient.Builder()
                 .addInterceptor(AuthInterceptor(activity))
-                // .addInterceptor(ErrorInterceptor())
+                // .addInterceptor(ErrorInterceptor(activity))
                 .build()
         }
     }

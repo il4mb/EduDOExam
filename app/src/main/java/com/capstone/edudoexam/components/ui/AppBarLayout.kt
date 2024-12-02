@@ -1,9 +1,7 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.Gravity
@@ -14,7 +12,6 @@ import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.children
 import androidx.transition.ChangeBounds

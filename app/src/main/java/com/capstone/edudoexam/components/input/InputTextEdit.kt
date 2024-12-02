@@ -1,6 +1,5 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.input
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.Editable
@@ -9,12 +8,9 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
-import com.google.android.material.internal.TextWatcherAdapter
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -23,6 +19,13 @@ open class InputTextEdit @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
+
+    var editable: Boolean = true
+        set(value) {
+            field = value
+            editText.isEnabled = value
+            textInputLayout.alpha = if (value) 1f else 0.5f
+        }
 
     private val onChangeRecycler: MutableList<() -> Unit> = mutableListOf()
     private val textInputLayout: TextInputLayout by lazy {
@@ -70,6 +73,9 @@ open class InputTextEdit @JvmOverloads constructor(
                 val endIcon = getDrawable(R.styleable.InputTextEdit_endIcon)
                 val maxLength = getInt(R.styleable.InputTextEdit_maxLength, -1)
                 val maxLines = getInt(R.styleable.InputTextEdit_maxLines, -1)
+                val enabled = getBoolean(R.styleable.InputTextEdit_enabled, true)
+                editable = getBoolean(R.styleable.InputTextEdit_editable, true)
+
 
                 if (!hint.isNullOrEmpty()) {
                     textInputLayout.hint = hint
@@ -81,8 +87,8 @@ open class InputTextEdit @JvmOverloads constructor(
                     textInputLayout.startIconDrawable = startIcon
                 }
                 if (endIcon != null) {
-                    textInputLayout.endIconDrawable = endIcon
                     textInputLayout.endIconMode = TextInputLayout.END_ICON_CUSTOM
+                    textInputLayout.endIconDrawable = endIcon
                 }
                 if (maxLength != -1) {
                     editText.filters = arrayOf(android.text.InputFilter.LengthFilter(maxLength))
@@ -91,8 +97,6 @@ open class InputTextEdit @JvmOverloads constructor(
                     editText.setLines(maxLines)
                     editText.maxLines = maxLines
                 }
-                val enabled = getBoolean(R.styleable.InputTextEdit_enabled, true)
-
                 if (!enabled) {
                     setEnabled(false)
                 }
@@ -104,6 +108,12 @@ open class InputTextEdit @JvmOverloads constructor(
 
     fun onTextChanged(callback: () -> Unit) {
         onChangeRecycler.add(callback)
+    }
+
+    fun onClickAtEnd(callback: () -> Unit) {
+        textInputLayout.setEndIconOnClickListener {
+            callback()
+        }
     }
 
     override fun setEnabled(enabled: Boolean) {

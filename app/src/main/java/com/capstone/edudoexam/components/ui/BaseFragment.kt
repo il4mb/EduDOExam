@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.dialog.DialogBottom
 import com.capstone.edudoexam.databinding.ViewModalPickImageBinding
 import com.capstone.edudoexam.ui.dashboard.DashboardActivity
 import com.capstone.edudoexam.ui.dashboard.SharedViewModel
@@ -159,6 +160,10 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
     }
 
     internal fun setLoading(isLoading: Boolean) {
-        getParentActivity().setLoading(isLoading)
+        try {
+            getParentActivity().setLoading(isLoading)
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
     }
 }

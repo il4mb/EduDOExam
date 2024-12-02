@@ -23,7 +23,7 @@ import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.ModalBottom
+import com.capstone.edudoexam.components.ui.ModalBottom
 import com.capstone.edudoexam.databinding.ActivityDashboardBinding
 import com.capstone.edudoexam.databinding.ViewPopupLayoutBinding
 import kotlin.math.abs

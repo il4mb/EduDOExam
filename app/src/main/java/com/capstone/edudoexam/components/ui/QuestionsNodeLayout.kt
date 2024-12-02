@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.ui
 
 import android.annotation.SuppressLint
 import android.content.Context

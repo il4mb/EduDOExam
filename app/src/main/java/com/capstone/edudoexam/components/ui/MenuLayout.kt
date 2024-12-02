@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.ui
 
 import android.content.Context
 import android.graphics.Color
@@ -119,8 +119,9 @@ class MenuLayout @JvmOverloads constructor(
                 40.dp
             ).apply {
                 marginEnd = 8.dp
+                setPadding(8.dp, 8.dp, 8.dp, 8.dp)
             }
-            foreground = ContextCompat.getDrawable(context, R.drawable.ripple_effect)
+             foreground = ContextCompat.getDrawable(context, R.drawable.ripple_effect)
         }
         val imageView = ImageView(context).apply {
             setImageDrawable(icon)

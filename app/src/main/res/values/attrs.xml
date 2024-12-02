@@ -15,6 +15,7 @@
         <attr name="startIcon" format="reference"/>
         <attr name="endIcon" format="reference"/>
         <attr name="enabled" format="boolean" />
+        <attr name="editable" format="boolean" />
 
     </declare-styleable>
 

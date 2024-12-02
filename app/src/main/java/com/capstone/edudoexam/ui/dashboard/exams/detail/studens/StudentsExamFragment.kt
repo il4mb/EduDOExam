@@ -12,13 +12,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.DialogBottom
-import com.capstone.edudoexam.components.FloatingMenu
+import com.capstone.edudoexam.api.payloads.AddStudentPayload
+import com.capstone.edudoexam.api.response.Response
+import com.capstone.edudoexam.components.dialog.DialogBottom
+import com.capstone.edudoexam.components.ui.FloatingMenu
 import com.capstone.edudoexam.components.GenericListAdapter
 import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.UserDiffCallback
+import com.capstone.edudoexam.components.Utils
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getColor
+import com.capstone.edudoexam.components.dialog.InfoDialog
 import com.capstone.edudoexam.databinding.FragmentStudentsExamBinding
 import com.capstone.edudoexam.databinding.ViewItemUserBinding
 import com.capstone.edudoexam.databinding.ViewModalAddUserBinding
@@ -28,11 +32,11 @@ import com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class StudentsExamFragment(
-    private var examId: String?
-) : Fragment(),
+class StudentsExamFragment: Fragment(),
     GenericListAdapter.ItemBindListener<User, ViewItemUserBinding> {
-
+    private val bindingModalAddUser: ViewModalAddUserBinding by lazy {
+        ViewModalAddUserBinding.inflate(layoutInflater)
+    }
     private val binding: FragmentStudentsExamBinding by lazy {
         FragmentStudentsExamBinding.inflate(layoutInflater)
     }
@@ -44,6 +48,12 @@ class StudentsExamFragment(
             diffCallback = UserDiffCallback()
         )
     }
+    private var examId: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        examId = arguments?.getString(ARG_EXAM_ID)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding.apply {
@@ -51,7 +61,7 @@ class StudentsExamFragment(
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = genericAdapter
             }
-            floatingActionButton.setOnClickListener { addUserHandler() }
+            floatingActionButton.setOnClickListener { addUserDialog() }
         }
         return binding.root
     }
@@ -69,23 +79,86 @@ class StudentsExamFragment(
         }
         lifecycleScope.launch {
             delay(400)
-            fetchUsers()
+            doFetchUsers()
         }
     }
 
-    private fun fetchUsers() {
-        Log.d("StudentsExamFragment", "fetchUsers: $examId")
+    fun doFetchUsers() {
         examId?.let { examId ->
             setLoading(true)
             viewModel.withUsers(requireActivity())
+                .onError { onErrorHandler(it) }
+                .fetch { it.getStudents(examId,false) }
+        }
+    }
+
+    private fun doAddUser(email: String, modal: DialogBottom) {
+        Utils.hideKeyboard(requireActivity())
+        modal.dismiss()
+        examId?.let { id ->
+            setLoading(true)
+            viewModel.withNoResult(requireActivity())
                 .onError {
+                    onErrorHandler(it)
                     lifecycleScope.launch {
-                        delay(400)
-                        setLoading(false)
-                        Snackbar.with(binding.root).show("Something went wrong", it.message, Snackbar.LENGTH_LONG)
+                        delay(800)
+                        addUserDialog()
                     }
                 }
-                .fetch { it.getStudents(examId) }
+                .onSuccess {
+                    bindingModalAddUser.inputEmail.apply {
+                        text = ""
+                        error = ""
+                    }
+                    modal.dismissNow()
+                    doFetchUsers()
+                    InfoDialog(requireActivity())
+                        .setTitle("Success")
+                        .setMessage("Student added")
+                        .show()
+                }
+                .fetch { it.addStudent(id, AddStudentPayload(email)) }
+        }
+    }
+
+    private fun doRemoveUser(uid: String) {
+        examId?.let { examId ->
+            setLoading(true)
+            viewModel.withNoResult(requireActivity())
+                .onError { onErrorHandler(it) }
+                .onSuccess {
+                    doFetchUsers()
+                    InfoDialog(requireActivity())
+                        .setMessage("Student removed")
+                        .show()
+                }
+                .fetch { it.removeStudent(examId, uid) }
+        }
+    }
+
+    private fun doBlockUser(uid: String,) {
+        examId?.let { examId ->
+            setLoading(true)
+            viewModel.withNoResult(requireActivity())
+                .onError { onErrorHandler(it) }
+                .onSuccess {
+                    doFetchUsers()
+                    InfoDialog(requireActivity())
+                        .setMessage("Student blocked")
+                        .show()
+                }
+                .fetch { it.updateStudent(examId, uid, true) }
+        }
+    }
+
+    private fun onErrorHandler(e: Response) {
+        lifecycleScope.launch {
+            delay(400)
+            setLoading(false)
+            InfoDialog(requireActivity())
+                .setTitle("Something went wrong")
+                .setMessage(e.message)
+                .show()
         }
     }
 
@@ -142,7 +215,7 @@ class StudentsExamFragment(
             message = "Are you sure you want to block user from this exam?\nUser detail:\nName\t: ${item.name}\nEmail\t: ${item.email}\n"
             acceptText = "Block"
             acceptHandler = {
-
+                doBlockUser(item.id)
                 true
             }
         }.show()
@@ -156,23 +229,33 @@ class StudentsExamFragment(
             message = "Are you sure you want to remove user from this exam?\nUser detail:\nName\t: ${item.name}\nEmail\t: ${item.email}\nThis action cannot be undone."
             acceptText = "Remove"
             acceptHandler = {
-
+                doRemoveUser(item.id)
                 true
             }
         }.show()
 
     }
 
-    private fun addUserHandler() {
+    private fun addUserDialog() {
         DialogBottom.Builder(requireActivity()).apply {
+
             title   = "Add User"
             message = "Please enter email user, make sure user has ben registered."
-            setLayout(ViewModalAddUserBinding::class.java) { binding, dialog ->
-                binding.apply {
-                    inputEmail
+            setLayout(bindingModalAddUser)
+            acceptHandler = { modal ->
+                val isValid = bindingModalAddUser.inputEmail.isValid
+                if (!isValid) {
+                    bindingModalAddUser.inputEmail.error = "Email is required"
+                } else {
+                    bindingModalAddUser.inputEmail.error = ""
+                    doAddUser(bindingModalAddUser.inputEmail.text, modal)
                 }
+
+                false
             }
+
             acceptText = "Add"
+
         }.show()
     }
 
@@ -204,4 +287,15 @@ class StudentsExamFragment(
         }
     }
 
+    companion object {
+        private const val ARG_EXAM_ID = "exam_id"
+
+        fun newInstance(examId: String?): StudentsExamFragment {
+            val fragment = StudentsExamFragment()
+            val args = Bundle()
+            args.putString(ARG_EXAM_ID, examId)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 }

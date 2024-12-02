@@ -5,10 +5,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import com.capstone.edudoexam.components.BaseFragment
-import com.capstone.edudoexam.components.QuestionNode
-import com.capstone.edudoexam.components.QuestionsNodeLayout
-import com.capstone.edudoexam.components.ResultCard
+import com.capstone.edudoexam.components.ui.BaseFragment
+import com.capstone.edudoexam.components.ui.QuestionNode
+import com.capstone.edudoexam.components.ui.QuestionsNodeLayout
+import com.capstone.edudoexam.components.ui.ResultCard
 import com.capstone.edudoexam.databinding.FragmentExamResultBinding
 import com.capstone.edudoexam.models.ExamResult
 

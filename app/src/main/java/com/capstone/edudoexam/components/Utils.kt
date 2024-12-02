@@ -2,11 +2,13 @@ package com.capstone.edudoexam.components
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
-import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -24,14 +26,21 @@ class Utils {
 
     companion object {
 
-        val String.CountWords: Int
-            get() {
+        val String.CountWords: Int get() {
                 val words = this.split("\\s+".toRegex())
                     .filter { it.length >= 3 }
                 return words.size
             }
         val Int.dp: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
         val Int.px: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+        fun isInternetAvailable(context: Context): Boolean {
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            return connectivityManager.activeNetwork?.let { network ->
+                connectivityManager.getNetworkCapabilities(network)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            } == true
+        }
+
 
         fun isDarkMode(context: Context): Boolean {
             val nightModeFlags = context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
@@ -68,6 +77,16 @@ class Utils {
             val view = activity.currentFocus ?: View(activity)
             val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+        fun copyTextToClipboard(context: Context, textToCopy: String) : Boolean {
+            if (textToCopy.isNotBlank()) {
+                val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Copied Text", textToCopy)
+                clipboardManager.setPrimaryClip(clip)
+                return true
+            }
+            return false
         }
     }
 }

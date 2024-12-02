@@ -11,8 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.api.AuthInterceptor
 import com.capstone.edudoexam.api.payloads.UpdateProfile
-import com.capstone.edudoexam.components.BaseFragment
-import com.capstone.edudoexam.components.DialogBottom
+import com.capstone.edudoexam.components.ui.BaseFragment
+import com.capstone.edudoexam.components.dialog.DialogBottom
 import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.Utils
 import com.capstone.edudoexam.databinding.FragmentProfileBinding

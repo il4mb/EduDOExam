@@ -1,19 +1,19 @@
 package com.capstone.edudoexam.ui.dashboard
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -22,22 +22,56 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.capstone.edudoexam.R
-import com.capstone.edudoexam.components.AppBarLayout
+import com.capstone.edudoexam.components.NetworkStatusHelper
+import com.capstone.edudoexam.components.dialog.InfoDialog
+import com.capstone.edudoexam.components.ui.AppBarLayout
 import com.capstone.edudoexam.databinding.ActivityDashboard2Binding
+import com.capstone.edudoexam.ui.LoadingHandler
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
-
-    // private val userSession
+class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, LoadingHandler {
 
     private val _binding: ActivityDashboard2Binding by lazy {
         ActivityDashboard2Binding.inflate(layoutInflater)
     }
-    private lateinit var appBarInitialBg: Drawable
-    private lateinit var sharedViewModel: SharedViewModel
+    private val sharedViewModel: SharedViewModel by viewModels()
+    private val networkStatusHelper: NetworkStatusHelper by lazy {
+        NetworkStatusHelper(this) { isConnected ->
+            runOnUiThread {
+                if (isConnected) {
+                    _binding.noConnectionLayout.apply {
+                        animate()
+                            .alpha(0f)
+                            .withEndAction {
+                                visibility = View.GONE
+                            }
+                            .duration = 400
+                    }
+                } else {
+                    _binding.noConnectionLayout.apply {
+                        visibility = View.VISIBLE
+                        alpha = 0f
+                        animate()
+                            .alpha(1f)
+                            .duration = 400
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        networkStatusHelper.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        networkStatusHelper.stopListening()
+    }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    @SuppressLint("UseSupportActionBar")
+    @SuppressLint("UseSupportActionBar", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         enableEdgeToEdge()
@@ -49,13 +83,9 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
-
         super.onCreate(savedInstanceState)
-
-        appBarInitialBg = _binding.appBarLayout.background
         setContentView(_binding.root)
         setSupportActionBar(_binding.appBarLayout.toolbar)
-        sharedViewModel = ViewModelProvider(this)[SharedViewModel::class.java]
 
         val navView: BottomNavigationView = _binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_dashboard)
@@ -67,7 +97,7 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
         navController.addOnDestinationChangedListener(this)
 
         _binding.apply {
-
+            noConnectionLayout.setOnTouchListener{ _, _ -> true }
             appBarLayout.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
                 val appBarHeight = _binding.appBarLayout.height
                 sharedViewModel.updateTopMargin(appBarHeight)
@@ -151,7 +181,7 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun setLoading(isLoading: Boolean) {
+    override fun setLoading(isLoading: Boolean) {
         // Block touch events when loading
         _binding.loadingLayout.root.setOnTouchListener { _, _ -> isLoading }
 

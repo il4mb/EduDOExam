@@ -4,7 +4,7 @@ data class QuestionPayload(
     val description: String,
     val image: String?,
     val duration: Double?,
-    val correct: Char?,
+    val correctOption: Char?,
     val options: Map<Char, String>?,
     var order: Int?
 )

@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.input
 
 import android.content.Context
 import android.text.InputType

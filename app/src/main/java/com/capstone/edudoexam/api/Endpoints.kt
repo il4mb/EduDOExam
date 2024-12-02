@@ -1,21 +1,27 @@
 package com.capstone.edudoexam.api
 
+import com.capstone.edudoexam.api.payloads.AddStudentPayload
+import com.capstone.edudoexam.api.payloads.ExamPayload
 import com.capstone.edudoexam.api.payloads.QuestionPayload
 import com.capstone.edudoexam.api.payloads.Login
 import com.capstone.edudoexam.api.payloads.Register
 import com.capstone.edudoexam.api.payloads.UpdateProfile
 import com.capstone.edudoexam.api.response.Response
+import com.capstone.edudoexam.api.response.ResponseExam
 import com.capstone.edudoexam.api.response.ResponseExams
 import com.capstone.edudoexam.api.response.ResponseLogin
 import com.capstone.edudoexam.api.response.ResponseQuestion
+import com.capstone.edudoexam.api.response.ResponseQuestions
 import com.capstone.edudoexam.api.response.ResponseUser
 import com.capstone.edudoexam.api.response.ResponseUsers
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface AuthEndpoints {
@@ -50,10 +56,26 @@ interface ExamsEndpoints {
     @GET("exams")
     fun getExams(): Call<ResponseExams>
 
+    @POST("exams")
+    fun addExam(
+        @Body body: ExamPayload
+    ): Call<ResponseExams>
+
+    @GET("exams/{examId}")
+    fun getExam(
+        @Path("examId") examId: String
+    ): Call<ResponseExam>
+
+    @PUT("exams/{examId}")
+    fun updateExam(
+        @Path("examId") examId: String,
+        @Body body: ExamPayload
+    ): Call<Response>
+
     @GET("exams/{examId}/questions")
     fun getQuestions(
         @Path("examId") examId: String
-    ): Call<ResponseQuestion>
+    ): Call<ResponseQuestions>
 
     @POST("exams/{examId}/questions")
     fun addQuestion(
@@ -66,12 +88,36 @@ interface ExamsEndpoints {
         @Path("examId") examId: String,
         @Path("questionId") questionId: String,
         @Body body: QuestionPayload
-    ): Call<ResponseQuestion>
+    ): Call<ResponseQuestions>
+
+    @DELETE("exams/{examId}/questions/{questionId}")
+    fun deleteQuestion(@Path("examId") examId: String, @Path("questionId") questionId: String): Call<Response>
+
 
     @GET("exams/{examId}/students")
     fun getStudents(
-        @Path("examId") examId: String
+        @Path("examId") examId: String,
+        @Query("block") block: Boolean
     ): Call<ResponseUsers>
+
+    @POST("exams/{examId}/students")
+    fun addStudent(
+        @Path("examId") examId: String,
+        @Body body: AddStudentPayload
+    ): Call<Response>
+
+    @DELETE("exams/{examId}/students/{userId}")
+    fun removeStudent(
+        @Path("examId") examId: String,
+        @Path("userId") userId: String
+    ): Call<Response>
+
+    @PUT("exams/{examId}/students/{userId}")
+    fun updateStudent(
+        @Path("examId") examId: String,
+        @Path("userId") userId: String,
+        @Query("block") block: Boolean
+    ): Call<Response>
 
 }
 

@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import com.capstone.edudoexam.R
 import com.google.android.material.card.MaterialCardView
 
 
@@ -35,7 +34,8 @@ class QuestionNode(
             textView.text = value
         }
 
-    private var _questionInfoWindow: QuestionInfoWindow = QuestionInfoWindow.inflate(LayoutInflater.from(context))
+    private var _questionInfoWindow: QuestionInfoWindow =
+        QuestionInfoWindow.inflate(LayoutInflater.from(context))
     var questionInfoWindow: QuestionInfoWindow
         get() = _questionInfoWindow
         set(value) {

@@ -13,7 +13,7 @@
         app:layoutDescription="@xml/fragment_profile_scene">
 
 
-        <com.capstone.edudoexam.components.InputTextEdit
+        <com.capstone.edudoexam.components.input.InputTextEdit
             android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,9 +21,9 @@
             android:layout_marginTop="@dimen/dp_18"
             app:layout_constraintTop_toTopOf="parent"
             app:hint="Email Address"
-            app:enabled="false"/>
+            app:editable="false"/>
 
-        <com.capstone.edudoexam.components.InputTextEdit
+        <com.capstone.edudoexam.components.input.InputTextEdit
             android:id="@+id/input_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toBottomOf="@id/input_email"/>
 
 
-        <com.capstone.edudoexam.components.InputGenderRadio
+        <com.capstone.edudoexam.components.input.InputGenderRadio
             android:id="@+id/gender_radio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

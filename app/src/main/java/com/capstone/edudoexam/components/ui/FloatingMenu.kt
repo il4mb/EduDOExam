@@ -1,4 +1,4 @@
-package com.capstone.edudoexam.components
+package com.capstone.edudoexam.components.ui
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.Utils
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
 
