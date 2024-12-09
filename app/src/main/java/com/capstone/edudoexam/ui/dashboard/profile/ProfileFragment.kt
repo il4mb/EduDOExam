@@ -45,7 +45,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                         inputName.text = response.user?.name.toString()
                         inputEmail.text = response.user?.email.toString()
                         genderRadio.gender = response.user?.gender?: 1
-                        profileAppbarLayout.setUserIdText(response.user?.id.toString())
+                        profileAppbarLayout.apply {
+                            setUserIdText(response.user?.id.toString())
+                            if(response.user?.gender == 0) {
+                                setProfileImageResource(R.drawable.woman)
+                            } else {
+                                setProfileImageResource(R.drawable.man)
+                            }
+                        }
                     }
                 }
             }

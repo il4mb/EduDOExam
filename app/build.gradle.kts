@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id ("kotlin-parcelize")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -40,6 +42,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        mlModelBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -74,14 +77,29 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.room.compiler)
+    annotationProcessor(libs.androidx.room.room.compiler)
+
+    implementation(libs.okhttp)
+    implementation(libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.glide)
+
+    implementation(libs.face.detection)
+    implementation(libs.androidx.ui.test.junit4.android)
+
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle.v123)
+    implementation(libs.androidx.camera.view)
+
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.metadata)
+    implementation("androidx.core:core-splashscreen:1.0.0")
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    // androidTestImplementation(libs.androidx.junit)
+    // androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)

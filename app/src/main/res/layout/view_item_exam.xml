@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/deck_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="-20dp"
@@ -38,7 +39,6 @@
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/exam_card"
         android:layout_width="match_parent"
@@ -83,5 +83,51 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/exam_card"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:visibility="gone"
+            android:background="@drawable/rounded_frame"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:backgroundTint="@color/primary_light"
+            android:id="@+id/student_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/student"
+            android:textColor="@color/text"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+        <TextView
+            android:visibility="gone"
+            android:background="@drawable/rounded_frame"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:backgroundTint="@color/waring"
+            android:id="@+id/teacher_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text"
+            android:text="@string/teacher"
+            android:textSize="12sp"
+            android:textStyle="bold"  />
+    </LinearLayout>
+    <ImageView
+        android:importantForAccessibility="no"
+        android:visibility="gone"
+        android:id="@+id/ongoing_badged"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/baseline_circle_24"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/secondary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

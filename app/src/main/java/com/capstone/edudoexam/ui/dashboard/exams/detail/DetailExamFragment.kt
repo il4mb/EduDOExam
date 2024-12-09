@@ -17,6 +17,7 @@ import com.capstone.edudoexam.components.ui.BaseFragment
 import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
 import com.capstone.edudoexam.databinding.FragmentExamDetailBinding
+import com.capstone.edudoexam.ui.dashboard.exams.ExamsViewModel
 import com.capstone.edudoexam.ui.dashboard.exams.detail.config.ExamConfigFragment
 import com.capstone.edudoexam.ui.dashboard.exams.detail.questions.QuestionsExamFragment
 import com.capstone.edudoexam.ui.dashboard.exams.detail.studens.StudentsExamFragment
@@ -28,26 +29,43 @@ class DetailExamFragment :
     BaseFragment<FragmentExamDetailBinding>(FragmentExamDetailBinding::class.java),
     TabLayout.OnTabSelectedListener {
 
-    private val viewModel: DetailExamViewModel by activityViewModels()
-    private val examId: String? by lazy {
-        arguments?.getString(ARG_EXAM_ID)
-    }
+    private val detailViewModel: DetailExamViewModel by activityViewModels()
     private val fragmentList: List<Fragment> by lazy {
         listOf(
-            StudentsExamFragment.newInstance(examId),
-            QuestionsExamFragment.newInstance(examId)
+            StudentsExamFragment.newInstance(),
+            QuestionsExamFragment.newInstance()
         )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.exam.observe(viewLifecycleOwner) {
+        liveCycleObserve()
+        setupUI()
+    }
+
+    private fun liveCycleObserve() {
+        detailViewModel.exam.observe(viewLifecycleOwner) {
             binding.apply {
                 examTitle.text = it.title
                 examSubtitle.text = it.subTitle
                 examCode.text = it.id.uppercase()
+                if(it.isOngoing) {
+                    setupOngoingUI()
+                    finishExamButton.apply {
+                        visibility = View.VISIBLE
+                    }
+                }
             }
         }
+    }
+
+    private fun setupOngoingUI() {
+        binding.apply {
+            ongoingWarningInfoContainer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupUI() {
         binding.apply {
             viewPager.apply {
                 adapter = ViewPagerAdapter(requireActivity(), fragmentList)
@@ -65,25 +83,13 @@ class DetailExamFragment :
             delay(400)
             getParentActivity().apply {
                 addMenu(R.drawable.baseline_settings_24, getAttr(requireContext(), android.R.attr.textColor)) {
-                    if (examId == null) return@addMenu
+                    val examId = detailViewModel.exam.value?.id
+                    if (examId.isNullOrEmpty()) return@addMenu
                     findNavController().navigate(R.id.action_nav_exam_detail_to_nav_exam_config, Bundle().apply {
                         putString(ExamConfigFragment.ARG_EXAM_ID, examId)
-                        putString(ExamConfigFragment.ARG_EXAM_TITLE, viewModel.exam.value?.title)
-                        putString(ExamConfigFragment.ARG_EXAM_SUBTITLE, viewModel.exam.value?.subTitle)
                     })
                 }
             }
-            doFetchExam()
-        }
-    }
-
-    private fun doFetchExam() {
-        examId?.let { examId ->
-            setLoading(true)
-            viewModel.withExam(requireActivity())
-                .onError { onErrorHandler(it) }
-                .onSuccess { viewModel.setExam(it.exam) }
-                .fetch { it.getExam(examId) }
         }
     }
 
@@ -92,7 +98,7 @@ class DetailExamFragment :
         super.onResume()
 
         try {
-            doFetchExam()
+
             fragmentList.forEach { fragment ->
                 if (fragment is StudentsExamFragment && fragment.isAdded) {
                     fragment.doFetchUsers()
@@ -105,6 +111,11 @@ class DetailExamFragment :
         } catch (e: Exception) {
             Log.e("DetailExamFragment", "onResume: ", e)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        detailViewModel.clearAll()
     }
 
     private fun onErrorHandler(e: Response) {
@@ -129,9 +140,5 @@ class DetailExamFragment :
     ): FragmentStateAdapter(fragmentActivity) {
         override fun getItemCount(): Int = fragmentList.size
         override fun createFragment(position: Int): Fragment = fragmentList[position]
-    }
-
-    companion object {
-        const val ARG_EXAM_ID = "exam_id"
     }
 }

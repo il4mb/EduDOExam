@@ -140,6 +140,7 @@ class InfoDialog(private val activity: FragmentActivity) {
             return wrappers
         }
 
+        @Suppress("DEPRECATION")
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
 
@@ -209,7 +210,11 @@ class InfoDialog(private val activity: FragmentActivity) {
 
         override fun dismiss() {
             animateOut(layout) {
-                super.dismiss()
+                try {
+                    super.dismiss()
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                }
             }
         }
     }

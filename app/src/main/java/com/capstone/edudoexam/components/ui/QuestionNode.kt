@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import com.capstone.edudoexam.R
 import com.google.android.material.card.MaterialCardView
 
 
@@ -18,7 +19,7 @@ class QuestionNode(
 ) : MaterialCardView(context) {
 
     @ColorInt
-    var mainColor: Int = Color.parseColor("#0075DD")
+    var mainColor: Int = Color.parseColor("#5E5E5E")
         set(value) {
             field = value
             strokeColor = value
@@ -36,6 +37,7 @@ class QuestionNode(
 
     private var _questionInfoWindow: QuestionInfoWindow =
         QuestionInfoWindow.inflate(LayoutInflater.from(context))
+
     var questionInfoWindow: QuestionInfoWindow
         get() = _questionInfoWindow
         set(value) {
@@ -53,6 +55,7 @@ class QuestionNode(
             gravity = Gravity.CENTER
             typeface = Typeface.DEFAULT_BOLD
             textSize = 16f
+            typeface = resources.getFont(R.font.montserrat_semi_bold)
             setTextColor(mainColor)
         }
     }
@@ -60,9 +63,8 @@ class QuestionNode(
     init {
         addView(textView)
 
-        // Card styling
         radius = 16.dp.toFloat()
-        strokeWidth = 4.dp
+        strokeWidth = 2.dp
         strokeColor = mainColor
         setCardBackgroundColor(getBackgroundColor(mainColor))
     }
@@ -80,20 +82,17 @@ class QuestionNode(
         questionInfoWindow.let { binding ->
             val popUp = PopupWindow(this).apply {
                 contentView = binding.root
-                width = android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                width = 200.dp
                 height = android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
                 isFocusable = true
-                // animationStyle = R.style.popup_window_animation
                 setBackgroundDrawable(ColorDrawable())
             }
 
             val location = IntArray(2)
             getLocationOnScreen(location)
 
-            val xOffset = 0
-            val yOffset = -200
+            popUp.showAtLocation(binding.root, Gravity.NO_GRAVITY, location[0], location[1])
 
-            popUp.showAtLocation(binding.root, Gravity.NO_GRAVITY, location[0] + xOffset, location[1] + yOffset)
         }
     }
 

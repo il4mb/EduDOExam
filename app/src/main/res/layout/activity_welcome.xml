@@ -9,14 +9,6 @@
     android:clipToPadding="false"
     tools:context=".ui.welcome.WelcomeActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/pattern_background"
-        android:background="?android:colorBackground" />
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:layout_width="match_parent"

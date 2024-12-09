@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
+import com.capstone.edudoexam.R
 import com.capstone.edudoexam.api.AuthInterceptor
 import com.capstone.edudoexam.api.payloads.Login
 import com.capstone.edudoexam.components.Snackbar
@@ -48,13 +51,15 @@ class LoginFragment : Fragment() {
 
         binding.apply {
             loginButton.setOnClickListener { doLogin() }
-//            skipLoginButton.setOnClickListener {
-//                val intent = Intent(context, DashboardActivity::class.java).apply {
-//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                }
-//                startActivity(intent)
-//                activity?.finish()
-//            }
+            registerButton.setOnClickListener {
+                findNavController().navigate(
+                    R.id.action_nav_login_to_nav_register,
+                    null,
+                    NavOptions.Builder()
+                        .setPopUpTo(R.id.nav_login, true)
+                        .build()
+                )
+            }
         }
     }
 

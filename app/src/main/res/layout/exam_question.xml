@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_max="500dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/question_image_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:minWidth="300dp"
+                android:layout_margin="@dimen/dp_18"
+                app:cardCornerRadius="15dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/baseline_image_24" />
+
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="22dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/question_order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="45dp"
+                    android:padding="4dp"
+                    android:textSize="@dimen/text_md"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:text="1."/>
+
+                <TextView
+                    android:id="@+id/question_description"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/app_moto"
+                    android:textSize="@dimen/text_md" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_14"
+                android:layout_marginTop="18dp"
+                android:orientation="vertical">
+
+                <com.capstone.edudoexam.components.ui.OptionNode
+                    android:id="@+id/option_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_18"
+                    app:optionLabel="A"/>
+
+                <com.capstone.edudoexam.components.ui.OptionNode
+                    android:id="@+id/option_b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_18"
+                    app:optionLabel="B"/>
+
+                <com.capstone.edudoexam.components.ui.OptionNode
+                    android:id="@+id/option_c"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_18"
+                    app:optionLabel="C"/>
+
+                <com.capstone.edudoexam.components.ui.OptionNode
+                    android:id="@+id/option_d"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_18"
+                    app:optionLabel="D"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:visibility="gone"
+            android:id="@+id/question_next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next"
+            android:drawableEnd="@drawable/baseline_navigate_next_24"
+            android:paddingEnd="15dp"
+            android:drawableTint="?android:colorBackground"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="75dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="RtlSymmetry" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/face_not_detect_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_face"
+            app:tint="?android:textColor"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_lg"
+            android:text="Face Not Detect"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="please ensure your face is in the frame"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

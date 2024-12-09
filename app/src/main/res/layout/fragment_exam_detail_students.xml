@@ -7,6 +7,7 @@
     tools:context=".ui.dashboard.exams.detail.studens.StudentsExamFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
         android:paddingHorizontal="14dp"
         android:paddingTop="14dp"
         android:paddingBottom="75dp"
@@ -16,14 +17,30 @@
         android:clipToPadding="false"
         android:clipChildren="false"/>
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:gravity="center"
+        android:text="@string/no_students"
+        android:textSize="@dimen/text_md"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floating_action_button"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_marginBottom="65dp"
+        android:layout_marginBottom="18dp"
         android:layout_marginEnd="18dp"
+        android:importantForAccessibility="no"
+        app:backgroundTint="@color/secondary_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/baseline_person_add"/>
+        app:srcCompat="@drawable/baseline_person_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

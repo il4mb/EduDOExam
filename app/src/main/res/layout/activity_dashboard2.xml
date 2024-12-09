@@ -14,20 +14,40 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@id/nav_view"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/navigation_dashboard" />
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="0dp"
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/nav_view_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/windowBackground"
+            android:layout_marginHorizontal="7dp"
+            android:layout_marginBottom="7dp"
+            app:cardCornerRadius="35dp"
+            app:cardElevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:menu="@menu/dashboard_navigation_menu" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:strokeWidth="0dp">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:padding="5dp"
+                android:id="@+id/nav_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_frame"
+                android:keyboardNavigationCluster="true"
+                app:itemIconTint="@color/nav_icon"
+                app:itemRippleColor="@color/nav_ripple"
+                app:itemTextColor="@color/nav_text"
+                app:menu="@menu/dashboard_navigation_menu" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
         <com.capstone.edudoexam.components.ui.AppBarLayout
             android:id="@+id/app_bar_layout"
             style="@style/Theme.EduDOExam.AppBarLayout"

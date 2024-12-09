@@ -1,5 +1,7 @@
 package com.capstone.edudoexam.models
 
+import com.google.gson.Gson
+
 data class QuestionOptions (
     val a: String,
     val b: String,
@@ -14,4 +16,9 @@ data class QuestionOptions (
             'D' to d
         )
     }
+
+    fun asJson(): String {
+        return Gson().toJson(asMap())
+    }
+
 }

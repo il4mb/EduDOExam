@@ -17,7 +17,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/primary_600"/>
 
     <TextView
         android:layout_marginTop="8dp"
@@ -36,9 +37,10 @@
         android:id="@+id/register_button"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="Create Your Account"
+        android:text="@string/create_your_account"
         android:textColor="@color/text_light"
         android:layout_marginHorizontal="35dp"
+        android:backgroundTint="@color/secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_label_1" />
@@ -48,7 +50,7 @@
         android:id="@+id/text_label_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Already have an account?"
+        android:text="@string/already_have_an_account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_button"
@@ -61,7 +63,9 @@
         android:id="@+id/login_button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="@string/sign_in"
+        app:strokeColor="@color/secondary"
+        android:textColor="@color/secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_label_2" />

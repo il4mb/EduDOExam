@@ -70,7 +70,7 @@ class AppDialog(private val activity: FragmentActivity) {
             val layout = LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
                 setPadding(32, 32, 32, 32)
-                background = ContextCompat.getDrawable(context, R.drawable.rounded_frame)
+                background = ContextCompat.getDrawable(context, R.drawable.rounded_frame_outline)
             }
 
             val title = arguments?.getString(ARG_TITLE)

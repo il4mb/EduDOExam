@@ -1,29 +1,28 @@
 package com.capstone.edudoexam.ui.dashboard.exams.detail.studens
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.api.payloads.AddStudentPayload
 import com.capstone.edudoexam.api.response.Response
-import com.capstone.edudoexam.components.dialog.DialogBottom
-import com.capstone.edudoexam.components.ui.FloatingMenu
 import com.capstone.edudoexam.components.GenericListAdapter
-import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.UserDiffCallback
 import com.capstone.edudoexam.components.Utils
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getColor
+import com.capstone.edudoexam.components.dialog.DialogBottom
 import com.capstone.edudoexam.components.dialog.InfoDialog
-import com.capstone.edudoexam.databinding.FragmentStudentsExamBinding
+import com.capstone.edudoexam.components.ui.FloatingMenu
+import com.capstone.edudoexam.databinding.FragmentExamDetailStudentsBinding
 import com.capstone.edudoexam.databinding.ViewItemUserBinding
 import com.capstone.edudoexam.databinding.ViewModalAddUserBinding
 import com.capstone.edudoexam.models.User
@@ -37,10 +36,11 @@ class StudentsExamFragment: Fragment(),
     private val bindingModalAddUser: ViewModalAddUserBinding by lazy {
         ViewModalAddUserBinding.inflate(layoutInflater)
     }
-    private val binding: FragmentStudentsExamBinding by lazy {
-        FragmentStudentsExamBinding.inflate(layoutInflater)
+    private val binding: FragmentExamDetailStudentsBinding by lazy {
+        FragmentExamDetailStudentsBinding.inflate(layoutInflater)
     }
-    private val viewModel: DetailExamViewModel by viewModels()
+    private var examId: String? = null
+    private val viewModel: DetailExamViewModel by activityViewModels()
     private val genericAdapter:  GenericListAdapter<User, ViewItemUserBinding> by lazy {
         GenericListAdapter(
             ViewItemUserBinding::class.java,
@@ -48,14 +48,24 @@ class StudentsExamFragment: Fragment(),
             diffCallback = UserDiffCallback()
         )
     }
-    private var examId: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        examId = arguments?.getString(ARG_EXAM_ID)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        liveCycleObserve()
+        setupUI()
+
+        lifecycleScope.launch {
+            delay(400)
+            doFetchUsers()
+        }
+    }
+
+    private fun setupUI() {
         binding.apply {
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -63,23 +73,35 @@ class StudentsExamFragment: Fragment(),
             }
             floatingActionButton.setOnClickListener { addUserDialog() }
         }
-        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun liveCycleObserve() {
         viewModel.apply {
             users.observe(viewLifecycleOwner) {
                 lifecycleScope.launch {
-                    delay(400)
+                    delay(600)
+
+                    if(it.isEmpty()) {
+                        binding.apply {
+                            emptyState.visibility = View.VISIBLE
+                            recyclerView.visibility = View.GONE
+                        }
+                    } else {
+                        binding.apply {
+                            emptyState.visibility = View.GONE
+                            recyclerView.visibility = View.VISIBLE
+                        }
+                    }
                     genericAdapter.submitList(it)
                     setLoading(false)
                 }
             }
-        }
-        lifecycleScope.launch {
-            delay(400)
-            doFetchUsers()
+            exam.observe(viewLifecycleOwner) {
+                examId = it.id
+                if(it.isOngoing) {
+                    binding.floatingActionButton.visibility = View.GONE
+                }
+            }
         }
     }
 
@@ -113,8 +135,8 @@ class StudentsExamFragment: Fragment(),
                     modal.dismissNow()
                     doFetchUsers()
                     InfoDialog(requireActivity())
-                        .setTitle("Success")
-                        .setMessage("Student added")
+                        .setTitle(getString(R.string.success))
+                        .setMessage(getString(R.string.student_added))
                         .show()
                 }
                 .fetch { it.addStudent(id, AddStudentPayload(email)) }
@@ -129,7 +151,7 @@ class StudentsExamFragment: Fragment(),
                 .onSuccess {
                     doFetchUsers()
                     InfoDialog(requireActivity())
-                        .setMessage("Student removed")
+                        .setMessage(getString(R.string.student_removed))
                         .show()
                 }
                 .fetch { it.removeStudent(examId, uid) }
@@ -144,7 +166,7 @@ class StudentsExamFragment: Fragment(),
                 .onSuccess {
                     doFetchUsers()
                     InfoDialog(requireActivity())
-                        .setMessage("Student blocked")
+                        .setMessage(getString(R.string.student_blocked))
                         .show()
                 }
                 .fetch { it.updateStudent(examId, uid, true) }
@@ -156,7 +178,7 @@ class StudentsExamFragment: Fragment(),
             delay(400)
             setLoading(false)
             InfoDialog(requireActivity())
-                .setTitle("Something went wrong")
+                .setTitle(getString(R.string.something_went_wrong))
                 .setMessage(e.message)
                 .show()
         }
@@ -182,7 +204,7 @@ class StudentsExamFragment: Fragment(),
             xOffset = -300
             yOffset = 80
 
-            addItem("Remove").apply {
+            addItem(getString(R.string.remove)).apply {
                 icon = ContextCompat.getDrawable(
                     context,
                     R.drawable.baseline_person_remove_24
@@ -194,7 +216,7 @@ class StudentsExamFragment: Fragment(),
                 }
             }
 
-            addItem("Block").apply {
+            addItem(getString(R.string.block)).apply {
                 icon = ContextCompat.getDrawable(
                     context,
                     R.drawable.baseline_remove_circle_24
@@ -211,9 +233,13 @@ class StudentsExamFragment: Fragment(),
     private fun actionBlockHandler(item: User) {
         DialogBottom.Builder(requireActivity()).apply {
             color = getColor(requireContext(), R.color.waring)
-            title = "Are you sure?"
-            message = "Are you sure you want to block user from this exam?\nUser detail:\nName\t: ${item.name}\nEmail\t: ${item.email}\n"
-            acceptText = "Block"
+            title = getString(R.string.are_you_sure)
+            message = getString(
+                R.string.are_you_sure_you_want_to_block_user_from_this_exam_user_detail_name_email,
+                item.name,
+                item.email
+            )
+            acceptText = getString(R.string.block)
             acceptHandler = {
                 doBlockUser(item.id)
                 true
@@ -225,9 +251,13 @@ class StudentsExamFragment: Fragment(),
 
         DialogBottom.Builder(requireActivity()).apply {
             color = getColor(requireContext(), R.color.danger)
-            title = "Are you sure?"
-            message = "Are you sure you want to remove user from this exam?\nUser detail:\nName\t: ${item.name}\nEmail\t: ${item.email}\nThis action cannot be undone."
-            acceptText = "Remove"
+            title = getString(R.string.are_you_sure)
+            message = getString(
+                R.string.are_you_sure_you_want_to_remove_user_from_this_exam_user_detail_name_email_this_action_cannot_be_undone,
+                item.name,
+                item.email
+            )
+            acceptText = getString(R.string.remove)
             acceptHandler = {
                 doRemoveUser(item.id)
                 true
@@ -239,13 +269,13 @@ class StudentsExamFragment: Fragment(),
     private fun addUserDialog() {
         DialogBottom.Builder(requireActivity()).apply {
 
-            title   = "Add User"
-            message = "Please enter email user, make sure user has ben registered."
-            setLayout(bindingModalAddUser)
+            title   = getString(R.string.add_user)
+            message = getString(R.string.please_enter_email_user_make_sure_user_has_ben_registered)
+            view    = bindingModalAddUser.root
             acceptHandler = { modal ->
                 val isValid = bindingModalAddUser.inputEmail.isValid
                 if (!isValid) {
-                    bindingModalAddUser.inputEmail.error = "Email is required"
+                    bindingModalAddUser.inputEmail.error = getString(R.string.email_is_required)
                 } else {
                     bindingModalAddUser.inputEmail.error = ""
                     doAddUser(bindingModalAddUser.inputEmail.text, modal)
@@ -254,7 +284,7 @@ class StudentsExamFragment: Fragment(),
                 false
             }
 
-            acceptText = "Add"
+            acceptText = getString(R.string.add)
 
         }.show()
     }
@@ -270,6 +300,11 @@ class StudentsExamFragment: Fragment(),
         binding.apply {
             userName.text = item.name
             userEmail.text = item.email
+            userPhoto.setImageDrawable(
+                ContextCompat.getDrawable(requireContext(), if(item.gender == 1) R.drawable.man else R.drawable.woman)
+            )
+
+
 
             root.apply {
                 layoutParams = LinearLayout.LayoutParams(
@@ -280,21 +315,22 @@ class StudentsExamFragment: Fragment(),
                     layoutParams = this
                 }
                 actionButton.apply {
-                    visibility = View.VISIBLE
-                    setOnClickListener { showItemMenu(item, actionButton) }
+                    if(viewModel.exam.value?.isOngoing == true) {
+                        visibility = View.GONE
+                    } else {
+                        visibility = View.VISIBLE
+                        setOnClickListener { showItemMenu(item, actionButton) }
+                    }
                 }
+
             }
         }
     }
 
     companion object {
-        private const val ARG_EXAM_ID = "exam_id"
 
-        fun newInstance(examId: String?): StudentsExamFragment {
+        fun newInstance(): StudentsExamFragment {
             val fragment = StudentsExamFragment()
-            val args = Bundle()
-            args.putString(ARG_EXAM_ID, examId)
-            fragment.arguments = args
             return fragment
         }
     }

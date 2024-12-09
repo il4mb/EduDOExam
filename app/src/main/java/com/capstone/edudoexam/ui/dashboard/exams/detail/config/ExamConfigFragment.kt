@@ -1,42 +1,57 @@
 package com.capstone.edudoexam.ui.dashboard.exams.detail.config
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.api.payloads.ExamPayload
 import com.capstone.edudoexam.api.response.Response
-import com.capstone.edudoexam.components.ui.BaseFragment
-import com.capstone.edudoexam.components.dialog.DialogBottom
-import com.capstone.edudoexam.components.ui.FloatingMenu
 import com.capstone.edudoexam.components.GenericListAdapter
-import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.UserDiffCallback
+import com.capstone.edudoexam.components.Utils.Companion.asFormattedString
+import com.capstone.edudoexam.components.Utils.Companion.asLocalDateTime
 import com.capstone.edudoexam.components.Utils.Companion.copyTextToClipboard
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getColor
+import com.capstone.edudoexam.components.Utils.Companion.toDate
+import com.capstone.edudoexam.components.dialog.DialogBottom
 import com.capstone.edudoexam.components.dialog.InfoDialog
-import com.capstone.edudoexam.databinding.FragmentExamConfigBinding
+import com.capstone.edudoexam.components.ui.BaseFragment
+import com.capstone.edudoexam.components.ui.FloatingMenu
+import com.capstone.edudoexam.databinding.FragmentExamDetailConfigBinding
 import com.capstone.edudoexam.databinding.ViewItemUserBinding
 import com.capstone.edudoexam.models.User
+import com.capstone.edudoexam.ui.dashboard.exams.ExamsViewModel
 import com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
-class ExamConfigFragment : BaseFragment<FragmentExamConfigBinding>(FragmentExamConfigBinding::class.java),
+class ExamConfigFragment : BaseFragment<FragmentExamDetailConfigBinding>(FragmentExamDetailConfigBinding::class.java),
     GenericListAdapter.ItemBindListener<User, ViewItemUserBinding>,
     ViewTreeObserver.OnGlobalLayoutListener {
 
+    private val dateTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+    private var examTextTitle = ""
+    private var examTextSubtitle = ""
     private var examId: String? = null
-    private var examTextTitle: String? = null
-    private var examTextSubtitle: String? = null
     private val listAdapter: GenericListAdapter<User, ViewItemUserBinding> by lazy {
         GenericListAdapter(
             ViewItemUserBinding::class.java,
@@ -44,48 +59,94 @@ class ExamConfigFragment : BaseFragment<FragmentExamConfigBinding>(FragmentExamC
             diffCallback = UserDiffCallback()
         )
     }
-    private val viewModel: DetailExamViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        examId = arguments?.getString(ARG_EXAM_ID)
-        examTextTitle = arguments?.getString(ARG_EXAM_TITLE)
-        examTextSubtitle = arguments?.getString(ARG_EXAM_SUBTITLE)
-    }
+    private val viewModel: DetailExamViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.blockedUsers.observe(viewLifecycleOwner) {
-            if(it.isEmpty()) {
-                binding.emptyState.visibility = View.VISIBLE
-                binding.blockedUsersRecycle.visibility = View.GONE
-            } else {
-                binding.emptyState.visibility = View.GONE
-                binding.blockedUsersRecycle.visibility = View.VISIBLE
+        liveCycleObserve()
+        setupUI()
+    }
+
+    private fun fetchBlockedUsers(examId: String) {
+        viewModel.fetchBlockedUsers(requireActivity(), examId)
+    }
+
+    private var startDate: LocalDateTime = LocalDateTime.now().plusHours(1)
+        set(value) {
+            field = value
+            binding.examStartDate.text = field.asFormattedString
+        }
+    private var finishDate: LocalDateTime = LocalDateTime.now().plusHours(4)
+        set(value) {
+            field = value
+            binding.examEndDate.text = field.asFormattedString
+        }
+
+    private fun liveCycleObserve() {
+
+        viewModel.apply {
+            exam.observe(viewLifecycleOwner) {
+                examTextTitle    = it.title
+                examTextSubtitle = it.subTitle
+                examId           = it.id
+                binding.apply {
+                    examTitle.text     = it.title
+                    examSubtitle.text  = it.subTitle
+                    examCode.text      = it.id
+                    startDate          = it.startAt.asLocalDateTime
+                    finishDate         = it.finishAt.asLocalDateTime
+                }
+                fetchBlockedUsers(it.id)
+
+                if(it.isOngoing) {
+                    setupOngoingUI()
+                }
+                validateForm()
             }
-            listAdapter.submitList(it)
-            lifecycleScope.launch {
-                delay(800)
-                setLoading(false)
+            blockedUsers.observe(viewLifecycleOwner) {
+                if(it.isEmpty()) {
+                    binding.emptyState.visibility = View.VISIBLE
+                    binding.blockedUsersRecycle.visibility = View.GONE
+                } else {
+                    binding.emptyState.visibility = View.GONE
+                    binding.blockedUsersRecycle.visibility = View.VISIBLE
+                }
+                listAdapter.submitList(it)
+                lifecycleScope.launch {
+                    delay(800)
+                    setLoading(false)
+                }
             }
         }
+    }
+
+    private fun setupOngoingUI() {
+        binding.apply {
+            examTitle.isEnabled = false
+            examSubtitle.isEnabled = false
+            saveButton.visibility = View.GONE
+            examStartDate.isClickable = false
+            examEndDate.isClickable = false
+            ongoingWarningInfoContainer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupUI() {
+
         binding.apply {
 
             root.viewTreeObserver.addOnGlobalLayoutListener(this@ExamConfigFragment)
 
             examTitle.apply {
-                text = examTextTitle.toString()
                 onTextChanged { validateForm() }
             }
             examSubtitle.apply {
-                text = examTextSubtitle.toString()
                 onTextChanged { validateForm() }
             }
             examCode.apply {
-                text = examId?.uppercase().toString()
                 onClickAtEnd {
-                    if(copyTextToClipboard(requireContext(), examId?.uppercase().toString())) {
-                        Toast.makeText(context, "Exam code copied to clipboard", Toast.LENGTH_SHORT).show()
+                    if(copyTextToClipboard(requireContext(), examId.toString())) {
+                        Toast.makeText(context, getString(R.string.exam_code_copied_to_clipboard), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -96,20 +157,41 @@ class ExamConfigFragment : BaseFragment<FragmentExamConfigBinding>(FragmentExamC
             saveButton.setOnClickListener {
                 doSaveChanges()
             }
-        }
-
-        examId?.let {
-            lifecycleScope.launch {
-                viewModel.fetchBlockedUsers(requireActivity(), it)
+            examStartDate.onClickAtEnd {
+                if(viewModel.exam.value?.isOngoing == false)
+                    showDateTimePicker(LocalDateTime.now().plusMinutes(15)) {
+                        startDate = it
+                        finishDate = adjustFinishDate(startDate, finishDate)
+                        validateForm()
+                }
+            }
+            examEndDate.onClickAtEnd {
+                if(viewModel.exam.value?.isOngoing == false)
+                    showDateTimePicker(startDate.plusHours(3)) {
+                        finishDate = it
+                        validateForm()
+                }
             }
         }
+    }
+
+    private fun adjustFinishDate(startDate: LocalDateTime, finishDate: LocalDateTime): LocalDateTime {
+        val hoursDifference = ChronoUnit.HOURS.between(startDate, finishDate)
+        if (hoursDifference < 3) {
+            return startDate.plusHours(3)
+        }
+        return finishDate
     }
 
     override fun onViewBind(binding: ViewItemUserBinding, item: User, position: Int) {
 
         binding.apply {
-            userName.text = item.name
+
+            userName.text  = item.name
             userEmail.text = item.email
+            userPhoto.setImageDrawable(
+                ContextCompat.getDrawable(requireContext(), if(item.gender == 1) R.drawable.man else R.drawable.woman)
+            )
 
             root.apply {
                 layoutParams = LinearLayout.LayoutParams(
@@ -127,14 +209,71 @@ class ExamConfigFragment : BaseFragment<FragmentExamConfigBinding>(FragmentExamC
         }
     }
 
+    private fun showDateTimePicker(minDateTime: LocalDateTime? = null, onDateTimeSelected: (LocalDateTime) -> Unit) {
+        val calendar = Calendar.getInstance()
+        val minCalendar = Calendar.getInstance()
+
+        minDateTime?.let {
+            minCalendar.time = java.sql.Timestamp.valueOf(it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))) // Convert LocalDateTime to Date
+        }
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                TimePickerDialog(
+                    requireContext(),
+                    { _, hourOfDay, minute ->
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        calendar.set(Calendar.MINUTE, minute)
+
+                        val selectedDateTime = LocalDateTime.of(
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH) + 1,
+                            calendar.get(Calendar.DAY_OF_MONTH),
+                            calendar.get(Calendar.HOUR_OF_DAY),
+                            calendar.get(Calendar.MINUTE)
+                        )
+
+                        if (minDateTime != null && selectedDateTime.isBefore(minDateTime)) {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(
+                                    R.string.selected_date_and_time_must_be_after,
+                                    minDateTime.format(dateTimeFormat)
+                                ),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            onDateTimeSelected(selectedDateTime)
+                        }
+                    },
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    true
+                ).show()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        datePickerDialog.datePicker.minDate = minCalendar.timeInMillis
+        datePickerDialog.show()
+    }
+
     private fun doUnblockUser(user: User) {
+
         examId?.let {
             setLoading(true)
             viewModel.withNoResult(requireActivity())
                 .onError { onErrorHandler(it) }
                 .onSuccess {
                     InfoDialog(requireActivity())
-                        .setMessage("${user.name} removed from blocked users")
+                        .setMessage(getString(R.string.removed_from_blocked_users, user.name))
                         .show()
                     viewModel.fetchBlockedUsers(requireActivity(), examId!!)
                     viewModel.withUsers(requireActivity()).fetch { it.getStudents(examId!!, false) }
@@ -152,24 +291,37 @@ class ExamConfigFragment : BaseFragment<FragmentExamConfigBinding>(FragmentExamC
                 .onError { onErrorHandler(it) }
                 .onSuccess {
                     InfoDialog(requireActivity())
-                        .setMessage("Exam updated")
+                        .setMessage(getString(R.string.exam_updated))
                         .show()
                     setLoading(false)
                     examTextTitle = newTitle
                     examTextSubtitle = newSubtitle
                     validateForm()
                 }
-                .fetch { it.updateExam(examId!!, ExamPayload(newTitle, newSubtitle)) }
-
+                .fetch {
+                    it.updateExam(
+                        examId!!,
+                        ExamPayload(
+                            title = newTitle,
+                            subTitle = newSubtitle,
+                            startAt  = binding.examStartDate.text.toDate("yyyy-MM-dd HH:mm"),
+                            finishAt = binding.examEndDate.text.toDate("yyyy-MM-dd HH:mm")
+                        )
+                    )
+                }
         }
     }
 
     private fun showUnblockDialog(item: User) {
         DialogBottom.Builder(requireActivity()).apply {
             color = getColor(requireContext(), R.color.danger)
-            title = "Are you sure?"
-            message = "Are you sure you want to unblock user from this exam?\nUser detail:\nName	: ${item.name}\nEmail	: ${item.email}\nThis action cannot be undone."
-            acceptText = "Unblock"
+            title = getString(R.string.are_you_sure)
+            message = getString(
+                R.string.are_you_sure_you_want_to_unblock_user_from_this_exam_user_detail_name_email_this_action_cannot_be_undone,
+                item.name,
+                item.email
+            )
+            acceptText = getString(R.string.unblock)
             acceptHandler = {
                 doUnblockUser(item)
                 true
@@ -197,7 +349,7 @@ class ExamConfigFragment : BaseFragment<FragmentExamConfigBinding>(FragmentExamC
             xOffset = -300
             yOffset = 80
 
-            addItem("Remove From Block").apply {
+            addItem(getString(R.string.remove_from_block)).apply {
                 color = getColor(context, R.color.danger)
                 setOnClickListener {
                     showUnblockDialog(item)
@@ -212,7 +364,7 @@ class ExamConfigFragment : BaseFragment<FragmentExamConfigBinding>(FragmentExamC
             delay(400)
             setLoading(false)
             InfoDialog(requireActivity())
-                .setTitle("Something went wrong")
+                .setTitle(getString(R.string.something_went_wrong))
                 .setMessage(e.message)
                 .show()
         }
@@ -248,15 +400,28 @@ class ExamConfigFragment : BaseFragment<FragmentExamConfigBinding>(FragmentExamC
     }
 
     private fun formIsValid(): Boolean {
+        val currentExam = viewModel.exam.value
+
+        // Check if start and finish dates are different
+        val isStartDateChanged = currentExam?.startAt?.asLocalDateTime != startDate
+        val isFinishDateChanged = currentExam?.finishAt?.asLocalDateTime != finishDate
+
+        // Get new input values
         val newTitle = binding.examTitle.text
         val newSubtitle = binding.examSubtitle.text
-        return (newTitle.isNotEmpty() && newSubtitle.isNotEmpty()) && (newTitle != examTextTitle || newSubtitle != examTextSubtitle)
+
+        // Check if the title and subtitle are filled
+        val isTextFilled = newTitle.isNotEmpty() && newSubtitle.isNotEmpty()
+
+        // Check if any values have changed
+        val isDataChanged = newTitle != examTextTitle || newSubtitle != examTextSubtitle || isStartDateChanged || isFinishDateChanged
+
+        // Form is valid if text is filled and data has changed
+        return isTextFilled && isDataChanged
     }
 
     companion object {
         const val ARG_EXAM_ID = "exam-id"
-        const val ARG_EXAM_TITLE = "exam-title"
-        const val ARG_EXAM_SUBTITLE = "exam-subtitle"
     }
 
     override fun onGlobalLayout() {

@@ -20,17 +20,87 @@ import androidx.core.content.res.ResourcesCompat
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
+import java.util.Date
 import com.google.android.material.snackbar.Snackbar as DefaultSnackbar
 
 class Utils {
 
     companion object {
 
+         val Date.asLocalDateTime: LocalDateTime
+            get() {
+            return this.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+        }
+        val LocalDateTime.asFormattedString: String get() {
+
+            fun addZero(value: Int): String {
+                return if (value < 10) "0$value" else value.toString()
+            }
+
+            return "$year-${addZero(monthValue)}-${addZero(dayOfMonth)} ${addZero(hour)}:${addZero(minute)}"
+        }
+
+        val LocalDateTime.asTimeAgo: String
+            get() {
+                val now = LocalDateTime.now()
+                val duration = Duration.between(this, now)
+
+                val seconds = duration.seconds
+                val minutes = duration.toMinutes()
+                val hours = duration.toHours()
+                val days = duration.toDays()
+
+                return when {
+                    seconds < 60 -> "just now"
+                    minutes < 60 -> "$minutes minute${if (minutes > 1) "s" else ""} ago"
+                    hours < 24 -> "$hours hour${if (hours > 1) "s" else ""} ago"
+                    days < 7 -> "$days day${if (days > 1) "s" else ""} ago"
+                    days < 30 -> "${days / 7} week${if (days / 7 > 1) "s" else ""} ago"
+                    days < 365 -> "${days / 30} month${if (days / 30 > 1) "s" else ""} ago"
+                    else -> "${days / 365} year${if (days / 365 > 1) "s" else ""} ago"
+                }
+            }
+        val LocalDateTime.asEstimateTime: String get() {
+            val startDate = LocalDateTime.now()
+            val years = ChronoUnit.YEARS.between(startDate, this)
+            val months = ChronoUnit.MONTHS.between(startDate.plusYears(years), this)
+            val days = ChronoUnit.DAYS.between(startDate.plusYears(years).plusMonths(months), this)
+            val hours = ChronoUnit.HOURS.between(startDate.plusYears(years).plusMonths(months).plusDays(days), this)
+            val minutes = ChronoUnit.MINUTES.between(startDate.plusYears(years).plusMonths(months).plusDays(days).plusHours(hours), this)
+
+            return buildString {
+                if (years > 0) append("$years years ")
+                if (months > 0) append("$months months ")
+                if (days > 0) append("$days days ")
+                if (hours > 0) append("$hours hours ")
+                if (minutes > 0) append("$minutes minutes")
+                if (isBlank()) append("Less than a minute")
+            }.trim()
+
+        }
+
         val String.CountWords: Int get() {
                 val words = this.split("\\s+".toRegex())
                     .filter { it.length >= 3 }
                 return words.size
             }
+        @SuppressLint("SimpleDateFormat")
+        fun String.toDate(format: String): Date? {
+            val formatter = SimpleDateFormat(format)
+            return try {
+                formatter.parse(this)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+
         val Int.dp: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
         val Int.px: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 
@@ -40,7 +110,6 @@ class Utils {
                 connectivityManager.getNetworkCapabilities(network)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             } == true
         }
-
 
         fun isDarkMode(context: Context): Boolean {
             val nightModeFlags = context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
@@ -112,7 +181,7 @@ class Snackbar private constructor() {
             val snackbar = DefaultSnackbar.make(this, message, length)
             snackbar.view.post {
                 (snackbar.view as FrameLayout).apply {
-                    background = ContextCompat.getDrawable(this.context, R.drawable.rounded_frame)
+                    background = ContextCompat.getDrawable(this.context, R.drawable.rounded_frame_outline)
                 }
                 val snackbarHeight = snackbar.view.height
                 val translationY = (snackbarHeight*2)

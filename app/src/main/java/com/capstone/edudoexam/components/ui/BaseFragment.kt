@@ -105,6 +105,7 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
         Log.d("IMAGE PICK", uri.toString())
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = getInflateBinding()(null, inflater, container, false) as T
         sharedViewModel.topMargin.observe(viewLifecycleOwner) { margin ->

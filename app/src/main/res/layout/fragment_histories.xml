@@ -5,18 +5,23 @@
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.histories.HistoriesFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="18dp"
+        android:paddingBottom="100dp"
+        android:clipToPadding="false"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="14dp"
-            android:clipToPadding="false"/>
-
-    </androidx.core.widget.NestedScrollView>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="@dimen/dp_18"
+        android:text="There are no data"/>
 
 </FrameLayout>

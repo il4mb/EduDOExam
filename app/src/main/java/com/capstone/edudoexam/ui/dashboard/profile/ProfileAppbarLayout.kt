@@ -31,7 +31,7 @@ class ProfileAppbarLayout @JvmOverloads constructor(
     private val profileImageView: ImageView by lazy {
         ImageView(context).apply {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-            setImageResource(R.drawable.man)
+            setImageResource(R.drawable.baseline_image_24)
         }
     }
 

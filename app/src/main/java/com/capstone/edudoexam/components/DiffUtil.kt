@@ -2,9 +2,8 @@ package com.capstone.edudoexam.components
 
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
-import com.capstone.edudoexam.models.Answer
 import com.capstone.edudoexam.models.Exam
-import com.capstone.edudoexam.models.ExamResult
+import com.capstone.edudoexam.models.StudentExamResult
 import com.capstone.edudoexam.models.Question
 import com.capstone.edudoexam.models.User
 
@@ -19,26 +18,27 @@ class ExamDiffCallback : DiffUtil.ItemCallback<Exam>() {
     }
 }
 
-class ExamResultDiffCallback : DiffUtil.ItemCallback<ExamResult>() {
-    override fun areItemsTheSame(oldItem: ExamResult, newItem: ExamResult): Boolean {
+class ExamResultDiffCallback : DiffUtil.ItemCallback<StudentExamResult>() {
+    override fun areItemsTheSame(oldItem: StudentExamResult, newItem: StudentExamResult): Boolean {
         return oldItem.id == newItem.id
     }
 
     @SuppressLint("DiffUtilEquals")
-    override fun areContentsTheSame(oldItem: ExamResult, newItem: ExamResult): Boolean {
+    override fun areContentsTheSame(oldItem: StudentExamResult, newItem: StudentExamResult): Boolean {
         return oldItem == newItem
     }
 }
 
-class AnswerDiffCallback : DiffUtil.ItemCallback<Answer>() {
-    override fun areItemsTheSame(oldItem: Answer, newItem: Answer): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: Answer, newItem: Answer): Boolean {
-        return oldItem == newItem
-    }
-}
+//
+//class AnswerDiffCallback : DiffUtil.ItemCallback<Answer>() {
+//    override fun areItemsTheSame(oldItem: Answer, newItem: Answer): Boolean {
+//        return oldItem.id == newItem.id
+//    }
+//
+//    override fun areContentsTheSame(oldItem: Answer, newItem: Answer): Boolean {
+//        return oldItem == newItem
+//    }
+//}
 
 class UserDiffCallback : DiffUtil.ItemCallback<User>() {
     override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="language_options">
+        <item>English</item>
+        <item>Bahasa Indonesia</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>en</item>
+        <item>id</item>
+    </string-array>
+
+    <string name="app_name">EduDOExam</string>
+    <string name="app_moto" translatable="false">AI Smart Tracker untuk Fokus &amp; Keterlibatan Siswa</string>
+    <string name="title_activity_dashboard2" translatable="false">DashboardActivity2</string>
+    <string name="tab_text_1" translatable="false">Tab 1</string>
+    <string name="tab_text_2" translatable="false">Tab 2</string>
+    <string name="nav_home">Beranda</string>
+    <string name="nav_exams">Ujian</string>
+    <string name="nav_history">Riwayat</string>
+    <string name="nav_settings">Pengaturan</string>
+
+    <string name="pref_upcoming_notification" translatable="false">ref-upcoming-notification</string>
+    <string name="pref_dark_mode" translatable="false">ref-dark-mode</string>
+    <string name="pref_language" translatable="false">language_preference</string>
+
+    <string name="title_activity_dashboard">Aktivitas Dashboard</string>
+    <string name="title_home">Beranda</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifikasi</string>
+    <string name="nav_histories">Riwayat</string>
+    <string name="title_permission_denied">Izin Ditolak</string>
+    <string name="description_permission_capture_denied">Mengambil gambar membutuhkan izin akses kamera, jika tidak fitur ini tidak dapat digunakan.</string>
+    <string name="get_it">Mengerti</string>
+    <string name="user_email">Email Pengguna</string>
+    <string name="gender_male">Laki-laki</string>
+    <string name="gender_female">Perempuan</string>
+    <string name="gender">Jenis Kelamin</string>
+    <string name="save_changes">Simpan Perubahan</string>
+    <string name="question">Pertanyaan</string>
+    <string name="correct_option">Opsi Benar</string>
+    <string name="no_internet_connection">Tidak Ada Koneksi Internet</string>
+    <string name="we_will_be_back_once_internet_connection_is_available">Kami akan kembali saat koneksi internet tersedia</string>
+    <string name="navigation_drawer_open" translatable="false">Buka laci navigasi</string>
+    <string name="navigation_drawer_close" translatable="false">Tutup laci navigasi</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Header Navigasi</string>
+    <string name="action_settings">Pengaturan</string>
+
+    <string name="menu_home">Beranda</string>
+    <string name="menu_gallery">Galeri</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
+    <string name="necessary_requirements">Persyaratan Penting</string>
+    <string name="next">Berikutnya</string>
+    <string name="ongoing_exams">Ujian Berlangsung</string>
+    <string name="upcoming_exams">Ujian Mendatang</string>
+    <string name="no_upcoming_exams">Tidak ada ujian mendatang</string>
+    <string name="no_students">Tidak Ada Siswa</string>
+    <string name="no_participants_found">Tidak Ada Peserta!</string>
+    <string name="no_questions_found">Tidak Ada Pertanyaan!</string>
+    <string name="sign_in">Masuk</string>
+    <string name="already_have_an_account">Sudah memiliki akun?</string>
+    <string name="create_your_account">Buat Akun Anda</string>
+    <string name="form_register_help_label">Semua bidang di bawah ini wajib diisi untuk membuat akun.</string>
+    <string name="don_t_have_an_account_yet">Belum punya akun?</string>
+    <string name="click_here">Klik di sini</string>
+    <string name="title_activity_exam" translatable="false">Aktivitas Ujian</string>
+    <string name="exams">Ujian</string>
+    <string name="history">Riwayat</string>
+    <string name="settings">Pengaturan</string>
+    <string name="profile">Profil</string>
+    <string name="exam_result">Hasil Ujian</string>
+    <string name="exam_detail">Detail Ujian</string>
+    <string name="form_question">Formulir Pertanyaan</string>
+    <string name="exam_config">Konfigurasi Ujian</string>
+    <string name="select_language">Pilih Bahasa</string>
+    <string name="upcoming">Mendatang</string>
+    <string name="dark_mode">Mode Gelap</string>
+    <string name="enable_dark_theme">Aktifkan tema gelap</string>
+    <string name="disable_dark_theme">Nonaktifkan tema gelap</string>
+    <string name="notification">Notifikasi</string>
+    <string name="theme">Tema</string>
+    <string name="join_exam">Ikut Ujian</string>
+    <string name="answered">Terjawab</string>
+    <string name="ongoing">Berlangsung</string>
+    <string name="exam_code_copied_to_clipboard">Kode Ujian Disalin ke Clipboard</string>
+    <string name="starting_in">Mulai dalam %1$s</string>
+    <string name="this_exam_has_not_started_yet">Ujian ini belum dimulai!</string>
+    <string name="successful">Berhasil</string>
+    <string name="something_went_wrong">Terjadi kesalahan</string>
+    <string name="selected_date_and_time_must_be_after">Tanggal dan waktu yang dipilih harus setelah %1$s</string>
+    <string name="removed_from_blocked_users">%1$s dihapus dari pengguna yang diblokir</string>
+    <string name="exam_updated">Ujian diperbarui</string>
+    <string name="are_you_sure">Apakah Anda yakin?</string>
+    <string name="are_you_sure_you_want_to_unblock_user_from_this_exam_user_detail_name_email_this_action_cannot_be_undone">Apakah Anda yakin ingin membuka blokir pengguna dari ujian ini?\nDetail pengguna:\nNama\t: %1$s\nEmail\t: %2$s\nTindakan ini tidak dapat dibatalkan.</string>
+    <string name="unblock">Buka Blokir</string>
+    <string name="remove_from_block">Hapus dari Blokir</string>
+    <string name="option_must_be_not_empty">Opsi tidak boleh kosong</string>
+    <string name="description_must_be_at_least_3_words">Deskripsi harus terdiri dari setidaknya 3 kata</string>
+    <string name="select_duration_mm_ss">Pilih Durasi (MM:SS)</string>
+    <string name="d_02d_minute">%d:%02d Menit</string>
+    <string name="cancel">Batal</string>
+    <string name="failed_to_retrieve_file_path">Gagal mengambil jalur file.</string>
+    <string name="missing_exam_id">ID ujian hilang</string>
+    <string name="success">Sukses</string>
+    <string name="new_question_added_to_exam">Pertanyaan baru ditambahkan ke ujian</string>
+    <string name="missing_exam_id_or_question_id">ID ujian atau ID pertanyaan hilang</string>
+    <string name="choose_position">Pilih Posisi</string>
+    <string name="swap">Tukar</string>
+    <string name="edit">Ubah</string>
+    <string name="remove">Hapus</string>
+    <string name="minute">%1$s Menit</string>
+    <string name="student_added">Siswa ditambahkan</string>
+    <string name="student_removed">Siswa dihapus</string>
+    <string name="student_blocked">Siswa diblokir</string>
+    <string name="block">Blokir</string>
+    <string name="email_is_required">Email wajib diisi</string>
+    <string name="add">Tambah</string>
+    <string name="question_detail">Detail Soal</string>
+    <string name="add_user">Tambah User</string>
+    <string name="please_enter_email_user_make_sure_user_has_ben_registered">Mohon masukan email penguna, pastikan email telah terdaftar.</string>
+    <string name="starting_at">"Maulai pada "</string>
+    <string name="create_exam">Buat Ujian</string>
+    <string name="create">Buat</string>
+    <string name="exam_created_successful">Berhasil membuat ujian</string>
+    <string name="join">Gabung</string>
+    <string name="are_you_sure_you_want_to_remove_question_detail_as_below_id_question_this_action_cannot_be_undone">Apakah Anda yakin ingin menghapus pertanyaan? \nDetailnya seperti di bawah ini: \nID: %1$s \nPertanyaan: %2$s \nTindakan ini tidak dapat dibatalkan.</string>
+    <string name="are_you_sure_you_want_to_block_user_from_this_exam_user_detail_name_email">Apakah Anda yakin ingin memblokir pengguna dari ujian ini? \nDetail pengguna: \nNama : %1$s \nEmail : %2$s</string>
+    <string name="are_you_sure_you_want_to_remove_user_from_this_exam_user_detail_name_email_this_action_cannot_be_undone">Are you sure you want to remove user from this exam? \nUser detail: \nName</string>
+    <string name="student">siswa</string>
+    <string name="teacher">guru</string>
+    <string name="caution_the_exam_is_ongoing">Perhatian: Ujian sedang berlangsung.</string>
+    <string name="you_cannot_change_anything_once_the_exam_has_started_such_as_adding_users_changing_questions_and_other_settings">Anda tidak dapat mengubah apa pun setelah ujian dimulai, seperti menambahkan pengguna, mengubah pertanyaan, dan pengaturan lainnya.</string>
+    <string name="students">Siswa</string>
+    <string name="questions">Soal</string>
+    <string name="blocked_users">Daftar Blokir</string>
+    <string name="data_not_found">Data tidak ditemukan</string>
+</resources>

@@ -8,6 +8,8 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.compose.ui.text.font.Typeface
+import androidx.core.widget.addTextChangedListener
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.Utils.Companion.getAttr
@@ -24,7 +26,7 @@ open class InputTextEdit @JvmOverloads constructor(
         set(value) {
             field = value
             editText.isEnabled = value
-            textInputLayout.alpha = if (value) 1f else 0.5f
+            textInputLayout.alpha = if (value) 1f else 0.75f
         }
 
     private val onChangeRecycler: MutableList<() -> Unit> = mutableListOf()
@@ -38,14 +40,13 @@ open class InputTextEdit @JvmOverloads constructor(
             setBoxCornerRadii(14.dp.toFloat(), 14.dp.toFloat(), 14.dp.toFloat(), 14.dp.toFloat())
         }
     }
-
     private val editText: TextInputEditText by lazy {
         TextInputEditText(textInputLayout.context).apply { // Use the context from textInputLayout
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
-            inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+            inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             setHintTextColor(getAttr(context, android.R.attr.textColorHint))
             setTextColor(getAttr(context, android.R.attr.textColor))
 
@@ -110,6 +111,18 @@ open class InputTextEdit @JvmOverloads constructor(
         onChangeRecycler.add(callback)
     }
 
+    fun setSelection(pos: Int) {
+        editText.setSelection(pos)
+    }
+
+    fun getLayout() : TextInputLayout {
+        return textInputLayout
+    }
+
+    fun addTextChangedListener(textWatcher: TextWatcher) {
+        editText.addTextChangedListener(textWatcher)
+    }
+
     fun onClickAtEnd(callback: () -> Unit) {
         textInputLayout.setEndIconOnClickListener {
             callback()
@@ -127,6 +140,23 @@ open class InputTextEdit @JvmOverloads constructor(
         // Ensure the TextInputLayout stretches the full height
         textInputLayout.layout(0, 0, width, height)
     }
+
+    override fun setOnKeyListener(l: OnKeyListener?) {
+        editText.setOnKeyListener(l)
+        super.setOnKeyListener(l)
+    }
+
+    var typeface: android.graphics.Typeface?
+        get() = editText.typeface
+        set(value) {
+            editText.typeface = value
+        }
+
+    var textSize: Float
+        get() = editText.textSize
+        set(value) {
+            editText.textSize = value
+        }
 
     var hint: String
         get() = textInputLayout.hint.toString()
@@ -150,6 +180,12 @@ open class InputTextEdit @JvmOverloads constructor(
         get() = editText.inputType
         set(value) {
             editText.inputType = value
+        }
+
+    var helperText: CharSequence?
+        get() = textInputLayout.helperText
+        set(value) {
+            textInputLayout.helperText = value
         }
 
     var startIcon: Drawable?

@@ -1,10 +1,13 @@
 package com.capstone.edudoexam.ui.dashboard
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -12,8 +15,10 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -22,12 +27,14 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.capstone.edudoexam.R
+import com.capstone.edudoexam.components.AppContextWrapper
 import com.capstone.edudoexam.components.NetworkStatusHelper
-import com.capstone.edudoexam.components.dialog.InfoDialog
 import com.capstone.edudoexam.components.ui.AppBarLayout
 import com.capstone.edudoexam.databinding.ActivityDashboard2Binding
 import com.capstone.edudoexam.ui.LoadingHandler
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.Locale
+
 
 class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, LoadingHandler {
 
@@ -73,18 +80,24 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("UseSupportActionBar", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         enableEdgeToEdge()
-
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val isDarkMode = sharedPref.getBoolean(getString(R.string.pref_dark_mode), false)
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
         super.onCreate(savedInstanceState)
+
+        ViewCompat.setOnApplyWindowInsetsListener(_binding.root) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                bottomMargin = insets.bottom
+                rightMargin = insets.right
+            }
+            WindowInsetsCompat.CONSUMED
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(_binding.navView) { v, windowInsets  ->
+            v.setPadding(0, 0, 0, 0)
+            windowInsets
+        }
         setContentView(_binding.root)
+
         setSupportActionBar(_binding.appBarLayout.toolbar)
 
         val navView: BottomNavigationView = _binding.navView
@@ -112,14 +125,14 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
+    private var lastDestinationId = 0
     override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
+        if(destination.id != lastDestinationId) setLoading(true)
+        lastDestinationId = destination.id
 
-        setLoading(true)
         _binding.apply {
-
             resetUI()
             appBarLayout.removeAllMenus()
-
             when (destination.id) {
                 R.id.nav_home -> {
                     appBarLayout.title    = getString(R.string.app_name)
@@ -233,4 +246,15 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
     fun getAppbar() : AppBarLayout {
         return _binding.appBarLayout
     }
+
+    override fun attachBaseContext(newBase: Context?) {
+        newBase?.let {
+            val language = PreferenceManager.getDefaultSharedPreferences(newBase).getString("pref_language", "en") ?: "en"
+            super.attachBaseContext(AppContextWrapper.wrap(it, language))
+        } ?: run {
+            super.attachBaseContext(newBase)
+        }
+
+    }
+
 }

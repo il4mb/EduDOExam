@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.capstone.edudoexam.components.input.InputTextEdit
+        android:id="@+id/exam_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hint="Exam Title"
+        android:layout_marginBottom="@dimen/dp_14"/>
+
+    <com.capstone.edudoexam.components.input.InputTextEdit
+        android:id="@+id/exam_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hint="Exam Subtitle"
+        android:layout_marginBottom="@dimen/dp_14"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start &amp; Finish Date"
+        android:textSize="@dimen/text_md"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="16dp"/>
+
+    <com.capstone.edudoexam.components.input.InputTextEdit
+        android:id="@+id/exam_start_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hint="Start Date"
+        android:layout_marginBottom="@dimen/dp_14"
+        app:endIcon="@drawable/baseline_calendar_today_24"
+        app:editable="false"/>
+
+    <com.capstone.edudoexam.components.input.InputTextEdit
+        android:id="@+id/exam_finish_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_14"
+        app:hint="Finish Date"
+        app:endIcon="@drawable/baseline_calendar_today_24"
+        app:editable="false"/>
+
+</LinearLayout>

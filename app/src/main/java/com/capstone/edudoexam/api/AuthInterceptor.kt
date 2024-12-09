@@ -35,10 +35,9 @@ class AuthInterceptor(private val fragment: FragmentActivity) : Interceptor {
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
+
         val request = chain.request()
-
         val token = getToken(fragment)
-
         val authenticatedRequest = if (token != null) {
             request.newBuilder().header("Authorization", "Bearer $token").build()
         } else {

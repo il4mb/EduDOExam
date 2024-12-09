@@ -27,6 +27,7 @@ open class GenericListAdapter<T: Any, V : ViewBinding>(
         onItemBindCallback.onViewBind(holder.binding, item, position)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenericViewHolder<V> {
         val binding = getInflateBinding()(null, LayoutInflater.from(parent.context), parent, false) as V
         return GenericViewHolder(binding)

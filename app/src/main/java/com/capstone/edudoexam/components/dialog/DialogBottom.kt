@@ -19,6 +19,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils
@@ -29,8 +30,19 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import java.lang.reflect.Method
 
+@Suppress("DEPRECATION")
 class DialogBottom : BottomSheetDialogFragment() {
 
+    var dismissible = true
+        set(value) {
+            field = value
+            updateUI()
+        }
+
+    private var dismissCallback: (() -> Unit)? = null
+    fun onDismissCallback(callback: () -> Unit) {
+        dismissCallback = callback
+    }
     var themeColor: Int = 0
         set(value) {
             field = value
@@ -83,6 +95,8 @@ class DialogBottom : BottomSheetDialogFragment() {
             updateUI()
         }
 
+    private var contentView: View? = null
+
     private var layoutBindHelper: LayoutBindHelper<ViewBinding>? = null
 
     private val layout: DialogContainer by lazy {
@@ -108,6 +122,11 @@ class DialogBottom : BottomSheetDialogFragment() {
         return layout
     }
 
+    override fun dismiss() {
+        dismissCallback?.invoke()
+        super.dismiss()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -120,6 +139,11 @@ class DialogBottom : BottomSheetDialogFragment() {
                     systemInsets.bottom
                 )
                 insets
+            }
+        }
+        dialog?.let {
+            it.setOnDismissListener {
+                dismissCallback?.invoke()
             }
         }
         updateUI()
@@ -137,24 +161,19 @@ class DialogBottom : BottomSheetDialogFragment() {
     }
 
     private fun Window.enableEdgeToEdge() {
-        // Disable decor fitting system windows
         WindowCompat.setDecorFitsSystemWindows(this, false)
-
-        // Set up the insets controller
         val insetsController = WindowInsetsControllerCompat(this, decorView)
         insetsController.apply {
             isAppearanceLightStatusBars = !Utils.isDarkMode(context)
             isAppearanceLightNavigationBars = !Utils.isDarkMode(context)
         }
 
-        // Set transparent status and navigation bar colors
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Use modern API
+
             setDecorFitsSystemWindows(false)
             insetsController.isAppearanceLightStatusBars = !Utils.isDarkMode(context)
             insetsController.isAppearanceLightNavigationBars = !Utils.isDarkMode(context)
         } else {
-            // Backward compatibility for older versions
             statusBarColor = Color.TRANSPARENT
             navigationBarColor = Color.TRANSPARENT
         }
@@ -184,7 +203,7 @@ class DialogBottom : BottomSheetDialogFragment() {
                 background = ColorDrawable()
                 setTextColor(textColor)
                 text = dismissText
-                visibility = if (isCancelActionButtonVisible) View.VISIBLE else View.GONE
+                visibility = if (isCancelActionButtonVisible && dismissible) View.VISIBLE else View.GONE
             }
 
             acceptButton.apply {
@@ -195,26 +214,34 @@ class DialogBottom : BottomSheetDialogFragment() {
             }
 
             if(viewBinding == null) {
-                layoutBindHelper?.let { helper ->
-                    helper.onInflateCallback?.let { callback ->
-                        val binding = helper.inflate?.invoke(
-                            null,
-                            layoutInflater,
-                            null,
-                            false
-                        ) as? ViewBinding
-                        binding?.let { validBinding ->
-                            callback(validBinding, this@DialogBottom)
-                            frame = validBinding.root
+                if(contentView != null) {
+                    frame = contentView!!
+                } else {
+                    layoutBindHelper?.let { helper ->
+                        helper.onInflateCallback?.let { callback ->
+                            val binding = helper.inflate?.invoke(
+                                null,
+                                layoutInflater,
+                                null,
+                                false
+                            ) as? ViewBinding
+                            binding?.let { validBinding ->
+                                callback(validBinding, this@DialogBottom)
+                                frame = validBinding.root
+                            }
                         }
+                    } ?: run {
+                        titleView.visibility = View.VISIBLE
+                        messageView.visibility = View.VISIBLE
                     }
-                } ?: run {
-                    titleView.visibility = View.VISIBLE
-                    messageView.visibility = View.VISIBLE
                 }
             } else {
                 frame = viewBinding!!.root
             }
+        }
+        dialog?.apply {
+            setCancelable(dismissible)
+            setCanceledOnTouchOutside(dismissible)
         }
     }
 
@@ -247,9 +274,10 @@ class DialogBottom : BottomSheetDialogFragment() {
         override var acceptHandler: ((DialogBottom) -> Boolean)? = null
         override var isCancelActionButtonVisible: Boolean = true
         override var isAcceptActionButtonVisible: Boolean = true
-
+        var view: View? = null
         private var layoutBindHelper: LayoutBindHelper<ViewBinding>? = null
 
+        @Suppress("UNCHECKED_CAST")
         fun <T : ViewBinding> setLayout(viewBindingClass: Class<T>, callback: (binding: T, dialog: DialogBottom) -> Unit) {
             layoutBindHelper = LayoutBindHelper<T>().apply {
                 inflate = viewBindingClass.getMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
@@ -274,6 +302,7 @@ class DialogBottom : BottomSheetDialogFragment() {
             dialog.acceptHandler = acceptHandler
             dialog.layoutBindHelper = layoutBindHelper
             dialog.viewBinding = viewBinding
+            dialog.contentView = view
             dialog.isCancelActionButtonVisible = isCancelActionButtonVisible
             dialog.isAcceptActionButtonVisible = isAcceptActionButtonVisible
             return dialog
@@ -306,7 +335,7 @@ class DialogBottom : BottomSheetDialogFragment() {
         }
         val acceptButton: MaterialButton by lazy {
             MaterialButton(context).apply {
-                text = "Accept"
+                text = context.getString(R.string.accept)
                 typeface = resources.getFont(R.font.montserrat_bold)
 
                 layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
@@ -316,7 +345,7 @@ class DialogBottom : BottomSheetDialogFragment() {
         }
         val cancelButton: MaterialButton by lazy {
             MaterialButton(context).apply {
-                text = "Cancel"
+                text = context.getString(R.string.accept)
                 typeface = resources.getFont(R.font.montserrat_bold)
 
                 layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
@@ -358,10 +387,20 @@ class DialogBottom : BottomSheetDialogFragment() {
             addView(bottomView)
         }
 
-        // private val Int.dp: Int get() = (this * context.resources.displayMetrics.density).toInt()
-
         override fun getRoot(): LinearLayout {
             return this
+        }
+    }
+
+    companion object {
+        fun dismissAll(activity: FragmentActivity) {
+            activity.supportFragmentManager.apply {
+                fragments.forEach {
+                    if (it is DialogBottom) {
+                        it.dismiss()
+                    }
+                }
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -20,11 +21,12 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.capstone.edudoexam.R
 import com.capstone.edudoexam.api.payloads.QuestionPayload
 import com.capstone.edudoexam.api.response.Response
 import com.capstone.edudoexam.components.ui.BaseFragment
 import com.capstone.edudoexam.components.dialog.DialogBottom
-import com.capstone.edudoexam.components.Snackbar
 import com.capstone.edudoexam.components.Utils.Companion.CountWords
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.capstone.edudoexam.components.dialog.InfoDialog
@@ -33,6 +35,13 @@ import com.capstone.edudoexam.models.QuestionOptions
 import com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+import java.io.FileOutputStream
 
 class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentFormQuestionBinding::class.java),
     ViewTreeObserver.OnGlobalLayoutListener {
@@ -40,7 +49,6 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
     private val formState: FormStateData by lazy {
         FormStateData(binding)
     }
-
     private val isDescriptionValid: Boolean
         get() {
             val inputDescription = binding.questionDescription.editText?.text.toString()
@@ -52,25 +60,18 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
                 a.length > 1 && b.length > 1 && c.length > 1 && d.length > 1
             }
         }
-
     private val isDurationValid: Boolean
         get() {
             val inputDuration = getDuration() / 60
             return inputDuration >= 3.0
         }
-
     private var imageUri: String? = null
         set(value) {
             field = value
             (binding.imageCard[0] as ImageView).setImageURI(Uri.parse(field))
         }
-
     private var questionId: String = ""
-
-    private val examId: String by lazy {
-        arguments?.getString(ARGS_QUESTION_EXAM_ID)?: ""
-    }
-
+    private var examId: String? = null
     private val viewModel: DetailExamViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,59 +85,8 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.questions.observe(viewLifecycleOwner) { questions ->
-            Log.d("QUESTION ID", questionId)
-            try {
-                questions.find { it.id == questionId }?.let {
-                    binding.apply {
-                        formState.duration = it.duration
-                        formState.description = it.description
-                        formState.imageUri = it.image
-                        formState.options = it.options
-                        formState.correctOption = it.correctOption
-                        formState.order = it.order
-                    }
-                }
-            } catch (t: Throwable) {
-                t.printStackTrace()
-            }
-            lifecycleScope.launch {
-                delay(600)
-                setLoading(false)
-            }
-        }
-
-        binding.apply {
-            root.viewTreeObserver.addOnGlobalLayoutListener(this@FormQuestionFragment)
-            durationPickerButton.setOnClickListener { showDurationPicker() }
-            imageCard.setOnClickListener{
-                pickImageBooth()
-            }
-            questionDescription.apply {
-                editText?.doOnTextChanged { _, _, _, _ ->
-
-                    if(isDescriptionValid) {
-                        questionDescription.error = null
-                    } else {
-                        questionDescription.error = "Description must be at least 3 words"
-                    }
-                    validateForm()
-                }
-            }
-            optionsLayout.apply {
-                setOnChangedCallback {
-                    validateForm()
-                }
-            }
-
-            saveButton.setOnClickListener {
-                if(questionId.isNotEmpty() && examId.isNotEmpty()) {
-                    updateQuestion()
-                } else {
-                    saveNewQuestion()
-                }
-            }
-        }
+        liveCycleObserve()
+        setupUI()
 
         lifecycleScope.launch {
             delay(200)
@@ -156,7 +106,7 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
                         if(editText?.text.toString().isNotEmpty()) {
                             editText?.error = null
                         } else {
-                            editText?.error = "Option must be not empty"
+                            editText?.error = context.getString(R.string.option_must_be_not_empty)
                         }
                         nestedScrollView.post {
                             nestedScrollView.smoothScrollTo(0, nestedScrollView.bottom)
@@ -182,6 +132,82 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
                         }
                     dialog.show()
                 } else findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun liveCycleObserve() {
+        viewModel.apply {
+            questions.observe(viewLifecycleOwner) { questions ->
+                Log.d("QUESTION ID", questionId)
+                try {
+                    questions.find { it.id == questionId }?.let {
+                        binding.apply {
+                            formState.duration = it.duration
+                            formState.description = it.description
+                            formState.imageUri = it.image
+                            formState.options = it.options
+                            formState.correctOption = it.correctOption
+                            formState.order = it.order
+                        }
+                        if(it.image != null) {
+                            val imageV = (binding.imageCard[0] as ImageView)
+                            Glide.with(requireActivity())
+                                .load(it.image)
+                                .placeholder(R.drawable.baseline_image_24)
+                                .into(imageV)
+                        }
+                    }
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                }
+                lifecycleScope.launch {
+                    delay(600)
+                    setLoading(false)
+                }
+            }
+            exam.observe(viewLifecycleOwner) {
+                examId = it.id
+                if(it.isOngoing) {
+                    setupOngoingUI()
+                }
+            }
+        }
+    }
+
+    private fun setupOngoingUI() {}
+
+    private fun setupUI() {
+        binding.apply {
+            root.viewTreeObserver.addOnGlobalLayoutListener(this@FormQuestionFragment)
+            durationPickerButton.setOnClickListener { showDurationPicker() }
+            imageCard.setOnClickListener{
+                pickImageBooth()
+            }
+            questionDescription.apply {
+                editText?.doOnTextChanged { _, _, _, _ ->
+
+                    if(isDescriptionValid) {
+                        questionDescription.error = null
+                    } else {
+                        questionDescription.error =
+                            context.getString(R.string.description_must_be_at_least_3_words)
+                    }
+                    validateForm()
+                }
+            }
+            optionsLayout.apply {
+                setOnChangedCallback {
+                    validateForm()
+                }
+            }
+
+            saveButton.setOnClickListener {
+                if(questionId.isNotEmpty() && !examId.isNullOrEmpty()) {
+                    updateQuestion()
+                } else {
+                    saveNewQuestion()
+                }
             }
         }
     }
@@ -228,21 +254,27 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
         }
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Select Duration (MM:SS)")
+            .setTitle(getString(R.string.select_duration_mm_ss))
             .setView(dialogLayout)
             .setPositiveButton("OK") { _, _ ->
                 val minutes = minutesPicker.value
                 val seconds = secondsPicker.value
-                binding.durationLabel.text = String.format("%d:%02d Minute", minutes, seconds)
+                binding.durationLabel.text = String.format(getString(R.string.d_02d_minute), minutes, seconds)
                 validateForm()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
     override fun onImageResult(result: Boolean, uri: Uri) {
         if(result) {
-            imageUri = uri.toString()
+            getRealPathFromUri(uri)?.let {
+                imageUri = it
+            } ?: {
+                InfoDialog(requireActivity())
+                    .setMessage(getString(R.string.failed_to_retrieve_file_path))
+                    .show()
+            }
             validateForm()
         }
     }
@@ -296,19 +328,11 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
     }
 
     private fun formIsValid(): Boolean {
-        // Calculate input duration in minutes
+
         val inputDuration = getDuration() / 60
-
-        // Validate if duration has changed
         val isDurationChanged = inputDuration != formState.duration
-
-        // Validate if description has changed
         val isDescriptionChanged = binding.questionDescription.editText?.text.toString().trim() != formState.description?.trim()
-
-        // Validate if the image URI has changed
-        val isImageChanged = !imageUri.isNullOrEmpty() && imageUri != formState.imageUri
-
-        // Validate if any of the options have changed
+        val isImageChanged = imageUri.toString() != formState.imageUri
         val areOptionsChanged = binding.optionsLayout.options.run {
             a.trim() != formState.options?.get('A')?.trim() ||
                     b.trim() != formState.options?.get('B')?.trim() ||
@@ -316,57 +340,79 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
                     d.trim() != formState.options?.get('D')?.trim()
         }
 
-        // Validate if the correct option has changed
         val isCorrectOptionChanged = binding.optionsLayout.correctOption != formState.correctOption
 
-        // Combine all validations into a single condition
         return isDurationValid && isDescriptionValid && isOptionValid &&
                 (isDurationChanged || isDescriptionChanged || isImageChanged || areOptionsChanged || isCorrectOptionChanged)
     }
 
     private fun saveNewQuestion() {
 
-        val order = formState.order ?: 0
-        if(examId.isEmpty()) {
-            InfoDialog(requireActivity()).setMessage("Missing exam id").show()
+        if(examId.isNullOrEmpty()) {
+            InfoDialog(requireActivity()).setMessage(getString(R.string.missing_exam_id)).show()
             return
         }
 
         val duration    = getDuration() / 60
         val description = binding.questionDescription.editText?.text.toString()
-        val options     = binding.optionsLayout.options.asMap()
+        val options     = binding.optionsLayout.options.asJson()
         val correctOption = binding.optionsLayout.correctOption
 
-        val payload = QuestionPayload(description, imageUri, duration, correctOption, options, order)
+        val descriptionBody = description.toRequestBody("text/plain".toMediaTypeOrNull())
+        val imagePart = imageUri?.let {
+            File(it)
+        }?.let {
+            MultipartBody.Part.createFormData("image", it.name, it.asRequestBody("image/*".toMediaTypeOrNull()))
+        }
+        val durationBody = duration.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val correctOptionBody = correctOption.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val optionsBody = options.toRequestBody("application/json".toMediaTypeOrNull())
 
         setLoading(true)
         viewModel.withQuestion(requireActivity())
             .onError { onErrorHandler(it) }
             .onSuccess {
                 InfoDialog(requireActivity())
-                    .setTitle("Success")
-                    .setMessage("new question added to exam")
+                    .setTitle(getString(R.string.success))
+                    .setMessage(getString(R.string.new_question_added_to_exam))
                     .show()
                 questionId = it.question.id
             }
-            .fetch { it.addQuestion(examId, payload) }
-
+            .fetch {
+                it.addQuestion(
+                    examId!!,
+                    description = descriptionBody,
+                    image = imagePart,
+                    duration = durationBody,
+                    correctOption = correctOptionBody,
+                    options = optionsBody
+                )
+            }
     }
 
     private fun updateQuestion() {
 
         val order = formState.order ?: 0
-        if(examId.isEmpty() || questionId.isEmpty()) {
-            InfoDialog(requireActivity()).setMessage("Missing Exam id or question id").show()
+        if(examId.isNullOrEmpty() || questionId.isEmpty()) {
+            InfoDialog(requireActivity()).setMessage(getString(R.string.missing_exam_id_or_question_id)).show()
             return
         }
 
         val duration    = getDuration() / 60
         val description = binding.questionDescription.editText?.text.toString()
-        val options     = binding.optionsLayout.options.asMap()
+        val options     = binding.optionsLayout.options.asJson()
         val correctOption = binding.optionsLayout.correctOption
 
-        val payload = QuestionPayload(description, imageUri, duration, correctOption, options, order)
+        val descriptionBody = description.toRequestBody("text/plain".toMediaTypeOrNull())
+        val imagePart = imageUri?.let {
+            File(it)
+        }?.let {
+            MultipartBody.Part.createFormData("image", it.name, it.asRequestBody("image/*".toMediaTypeOrNull()))
+        }
+        val durationBody = duration.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val correctOptionBody = correctOption.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val optionsBody = options.toRequestBody("application/json".toMediaTypeOrNull())
+        val orderBody = order.toString().toRequestBody()
 
         setLoading(true)
         viewModel.withQuestions(requireActivity())
@@ -376,8 +422,32 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
                     .setMessage("Question updated")
                     .show()
             }
-            .fetch { it.updateQuestion(examId, questionId, payload) }
+            .fetch {
+                it.updateQuestion(
+                    examId = examId!!,
+                    questionId  = questionId,
+                    description = descriptionBody,
+                    image    = imagePart,
+                    duration = durationBody,
+                    correctOption = correctOptionBody,
+                    options = optionsBody,
+                    order   = orderBody
+                )
+            }
 
+    }
+
+    private fun getRealPathFromUri(uri: Uri): String? {
+        return try {
+            val inputStream = requireContext().contentResolver.openInputStream(uri)
+            val tempFile = File(requireContext().cacheDir, "temp_image")
+            val outputStream = FileOutputStream(tempFile)
+            inputStream?.copyTo(outputStream)
+            tempFile.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
     private fun onErrorHandler(e: Response) {
@@ -385,7 +455,7 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
             delay(400)
             setLoading(false)
             InfoDialog(requireActivity())
-                .setTitle("Something went wrong")
+                .setTitle(getString(R.string.something_went_wrong))
                 .setMessage(e.message)
                 .show()
         }
@@ -403,7 +473,7 @@ class FormQuestionFragment : BaseFragment<FragmentFormQuestionBinding>(FragmentF
                 return String.format("%02d:%02d", minutes, seconds)
             }
 
-       private val Map<Char, String>.asQuestionOptions: QuestionOptions
+       val Map<Char, String>.asQuestionOptions: QuestionOptions
             get() = QuestionOptions(
                 a = this['A'] ?: "",
                 b = this['B'] ?: "",

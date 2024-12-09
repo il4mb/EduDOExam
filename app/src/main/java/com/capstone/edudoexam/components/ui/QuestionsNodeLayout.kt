@@ -49,6 +49,7 @@ class QuestionsNodeLayout @JvmOverloads constructor(
         render()
     }
 
+    // Render the nodes based on nodeLength
     private fun render() {
         removeAllViews()
 
@@ -60,56 +61,63 @@ class QuestionsNodeLayout @JvmOverloads constructor(
         }
     }
 
+    // Add a new row to the layout
     private fun addRow() {
         val rowLayout = LinearLayout(context).apply {
             orientation = HORIZONTAL
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 55.dp).apply {
                 setMargins(0, 8.dp, 0, 8.dp)
+                weightSum = 5f
             }
         }
         addView(rowLayout)
     }
 
+    // Add a new item node to the last row
     @SuppressLint("SetTextI18n")
     private fun addItem(index: Int) {
         val lastRow = getChildAt(childCount - 1) as? LinearLayout ?: return
-
         val itemNode = QuestionNode(context).apply {
             text = "${index + 1}"
             setOnClickListener {
                 itemNodeListener?.onItemClick(this, index)
-                showInfoWindow()
             }
         }
 
-        // Notify the listener when a node is created
         itemNodeListener?.onNodeCreate(itemNode, index)
-
         itemNode.layoutParams = LayoutParams(0, LayoutParams.MATCH_PARENT, 1f).apply {
             setMargins(8.dp, 0, 8.dp, 0)
         }
 
-        setAspectRatio(itemNode)
-
+        // setAspectRatio(itemNode)
         lastRow.addView(itemNode)
     }
 
-    /**
-     * Ensures the node has a 1:1 aspect ratio.
-     */
-    private fun setAspectRatio(view: QuestionNode) {
-        view.viewTreeObserver.addOnPreDrawListener(
-            object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    view.viewTreeObserver.removeOnPreDrawListener(this)
-                    val width = view.width
-                    view.layoutParams.height = width
-                    return true
-                }
-            }
-        )
+    // Retrieve a specific node based on its index
+    fun getNode(index: Int): QuestionNode {
+        val rowAt: Int = index / 5
+        val colAt: Int = index % 5
+
+        if (rowAt >= childCount) throw IndexOutOfBoundsException("Row index out of bounds")
+        val rowLayout = getChildAt(rowAt) as? LinearLayout
+            ?: throw IllegalStateException("Child at row index is not a LinearLayout")
+
+        if (colAt >= rowLayout.childCount) throw IndexOutOfBoundsException("Column index out of bounds")
+
+        return rowLayout.getChildAt(colAt) as? QuestionNode
+            ?: throw IllegalStateException("Child at column index is not a QuestionNode")
     }
 
+    // Retrieve all nodes
+    fun getNodes(): List<QuestionNode> {
+        val nodes: MutableList<QuestionNode> = mutableListOf()
+        for (i in 0 until nodeLength) {
+            nodes.add(getNode(i))
+        }
+        return nodes
+    }
+
+    // Extension property for converting dp to pixels
     private val Int.dp: Int get() = (this * context.resources.displayMetrics.density).toInt()
 
     /**

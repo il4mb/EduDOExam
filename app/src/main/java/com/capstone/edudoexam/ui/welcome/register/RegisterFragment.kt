@@ -51,9 +51,6 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            navBackButton.setOnClickListener {
-                findNavController().popBackStack()
-            }
             siginActionButton.setOnClickListener {
                 findNavController().navigate(
                     R.id.action_nav_register_to_nav_login,

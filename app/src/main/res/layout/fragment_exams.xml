@@ -4,14 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.exams.ExamsFragment">
-    <androidx.core.widget.NestedScrollView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:padding="14dp"/>
-    </androidx.core.widget.NestedScrollView>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="18dp"
+        android:paddingBottom="100dp" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No Exams"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_md"/>
+
 </FrameLayout>

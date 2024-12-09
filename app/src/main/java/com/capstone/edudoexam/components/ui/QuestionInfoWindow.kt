@@ -1,6 +1,7 @@
 package com.capstone.edudoexam.components.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.setPadding
@@ -10,7 +11,6 @@ class QuestionInfoWindow private constructor(layoutInflater: LayoutInflater) {
 
     internal val context = layoutInflater.context
     private var _root: MaterialCardView = MaterialCardView(layoutInflater.context).apply {
-        // layoutParams.width = 300.dp
     }
     val root = _root
 
@@ -31,16 +31,24 @@ class QuestionInfoWindow private constructor(layoutInflater: LayoutInflater) {
         }
 
     private var _message: TextView = TextView(layoutInflater.context)
-    var message : String
-        get() = _message.text.toString()
+    var message : CharSequence
+        get() = _message.text
         set(value) {
             _message.text = value
         }
+
+    fun addView(view: View) {
+        linearLayout.addView(view)
+    }
 
     init {
         _root.addView(linearLayout)
         linearLayout.addView(_title)
         linearLayout.addView(_message)
+        _root.apply {
+            scaleX = .8f
+            scaleY = .8f
+        }
     }
 
     companion object {

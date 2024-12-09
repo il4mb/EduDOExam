@@ -1,23 +1,31 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="Theme">
+    <PreferenceCategory app:title="@string/theme">
 
         <SwitchPreferenceCompat
-            app:key="@string/pref_dark_mode"
-            app:title="Dark Mode"
+            app:key="pref_dark_mode"
+            app:title="@string/dark_mode"
             app:defaultValue="false"
-            app:summaryOff="Enable dark theme"
-            app:summaryOn="Disable dark theme"/>
+            app:summaryOff="@string/enable_dark_theme"
+            app:summaryOn="@string/disable_dark_theme"/>
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Notification">
+    <PreferenceCategory app:title="@string/notification">
 
         <SwitchPreferenceCompat
-            app:key="@string/pref_upcoming_notification"
-            app:title="Upcoming"
+            app:key="pref_upcoming_notification"
+            app:title="@string/upcoming"
             app:summary="notifications for upcoming exams"/>
 
     </PreferenceCategory>
+
+    <ListPreference
+        app:key="pref_language"
+        app:title="@string/select_language"
+        app:entries="@array/language_options"
+        app:entryValues="@array/language_values"
+        app:defaultValue="en"
+        app:summary="%s" />
 
 </PreferenceScreen>

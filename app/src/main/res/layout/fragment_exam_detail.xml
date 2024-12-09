@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:clipChildren="false"
     tools:context=".ui.dashboard.exams.detail.DetailExamFragment">
-
     <LinearLayout
         android:id="@+id/exam_meta_layout"
         android:layout_width="match_parent"
@@ -19,7 +18,9 @@
         android:background="?android:colorBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:clipToPadding="false"
+        android:clipChildren="false">
 
         <TextView
             android:id="@+id/exam_title"
@@ -27,20 +28,45 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="22sp" />
-
         <TextView
             android:id="@+id/exam_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"/>
-
         <TextView
             android:id="@+id/exam_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:visibility="gone"
+            android:id="@+id/ongoing_warning_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/bg_danger"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="15dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_14">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/caution_the_exam_is_ongoing"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/danger"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/you_cannot_change_anything_once_the_exam_has_started_such_as_adding_users_changing_questions_and_other_settings"/>
 
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
@@ -51,22 +77,23 @@
         app:tabMode="fixed"
         app:tabGravity="fill"
         app:tabInlineLabel="true"
-        app:tabIndicatorHeight="0dp">
+        app:tabIndicatorHeight="0dp"
+        app:tabIconTint="@color/secondary_selector"
+        app:tabTextColor="@color/secondary_selector">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Studens"
+            android:text="@string/students"
             android:icon="@drawable/baseline_people_alt_24"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Questions"
+            android:text="@string/questions"
             android:icon="@drawable/baseline_mode_comment_24"/>
 
     </com.google.android.material.tabs.TabLayout>
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -78,6 +105,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tab_layout"
         app:navGraph="@navigation/navigation_exam_edit" />
-
-
+    <com.google.android.material.button.MaterialButton
+        android:visibility="gone"
+        android:id="@+id/finish_exam_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:text="Finish Now"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

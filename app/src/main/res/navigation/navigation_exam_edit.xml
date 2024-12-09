@@ -9,10 +9,10 @@
         android:id="@+id/nav_questions_exam"
         android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.questions.QuestionsExamFragment"
         android:label="fragment_questions_exam"
-        tools:layout="@layout/fragment_questions_exam" />
+        tools:layout="@layout/fragment_exam_detail_questions" />
     <fragment
         android:id="@+id/nav_students_exam"
         android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.studens.StudentsExamFragment"
         android:label="fragment_students_exam"
-        tools:layout="@layout/fragment_students_exam" />
+        tools:layout="@layout/fragment_exam_detail_students" />
 </navigation>

@@ -1,5 +1,6 @@
 package com.capstone.edudoexam.ui.welcome
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -11,11 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.api.AuthInterceptor
+import com.capstone.edudoexam.components.AppContextWrapper
 import com.capstone.edudoexam.databinding.ActivityWelcomeBinding
 import com.capstone.edudoexam.ui.LoadingHandler
 import com.capstone.edudoexam.ui.dashboard.DashboardActivity
+import com.capstone.edudoexam.ui.exam.ExamActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class WelcomeActivity : AppCompatActivity(), LoadingHandler {
 
@@ -26,15 +30,6 @@ class WelcomeActivity : AppCompatActivity(), LoadingHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         enableEdgeToEdge()
-
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val isDarkMode = sharedPref.getBoolean(getString(R.string.pref_dark_mode), false)
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
-
         if(AuthInterceptor.getToken(this) != null) {
             lifecycleScope.launch {
                 delay(200)
@@ -53,11 +48,6 @@ class WelcomeActivity : AppCompatActivity(), LoadingHandler {
         }
     }
 
-    fun goToDashboard(view: View?) {
-        startActivity(Intent(this, DashboardActivity::class.java))
-        finish()
-    }
-
     override fun setLoading(isLoading: Boolean) {
         if (isLoading) {
             _binding.loadingLayout.root.visibility = View.VISIBLE
@@ -71,4 +61,15 @@ class WelcomeActivity : AppCompatActivity(), LoadingHandler {
             }
         }
     }
+
+    override fun attachBaseContext(newBase: Context?) {
+        newBase?.let {
+            val language = PreferenceManager.getDefaultSharedPreferences(newBase).getString("pref_language", "en") ?: "en"
+            super.attachBaseContext(AppContextWrapper.wrap(it, language))
+        } ?: run {
+            super.attachBaseContext(newBase)
+        }
+
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.capstone.edudoexam.ui.dashboard.exams.detail
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,27 +14,28 @@ import com.capstone.edudoexam.api.response.ResponseUsers
 import com.capstone.edudoexam.models.Exam
 import com.capstone.edudoexam.models.Question
 import com.capstone.edudoexam.models.User
-import com.google.gson.Gson
 
 class DetailExamViewModel: ViewModel() {
 
     private val _exam = MutableLiveData<Exam>()
     val exam: LiveData<Exam> = _exam
+    fun setExam(exam: Exam) {
+        _exam.postValue(exam)
+    }
 
-    private val _users = MutableLiveData<List<User>>()
-    val users: LiveData<List<User>> = _users
+    private val _users = MutableLiveData<MutableList<User>>()
+    val users: LiveData<MutableList<User>> = _users
 
-    private val _blockedUsers = MutableLiveData<List<User>>()
-    val blockedUsers: LiveData<List<User>> = _blockedUsers
+    private val _blockedUsers = MutableLiveData<MutableList<User>>()
+    val blockedUsers: LiveData<MutableList<User>> = _blockedUsers
 
+    private val _questions = MutableLiveData<MutableList<Question>>()
+    val questions: LiveData<MutableList<Question>> = _questions
 
-    private val _questions = MutableLiveData<List<Question>>()
-    val questions: LiveData<List<Question>> = _questions
-
-    fun withExam(activity: FragmentActivity): Client<ExamsEndpoints, ResponseExam> {
-        return Client<ExamsEndpoints, ResponseExam>(activity, ExamsEndpoints::class.java).onSuccess {
-            _exam.postValue(it.exam)
-        }
+    fun clearAll() {
+        _users.postValue(mutableListOf())
+        _questions.postValue(mutableListOf())
+        _blockedUsers.postValue(mutableListOf())
     }
 
     fun withUsers(activity: FragmentActivity): Client<ExamsEndpoints, ResponseUsers> {
@@ -78,11 +78,6 @@ class DetailExamViewModel: ViewModel() {
            .fetch { it.getStudents(examId, true) }
     }
 
-    fun setExam(exam: Exam) {
-        Log.d("DetailExamViewModel", "setExam: ${Gson().toJson(exam)}")
-        _exam.postValue(exam)
-    }
-
     fun addQuestion(question: Question, index: Int = -1) {
         _questions.value = _questions.value?.toMutableList()?.apply {
             if (index != -1 && index in indices) {
@@ -90,6 +85,36 @@ class DetailExamViewModel: ViewModel() {
             } else {
                 add(question)
             }
+        }
+    }
+
+    fun moveQuestionItem(fromPosition: Int, toPosition: Int) {
+        _questions.value?.let { questions ->
+            // Swap the items
+            val fromItem = questions[fromPosition]
+            val toItem = questions[toPosition]
+
+            questions[fromPosition] = toItem
+            questions[toPosition] = fromItem
+
+            // Update their orders
+            questions[fromPosition].order = fromPosition + 1
+            questions[toPosition].order = toPosition + 1
+
+            // Notify the observers of the updated list
+            _questions.value = ArrayList(questions)
+        }
+    }
+
+    fun moveQuestion(fromPosition: Int, toPosition: Int, callback: (Question) -> Unit) {
+        _questions.value?.let { questions ->
+            val item = questions.removeAt(fromPosition)
+            callback(item)
+            questions.add(toPosition, item)
+            questions.forEachIndexed { index, question ->
+                question.order = index + 1
+            }
+            _questions.value = ArrayList(questions)
         }
     }
 

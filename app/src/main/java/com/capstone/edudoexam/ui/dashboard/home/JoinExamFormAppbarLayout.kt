@@ -2,11 +2,18 @@ package com.capstone.edudoexam.ui.dashboard.home
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.core.graphics.drawable.DrawableCompat
 import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils.Companion.dp
+import com.capstone.edudoexam.components.input.InputTextEdit
 import com.google.android.material.textfield.TextInputLayout
 
 @SuppressLint("UseCompatLoadingForDrawables")
@@ -16,22 +23,66 @@ class JoinExamFormAppbarLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private val textInputLayout: TextInputLayout by lazy {
-        TextInputLayout(context).apply {
+    val textInputLayout: InputTextEdit by lazy {
+        InputTextEdit(context).apply {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-            hint = "Join Exam"
+            hint = context.getString(R.string.join_exam)
             endIconMode = TextInputLayout.END_ICON_CUSTOM
-            endIconDrawable = context.getDrawable(R.drawable.outline_prompt_suggestion_24)
-            boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+            typeface = resources.getFont(R.font.montserrat_bold)
+            textSize = 18f
+            inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
-            setBoxCornerRadii(14.dp.toFloat(), 14.dp.toFloat(), 14.dp.toFloat(), 14.dp.toFloat())
-            addView(EditText(this.context).apply {
-                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-                setPadding(12.dp, 0, 12.dp, 0)
-                //background = ContextCompat.getDrawable(context, R.drawable.rounded_frame)
+            getLayout().apply {
+                boxStrokeWidth = 3.dp
+                val colorStateList = ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_enabled, android.R.attr.state_focused),
+                        intArrayOf(android.R.attr.state_enabled),
+                        intArrayOf()
+                    ),
+                    intArrayOf(
+                        context.getColor(R.color.input_box_outline_focus),
+                        context.getColor(R.color.input_box_outline_hover),
+                        context.getColor(R.color.input_box_outline)
+                    )
+                )
+
+                setBoxStrokeColorStateList(colorStateList)
+                defaultHintTextColor = ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_enabled, android.R.attr.state_focused),
+                        intArrayOf(android.R.attr.state_enabled),
+                        intArrayOf()
+                    ),
+                    intArrayOf(
+                        context.getColor(R.color.input_box_outline_focus),
+                        context.getColor(R.color.input_box_outline),
+                        context.getColor(R.color.input_box_outline)
+                    )
+                )
+                boxStrokeWidthFocused = 4.dp
+            }
+
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                    charSequence?.let {
+                        val newText = it.toString().replace(" ", "")
+                        if (it.toString() != newText) {
+                            post {
+                                textInputLayout.text = newText
+                                textInputLayout.setSelection(newText.length)
+                            }
+                        }
+                    }
+                }
+
+                override fun afterTextChanged(editable: Editable?) {}
             })
         }
     }
+
 
     init {
         // Set layout orientation and padding

@@ -122,7 +122,7 @@ class OptionsEditLayout @JvmOverloads constructor(
                 setMargins(0, 0, 0, 14.dp)
                 setPadding(8.dp, 0, 8.dp, 0)
             }
-            background = ContextCompat.getDrawable(context, R.drawable.rounded_frame)
+            background = ContextCompat.getDrawable(context, R.drawable.rounded_frame_outline)
             val label = TextView(context).apply {
                 layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                 text = "Correct Option:"
@@ -219,7 +219,7 @@ class OptionsEditLayout @JvmOverloads constructor(
                 setPadding(15.dp, 0, 15.dp, 0)
             }
             gravity = Gravity.CENTER_VERTICAL
-            background = ContextCompat.getDrawable(context, R.drawable.rounded_frame)
+            background = ContextCompat.getDrawable(context, R.drawable.rounded_frame_outline)
         }
         val labelTextView = TextView(context).apply {
             layoutParams = LayoutParams(
@@ -263,4 +263,17 @@ class OptionsEditLayout @JvmOverloads constructor(
         }
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        listOf(aEditText, bEditText, cEditText, dEditText).forEach {
+            it.isEnabled = enabled
+        }
+
+       if(enabled) {
+           spinnerContainer.visibility = View.VISIBLE
+       } else {
+           spinnerContainer.visibility = View.GONE
+       }
+    }
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.capstone.edudoexam.components.input.InputTextEdit
+        android:id="@+id/input_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hint="Duration:"
+        app:editable="false"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:gravity="top"
+        android:hint="@string/question"
+        app:boxBackgroundColor="?android:colorBackground"
+        app:boxCornerRadiusBottomEnd="14dp"
+        app:boxCornerRadiusBottomStart="14dp"
+        app:boxCornerRadiusTopEnd="14dp"
+        app:boxCornerRadiusTopStart="14dp"
+        android:enabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:minHeight="120dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.cardview.widget.CardView
+        android:visibility="gone"
+        android:id="@+id/image_card"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="14dp"
+        app:cardCornerRadius="14dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_image_24" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="Options :"
+        android:textSize="18sp" />
+
+    <com.capstone.edudoexam.components.input.OptionsEditLayout
+        android:id="@+id/options_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="14dp" />
+
+</LinearLayout>

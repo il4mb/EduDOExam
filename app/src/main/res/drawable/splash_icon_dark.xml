@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <color android:color="#212020"/>
+    </item>
+    <item
+        android:drawable="@drawable/edudoexamwide"
+        android:gravity="center"
+        android:width="200dp"
+        android:height="100dp" />
+</layer-list>

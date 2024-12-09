@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="text">#212121</color>
     <color name="danger">#CC2A1F</color>
+    <color name="bg_danger">#FFEBEB</color>
     <color name="waring">#d48326</color>
+
+    <color name="primary_200">#5895C1</color>
+    <color name="primary_400">#2B6C9B</color>
+    <color name="primary_600">#1C5883</color>
+
     <color name="primary_light">#5A9FFB</color>
     <color name="primary_dark">#3065AF</color>
 
     <color name="secondary_light">#FFCF94</color>
-    <color name="secondary_dark">#E29841</color>
+    <color name="secondary">#FF5C21</color>
+    <color name="secondary_variant">#FFBDA7</color>
 
     <color name="gray_light">#686868</color>
     <color name="gray_dark">#3C3C3C</color>
@@ -19,4 +28,16 @@
     <color name="light">#BBBBBB</color>
     <color name="transparent">#00000000</color>
 
+    <color name="background">#F5F5F5</color>
+
+    <color name="nav_icon">@color/secondary</color>
+    <color name="nav_text">@color/secondary</color>
+    <color name="nav_background">@color/primary_400</color>
+    <color name="nav_ripple">#FF937A</color>
+
+    <color name="input_box_color">#163B61</color>
+    <color name="input_box_error">#B82747</color>
+    <color name="input_box_outline">@color/secondary_variant</color>
+    <color name="input_box_outline_hover">#B44C25</color>
+    <color name="input_box_outline_focus">@color/secondary</color>
 </resources>

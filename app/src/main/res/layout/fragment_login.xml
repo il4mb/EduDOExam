@@ -7,49 +7,38 @@
     android:background="@color/transparent"
     tools:context=".ui.welcome.login.LoginFragment">
 
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="EduDoExam"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+    <ImageView
+        android:layout_width="330dp"
+        android:layout_height="180dp"
+        android:padding="35dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/edudoexamwide"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="35dp"
-        android:text="AI Smart Tracker for Student Focus &amp; Engagement"
-        android:textAlignment="center"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="-100dp"
-        android:orientation="vertical"
-        android:layout_marginHorizontal="22dp"
+        android:layout_marginHorizontal="14dp"
+        android:layout_marginTop="150dp"
         android:background="@drawable/rounded_frame"
-        android:paddingHorizontal="22dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/dp_14"
         android:paddingVertical="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign In"
+            android:layout_marginBottom="12dp"
+            android:text="@string/sign_in"
             android:textSize="35sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
+            android:textStyle="bold" />
 
         <com.capstone.edudoexam.components.input.InputEmailLayout
             android:id="@+id/input_email"
@@ -57,9 +46,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             app:boxCornerRadiusBottomEnd="25dp"
-            app:boxCornerRadiusTopEnd="25dp"
             app:boxCornerRadiusBottomStart="25dp"
-            app:boxCornerRadiusTopStart="25dp"/>
+            app:boxCornerRadiusTopEnd="25dp"
+            app:boxCornerRadiusTopStart="25dp" />
 
         <com.capstone.edudoexam.components.input.InputPasswordLayout
             android:id="@+id/input_password"
@@ -67,35 +56,38 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             app:boxCornerRadiusBottomEnd="25dp"
-            app:boxCornerRadiusTopEnd="25dp"
             app:boxCornerRadiusBottomStart="25dp"
-            app:boxCornerRadiusTopStart="25dp"/>
+            app:boxCornerRadiusTopEnd="25dp"
+            app:boxCornerRadiusTopStart="25dp" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.Material3.Button.OutlinedButton"
             android:id="@+id/login_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="14dp"
             android:layout_marginBottom="14dp"
-            android:text="Login"/>
+            android:paddingVertical="14dp"
+            android:text="@string/sign_in" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="14dp">
+            android:layout_marginBottom="14dp"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Don't have an account yet?"/>
+                android:text="@string/don_t_have_an_account_yet" />
+
             <TextView
+                android:id="@+id/register_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Click Here"
+                android:layout_marginStart="8dp"
+                android:text="@string/click_here"
                 android:textColor="#0075DD"
-                android:textStyle="bold"
-                android:layout_marginStart="8dp"/>
+                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>

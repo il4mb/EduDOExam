@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -20,7 +21,7 @@ import com.capstone.edudoexam.R
 import com.capstone.edudoexam.components.Utils.Companion.dp
 import com.google.android.material.appbar.AppBarLayout as AppBarLayoutMaterial
 
-@SuppressLint("ObjectAnimatorBinding")
+@SuppressLint("ObjectAnimatorBinding", "ResourceAsColor")
 class AppBarLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -29,7 +30,9 @@ class AppBarLayout @JvmOverloads constructor(
 
     val toolbar: Toolbar by lazy {
         Toolbar(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                setPadding(14.dp, 14.dp, 100.dp, 14.dp)
+            }
             background = ColorDrawable()
             elevation = 0f
         }
@@ -97,7 +100,10 @@ class AppBarLayout @JvmOverloads constructor(
         view?.let { newView ->
             newView.alpha = 0.6f
             newView.translationY = -20f
-
+            val parent = view.parent
+            if (parent is ViewGroup) {
+                parent.removeView(view)
+            }
             container.addView(newView)
 
             newView.animate()

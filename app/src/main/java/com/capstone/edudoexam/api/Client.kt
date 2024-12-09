@@ -67,15 +67,17 @@ class Client<T, R>(private val activity: FragmentActivity, private val clazz: Cl
 
     companion object {
 
-        private const val BASE_URL = "http://192.168.20.28:5000/api/"
+        private const val BASE_URL = "https://capstone-project-441907.et.r.appspot.com/api/"
         private var activityReference: WeakReference<FragmentActivity>? = null
         private var retrofitInstance: Retrofit? = null
 
-
         fun <T> beginWith(activity: FragmentActivity, endpointClass: Class<T>): T {
-            activityReference = WeakReference(activity)
+            val currentActivity = activityReference?.get()
 
-            if (retrofitInstance == null || activityReference?.get() == null) {
+            if (retrofitInstance == null || currentActivity == null || currentActivity.isFinishing) {
+
+                activityReference = WeakReference(activity)
+
                 retrofitInstance = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(buildClient(activity))
@@ -89,7 +91,6 @@ class Client<T, R>(private val activity: FragmentActivity, private val clazz: Cl
         private fun buildClient(activity: FragmentActivity): OkHttpClient {
             return OkHttpClient.Builder()
                 .addInterceptor(AuthInterceptor(activity))
-                // .addInterceptor(ErrorInterceptor(activity))
                 .build()
         }
     }

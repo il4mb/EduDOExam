@@ -8,12 +8,19 @@
         <item name="colorPrimary">@color/primary_light</item>
         <item name="colorPrimaryVariant">#3996E9</item>
         <item name="colorSecondary">@color/secondary_light</item>
-        <item name="android:textColor">@color/text_light</item>
+        <item name="android:textColor">@color/text</item>
 
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:windowLightStatusBar">false</item>
 
+        <item name="textInputStyle">@style/TextInputLayoutStyle</item>
+
     </style>
+
+    <style name="Theme.EduDOExam.Splash">
+        <item name="android:windowBackground">@drawable/splash_icon_dark</item>
+    </style>
+
 
     <style name="PopupAnimationStyle">
         <item name="android:windowEnterAnimation">@anim/popup_show</item>
@@ -25,16 +32,6 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingTop">22dp</item>
         <item name="android:paddingBottom">12dp</item>
-    </style>
-
-    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxStrokeColor">?colorPrimaryVariant</item>
-        <item name="strokeColor">#45000000</item>
-        <item name="boxStrokeWidth">1dp</item>
-        <item name="boxCornerRadiusBottomEnd">14dp</item>
-        <item name="boxCornerRadiusTopEnd">14dp</item>
-        <item name="boxCornerRadiusBottomStart">14dp</item>
-        <item name="boxCornerRadiusTopStart">14dp</item>
     </style>
 
     <style name="SlideDialogAnimation">
