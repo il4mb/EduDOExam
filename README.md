@@ -2,6 +2,9 @@
 
 EduDoExam is an Android application designed to provide a platform for managing and taking exams. The app allows users to create, join, and manage exams with a smooth user interface. Built with Kotlin and utilizing modern Android development tools, this app is both efficient and user-friendly.
 
+## Related Project
+- **Emotional Clasifier**: [Ml EduDoExam](https://github.com/dape22/Progress_ML_EduDOExam)
+
 ## Features
 
 - **Create Exam**: Users can create and customize exams.
