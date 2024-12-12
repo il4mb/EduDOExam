@@ -1,5 +1,7 @@
 # EduDoExam - Android App
 
+![Banner]("https://raw.githubusercontent.com/il4mb/EduDOExam/f1a70ef4954f428804ff2d34a70201908db980c7/images/Banner.png")
+
 EduDoExam is an Android application designed to provide a platform for managing and taking exams. The app allows users to create, join, and manage exams with a smooth user interface. Built with Kotlin and utilizing modern Android development tools, this app is both efficient and user-friendly.
 
 ## Related Project
