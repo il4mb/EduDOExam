@@ -67,8 +67,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - All open-source libraries and contributors.
 ### Customizing the README:
 1. **Screenshots**: You can add screenshots of the app to give users a visual preview. Use the following syntax:
-   ```markdown
-   ![Screenshot](path/to/screenshot.png)
-   ```
+   ![Screenshot](./images/to/screenshoots.png)
 2. Tech Stack: Update the tech stack section if you use any other libraries or tools not listed.
 3. Contributing: If you'd like others to contribute, add guidelines on how to contribute or any coding standards you follow.
