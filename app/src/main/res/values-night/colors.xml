@@ -5,11 +5,17 @@
 
     <color name="background">#1F1E1E</color>
 
+    <color name="primary">#1C5883</color>
+    <color name="primary_variant">#373737</color>
+
+    <color name="gray">#ABABAB</color>
+
     <color name="bg_danger">#211D1D</color>
     <color name="nav_icon">#FFFFFF</color>
     <color name="nav_text">#FFFFFF</color>
-    <color name="nav_background">#3C3C3C</color>
+    <color name="nav_background">#454444</color>
 
     <color name="input_box_outline">#F4A436</color>
     <color name="input_box_outline_hover">#FFCE8A</color>
+    <color name="divider">#7E7E7E</color>
 </resources>

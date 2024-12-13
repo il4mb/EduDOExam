@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <include layout="@layout/view_item_user"
+        android:id="@+id/user_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+    <LinearLayout
+        android:layout_marginTop="18dp"
+        android:id="@+id/summary_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <com.il4mb.edudoexam.components.ui.SummaryLayout
+            android:paddingHorizontal="8dp"
+            android:id="@+id/summary_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/dp_14">
+            <com.il4mb.edudoexam.components.ui.ResultCard
+                android:id="@+id/correct_answer_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                app:label="Correct answer"
+                app:score="0"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                android:clipToPadding="false"/>
+            <com.il4mb.edudoexam.components.ui.ResultCard
+                android:id="@+id/wrong_answer_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                app:label="Wrong answer"
+                app:score="0"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"/>
+            <com.il4mb.edudoexam.components.ui.ResultCard
+                android:id="@+id/question_length_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                app:label="Questions length"
+                app:score="0"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

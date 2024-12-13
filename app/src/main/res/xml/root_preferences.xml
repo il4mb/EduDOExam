@@ -11,15 +11,6 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/notification">
-
-        <SwitchPreferenceCompat
-            app:key="pref_upcoming_notification"
-            app:title="@string/upcoming"
-            app:summary="notifications for upcoming exams"/>
-
-    </PreferenceCategory>
-
     <ListPreference
         app:key="pref_language"
         app:title="@string/select_language"

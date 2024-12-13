@@ -4,42 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <fragment
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/nav_host_fragment_activity_dashboard"
             android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_anchor="@id/app_bar_layout"
+            app:layout_anchorGravity="bottom"
             app:navGraph="@navigation/navigation_dashboard" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/nav_view_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_marginHorizontal="7dp"
             android:layout_marginBottom="7dp"
             app:cardCornerRadius="35dp"
             app:cardElevation="4dp"
+            app:layout_anchorGravity="bottom|end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:strokeWidth="0dp">
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:padding="5dp"
                 android:id="@+id/nav_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_frame"
                 android:keyboardNavigationCluster="true"
+                android:padding="5dp"
                 app:itemIconTint="@color/nav_icon"
                 app:itemRippleColor="@color/nav_ripple"
                 app:itemTextColor="@color/nav_text"
@@ -47,23 +55,22 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-
-        <com.capstone.edudoexam.components.ui.AppBarLayout
+        <com.il4mb.edudoexam.components.ui.AppBarLayout
             android:id="@+id/app_bar_layout"
             style="@style/Theme.EduDOExam.AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="true"
             android:clipChildren="true"
-            android:gravity="end"
+            android:clipToPadding="true"
             android:elevation="0dp"
-            app:title="@string/app_name"
-            app:subtitle="@string/app_moto"
+            android:gravity="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:subtitle="@string/app_moto"
+            app:title="@string/app_name" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include layout="@layout/view_loading"
         android:layout_height="match_parent"

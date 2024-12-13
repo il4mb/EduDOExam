@@ -4,17 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.dashboard.exams.detail.questions.QuestionsExamFragment">
+    tools:context=".ui.dashboard.exams.detail.questions.QuestionsExamFragment"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:paddingHorizontal="14dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="75dp"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:clipChildren="false"/>
+        android:paddingBottom="100dp"
+        android:clipToPadding="false"/>
 
     <TextView
         android:visibility="gone"

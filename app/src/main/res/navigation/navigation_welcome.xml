@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_index"
-        android:name="com.capstone.edudoexam.ui.welcome.fragment.IndexFragment"
+        android:name="com.il4mb.edudoexam.ui.welcome.fragment.IndexFragment"
         android:label="fragment_index"
         tools:layout="@layout/fragment_index" >
         <action
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_register"
-        android:name="com.capstone.edudoexam.ui.welcome.register.RegisterFragment"
+        android:name="com.il4mb.edudoexam.ui.welcome.register.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_login"
-        android:name="com.capstone.edudoexam.ui.welcome.login.LoginFragment"
+        android:name="com.il4mb.edudoexam.ui.welcome.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action

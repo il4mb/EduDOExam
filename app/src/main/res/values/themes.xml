@@ -23,10 +23,34 @@
 
     </style>
 
+    <style name="circleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
     <style name="Theme.EduDOExam.Splash">
         <item name="android:windowBackground">@drawable/splash_icon</item>
     </style>
 
+    <style name="Theme.EduDOExam.Button" parent="Widget.Material3.Button">
+        <item name="strokeColor">@color/primary</item>
+        <item name="backgroundTint">@color/primary</item>
+    </style>
+    <style name="Theme.EduDOExam.Button.Outline" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/primary</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="backgroundTint">@color/primary_variant</item>
+    </style>
+    <style name="Theme.EduDOExam.Button.Secondary.Outline" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/secondary</item>
+        <item name="android:textColor">@color/secondary</item>
+        <item name="backgroundTint">@color/bg_danger</item>
+    </style>
+    <style name="Theme.EduDOExam.Button.Danger" parent="Widget.Material3.Button">
+        <item name="strokeColor">@color/danger</item>
+        <item name="android:textColor">?android:colorBackground</item>
+        <item name="backgroundTint">@color/danger</item>
+    </style>
 
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">cut</item>

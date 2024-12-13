@@ -14,6 +14,8 @@
             <enum name="inputTypeText" value="1" />
             <enum name="inputTypeEmail" value="32" />
             <enum name="inputTypePassword" value="129" />
+            <enum name="inputTypeNumber" value="16" />
+            <enum name="inputTypePhone" value="128" />
         </attr>
 
         <attr name="maxLines" format="integer" />

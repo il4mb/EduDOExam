@@ -73,28 +73,28 @@
                 android:layout_marginTop="18dp"
                 android:orientation="vertical">
 
-                <com.capstone.edudoexam.components.ui.OptionNode
+                <com.il4mb.edudoexam.components.ui.OptionNode
                     android:id="@+id/option_a"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_18"
                     app:optionLabel="A"/>
 
-                <com.capstone.edudoexam.components.ui.OptionNode
+                <com.il4mb.edudoexam.components.ui.OptionNode
                     android:id="@+id/option_b"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_18"
                     app:optionLabel="B"/>
 
-                <com.capstone.edudoexam.components.ui.OptionNode
+                <com.il4mb.edudoexam.components.ui.OptionNode
                     android:id="@+id/option_c"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_18"
                     app:optionLabel="C"/>
 
-                <com.capstone.edudoexam.components.ui.OptionNode
+                <com.il4mb.edudoexam.components.ui.OptionNode
                     android:id="@+id/option_d"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

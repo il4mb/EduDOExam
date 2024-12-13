@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView tools:context=".ui.dashboard.store.StoreFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:paddingHorizontal="@dimen/dp_14"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:paddingVertical="15dp">
+        <include
+            android:id="@+id/user_card"
+            layout="@layout/view_item_user"/>
+
+        <TextView
+            android:paddingHorizontal="@dimen/dp_14"
+            android:id="@+id/current_package_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondary"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:paddingTop="15dp"
+            android:id="@+id/quota_remaining"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_lg"
+            android:gravity="center"
+            android:text="0 Quota Remaining"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/quota_limit_reached"
+            android:paddingVertical="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/your_quota_limit_has_been_reached"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/text_lg"
+            android:textStyle="bold" />
+
+        <include
+            android:id="@+id/current_package_layout"
+            layout="@layout/view_item_package"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"/>
+
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade_your_package"
+                android:textSize="@dimen/text_md"
+                android:textStyle="bold"
+                android:textColor="@color/secondary"
+                android:layout_marginBottom="15dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:overScrollMode="never"
+                android:id="@+id/package_recycle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="22dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/just_increase_your_quota"
+                android:textSize="@dimen/text_md"
+                android:textStyle="bold"
+                android:textColor="@color/secondary"
+                android:layout_marginBottom="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <com.il4mb.edudoexam.components.input.InputNumberLayout
+                    android:id="@+id/input_quota"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    app:hint="Quota"
+                    app:inputType="inputTypeNumber"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/get_price_button"
+                    style="@style/Theme.EduDOExam.Button.Secondary.Outline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/get_price"
+                    app:cornerRadius="14dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

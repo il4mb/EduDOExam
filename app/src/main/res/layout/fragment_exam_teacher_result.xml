@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="@dimen/dp_14">
-                        <com.capstone.edudoexam.components.ui.ResultCard
+                        <com.il4mb.edudoexam.components.ui.ResultCard
                             android:id="@+id/correct_answer_card"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -84,7 +84,7 @@
                             app:cardCornerRadius="8dp"
                             app:cardElevation="2dp"
                             android:clipToPadding="false"/>
-                        <com.capstone.edudoexam.components.ui.ResultCard
+                        <com.il4mb.edudoexam.components.ui.ResultCard
                             android:id="@+id/wrong_answer_card"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -94,7 +94,7 @@
                             app:score="0"
                             app:cardCornerRadius="8dp"
                             app:cardElevation="2dp"/>
-                        <com.capstone.edudoexam.components.ui.ResultCard
+                        <com.il4mb.edudoexam.components.ui.ResultCard
                             android:id="@+id/question_length_card"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -106,14 +106,14 @@
                             app:cardElevation="2dp"/>
                     </LinearLayout>
 
-                    <com.capstone.edudoexam.components.ui.SummaryLayout
+                    <com.il4mb.edudoexam.components.ui.SummaryLayout
                         android:paddingHorizontal="8dp"
                         android:id="@+id/summary_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
                 </LinearLayout>
-                <com.capstone.edudoexam.components.ui.QuestionsNodeLayout
+                <com.il4mb.edudoexam.components.ui.QuestionsNodeLayout
                     android:id="@+id/questions_node_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.capstone.edudoexam.ui.dashboard.home.HomeFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.home.HomeFragment"
         android:label="@string/app_name"
         android:subtitle="@string/app_moto"
         tools:layout="@layout/fragment_home" >
@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/nav_exams"
-        android:name="com.capstone.edudoexam.ui.dashboard.exams.ExamsFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.exams.ExamsFragment"
         android:label="@string/exams"
         tools:layout="@layout/fragment_exams" >
         <action
@@ -74,11 +74,18 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_exams_to_nav_store_showcase"
+            app:destination="@id/nav_store_showcase"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
         android:id="@+id/nav_histories"
-        android:name="com.capstone.edudoexam.ui.dashboard.histories.HistoriesFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.histories.HistoriesFragment"
         android:label="@string/history"
         tools:layout="@layout/fragment_histories" >
         <action
@@ -95,17 +102,24 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_histories_to_nav_exam_detail"
+            app:destination="@id/nav_exam_detail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.capstone.edudoexam.ui.dashboard.settings.SettingsFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.settings.SettingsFragment"
         android:label="@string/settings">
     </fragment>
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="com.capstone.edudoexam.ui.dashboard.profile.ProfileFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.profile.ProfileFragment"
         android:label="@string/profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -115,23 +129,30 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_profile_to_nav_store_showcase"
+            app:destination="@id/nav_store_showcase"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
         android:id="@+id/nav_student_result"
-        android:name="com.capstone.edudoexam.ui.dashboard.histories.student.ExamStudentResultFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.histories.student.ExamStudentResultFragment"
         android:label="@string/exam_result"
         tools:layout="@layout/fragment_exam_student_result" />
 
     <fragment
         android:id="@+id/nav_teacher_result"
-        android:name="com.capstone.edudoexam.ui.dashboard.histories.teacher.ExamTeacherResultFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.histories.teacher.ExamTeacherResultFragment"
         android:label="@string/exam_result"
         tools:layout="@layout/fragment_exam_teacher_result" />
 
     <fragment
         android:id="@+id/nav_exam_detail"
-        android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.DetailExamFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.exams.detail.DetailExamFragment"
         android:label="@string/exam_detail"
         tools:layout="@layout/fragment_exam_detail" >
         <action
@@ -148,15 +169,22 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_exam_detail_to_nav_student_result"
+            app:destination="@id/nav_student_result"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/nav_form_question"
-        android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.questions.FormQuestionFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.exams.detail.questions.FormQuestionFragment"
         android:label="@string/form_question"
         tools:layout="@layout/fragment_form_question" />
     <fragment
         android:id="@+id/nav_exam_config"
-        android:name="com.capstone.edudoexam.ui.dashboard.exams.detail.config.ExamConfigFragment"
+        android:name="com.il4mb.edudoexam.ui.dashboard.exams.detail.config.ExamConfigFragment"
         android:label="@string/exam_config"
         tools:layout="@layout/fragment_exam_detail_config" >
         <action
@@ -167,5 +195,10 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
+    <fragment
+        android:id="@+id/nav_store_showcase"
+        android:name="com.il4mb.edudoexam.ui.dashboard.store.StoreFragment"
+        android:label="Increase You Limit"
+        tools:layout="@layout/fragment_store" />
 
 </navigation>

@@ -40,7 +40,7 @@
             android:textSize="35sp"
             android:textStyle="bold" />
 
-        <com.capstone.edudoexam.components.input.InputEmailLayout
+        <com.il4mb.edudoexam.components.input.InputEmailLayout
             android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             app:boxCornerRadiusTopEnd="25dp"
             app:boxCornerRadiusTopStart="25dp" />
 
-        <com.capstone.edudoexam.components.input.InputPasswordLayout
+        <com.il4mb.edudoexam.components.input.InputPasswordLayout
             android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

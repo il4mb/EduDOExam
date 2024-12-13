@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:paddingBottom="45dp">
 
-    <com.capstone.edudoexam.components.input.InputEmailLayout
+    <com.il4mb.edudoexam.components.input.InputEmailLayout
         android:id="@+id/input_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

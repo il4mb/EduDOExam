@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.capstone.edudoexam.components.input.InputTextEdit
+    <com.il4mb.edudoexam.components.input.InputTextEdit
         android:id="@+id/input_duration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         android:text="Options :"
         android:textSize="18sp" />
 
-    <com.capstone.edudoexam.components.input.OptionsEditLayout
+    <com.il4mb.edudoexam.components.input.OptionsEditLayout
         android:id="@+id/options_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

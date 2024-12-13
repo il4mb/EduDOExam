@@ -4,14 +4,16 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id ("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
-    namespace = "com.capstone.edudoexam"
+    namespace = "com.il4mb.edudoexam"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.capstone.edudoexam"
+        applicationId = "com.il4mb.edudoexam"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -21,6 +23,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "BASE_URL", "\"https://capstone-project-441907.et.r.appspot.com/api/\"")
+
     }
 
     buildTypes {
@@ -43,6 +48,7 @@ android {
         compose = true
         viewBinding = true
         mlModelBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -78,6 +84,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.androidx.room.runtime)
+    implementation(libs.firebase.crashlytics)
     ksp(libs.androidx.room.room.compiler)
     annotationProcessor(libs.androidx.room.room.compiler)
 
@@ -96,6 +103,8 @@ dependencies {
     implementation(libs.tensorflow.lite.support)
     implementation(libs.tensorflow.lite.metadata)
     implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
     testImplementation(libs.junit)
     // androidTestImplementation(libs.androidx.junit)

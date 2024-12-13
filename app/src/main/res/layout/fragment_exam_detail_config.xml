@@ -8,6 +8,7 @@
     tools:context=".ui.dashboard.exams.detail.config.ExamConfigFragment">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,77 +20,89 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_14"
-            android:paddingBottom="300dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingBottom="300dp">
 
-            <androidx.cardview.widget.CardView
+
+            <FrameLayout
                 android:visibility="gone"
-                android:id="@+id/ongoing_warning_info_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/bg_danger"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="15dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dp_14">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/caution_the_exam_is_ongoing"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textColor="@color/danger"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/you_cannot_change_anything_once_the_exam_has_started_such_as_adding_users_changing_questions_and_other_settings"/>
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:id="@+id/ongoing_info_container"
+                android:layout_width="match_parent"
+                android:padding="5dp"
+                android:layout_height="wrap_content">
+                <include layout="@layout/view_info_exam_ongoing"/>
+            </FrameLayout>
 
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <FrameLayout
+                android:visibility="gone"
+                android:layout_marginBottom="12dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:padding="5dp"
+                android:id="@+id/finished_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <include layout="@layout/view_info_exam_finished"/>
+            </FrameLayout>
 
-            <com.capstone.edudoexam.components.input.InputTextEdit
+            <com.il4mb.edudoexam.components.input.InputTextEdit
                 android:id="@+id/exam_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_14"
-                app:endIcon="@drawable/baseline_content_copy_24"
                 app:editable="false"
+                app:endIcon="@drawable/baseline_content_copy_24"
                 app:hint="Exam Code" />
 
-            <com.capstone.edudoexam.components.input.InputTextEdit
+            <com.il4mb.edudoexam.components.input.InputTextEdit
                 android:id="@+id/exam_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_14"
                 app:hint="Exam Title" />
 
-            <com.capstone.edudoexam.components.input.InputTextEdit
+            <com.il4mb.edudoexam.components.input.InputTextEdit
                 android:id="@+id/exam_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_14"
                 app:hint="Exam subtitle" />
 
-            <com.capstone.edudoexam.components.input.InputTextEdit
+            <com.il4mb.edudoexam.components.input.InputTextEdit
                 android:id="@+id/exam_start_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_14"
+                app:editable="false"
                 app:endIcon="@drawable/baseline_calendar_today_24"
-                app:hint="Start date"
-                app:editable="false"/>
+                app:hint="Start date" />
 
-            <com.capstone.edudoexam.components.input.InputTextEdit
+            <com.il4mb.edudoexam.components.input.InputTextEdit
                 android:id="@+id/exam_end_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_14"
+                app:editable="false"
                 app:endIcon="@drawable/baseline_calendar_today_24"
-                app:hint="End date"
-                app:editable="false"/>
+                app:hint="End date" />
+
+            <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save_changes"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginVertical="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -99,36 +112,66 @@
                 android:textSize="@dimen/text_md"
                 android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/blocked_users_recycle"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/empty_state"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/blocked_users_recycle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/empty_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:gravity="center"
+                    android:text="@string/data_not_found"
+                    android:textSize="@dimen/text_md"
+                    android:textStyle="bold" />
+                <View
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:textColor"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/force_start_exam"
+                style="@style/Theme.EduDOExam.Button.Outline"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="12dp"
                 android:gravity="center"
+                android:text="@string/start_exam_now"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textSize="@dimen/text_md"
-                android:text="@string/data_not_found"/>
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/force_finish_exam"
+                style="@style/Theme.EduDOExam.Button.Secondary.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="12dp"
+                android:gravity="center"
+                android:text="@string/finish_exam_now"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/delete_exam_button"
+                style="@style/Theme.EduDOExam.Button.Danger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="12dp"
+                android:text="@string/delete_exam"
+                android:textStyle="bold" />
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/save_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_18"
-        android:layout_marginBottom="55dp"
-        android:elevation="5dp"
-        android:text="@string/save_changes"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,10 +15,15 @@
 
     <color name="secondary_light">#FFCF94</color>
     <color name="secondary">#FF5C21</color>
-    <color name="secondary_variant">#FFBDA7</color>
+    <color name="secondary_variant">#FFA08B</color>
+
+    <color name="primary">#1C5883</color>
+    <color name="primary_variant">#E5EAED</color>
 
     <color name="gray_light">#686868</color>
     <color name="gray_dark">#3C3C3C</color>
+    <color name="gray">#858585</color>
+    <color name="gray_variant">#E6E4E4</color>
 
     <color name="text_light">#E9E9E9</color>
     <color name="text_dark">#313131</color>
@@ -28,7 +33,8 @@
     <color name="light">#BBBBBB</color>
     <color name="transparent">#00000000</color>
 
-    <color name="background">#F5F5F5</color>
+    <color name="background">#FFFFFF</color>
+    <color name="backgroundVariant">#F0F3FB</color>
 
     <color name="nav_icon">@color/secondary</color>
     <color name="nav_text">@color/secondary</color>
@@ -40,4 +46,6 @@
     <color name="input_box_outline">@color/secondary_variant</color>
     <color name="input_box_outline_hover">#B44C25</color>
     <color name="input_box_outline_focus">@color/secondary</color>
+
+    <color name="divider">#E6E6E6</color>
 </resources>

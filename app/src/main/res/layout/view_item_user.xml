@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_margin="8dp"
+    app:strokeWidth="0dp"
+    app:cardElevation="1dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="18dp">
+            android:padding="14dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 app:cardCornerRadius="50dp">
-
                 <ImageView
                     android:id="@+id/user_photo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/baseline_image_24" />
+                    android:src="@drawable/baseline_person_24" />
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
@@ -43,12 +47,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:layout_marginStart="12dp"/>
+                    android:layout_marginStart="12dp"
+                    android:ellipsize="end"
+                    android:paddingEnd="8dp"
+                    android:maxLines="1"
+                    tools:ignore="RtlSymmetry" />
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/score_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/text_md"
+                android:textStyle="bold"
+                android:gravity="end|center_vertical" />
+
         </LinearLayout>
+
         <ImageView
+            android:importantForAccessibility="no"
             android:visibility="visible"
             android:id="@+id/action_button"
             android:layout_alignParentEnd="true"
@@ -58,9 +76,9 @@
             android:layout_gravity="top"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/rounded_frame_outline"
             android:src="@drawable/baseline_arrow_drop_down_24"
             app:tint="?attr/android:textColor"/>
+
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

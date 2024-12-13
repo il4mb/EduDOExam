@@ -5,14 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.capstone.edudoexam.components.input.InputTextEdit
+    <com.il4mb.edudoexam.components.input.InputTextEdit
         android:id="@+id/exam_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:hint="Exam Title"
         android:layout_marginBottom="@dimen/dp_14"/>
 
-    <com.capstone.edudoexam.components.input.InputTextEdit
+    <com.il4mb.edudoexam.components.input.InputTextEdit
         android:id="@+id/exam_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginTop="16dp"/>
 
-    <com.capstone.edudoexam.components.input.InputTextEdit
+    <com.il4mb.edudoexam.components.input.InputTextEdit
         android:id="@+id/exam_start_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
         app:endIcon="@drawable/baseline_calendar_today_24"
         app:editable="false"/>
 
-    <com.capstone.edudoexam.components.input.InputTextEdit
+    <com.il4mb.edudoexam.components.input.InputTextEdit
         android:id="@+id/exam_finish_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

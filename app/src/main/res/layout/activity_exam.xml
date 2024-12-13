@@ -55,7 +55,7 @@
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <com.capstone.edudoexam.components.ui.QuestionsNodeLayout
+                <com.il4mb.edudoexam.components.ui.QuestionsNodeLayout
                     android:id="@+id/questions_node_layout"
                     android:padding="12dp"
                     android:layout_width="match_parent"
