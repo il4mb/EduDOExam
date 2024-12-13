@@ -8,14 +8,19 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.children
+import androidx.core.view.marginTop
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
@@ -30,8 +35,36 @@ class AppBarLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : AppBarLayoutMaterial(context, attrs, defStyleAttr) {
+) : AppBarLayoutMaterial(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
 
+    private val progressbar: ProgressBar by lazy {
+        ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                10.dp // Adjusted height
+            )
+
+            // Remove default padding
+            progressDrawable = ContextCompat.getDrawable(context, R.drawable.progressbar_loading_bg)?.apply {
+                setBounds(0, 0, 0, 0)
+            }
+            isIndeterminate = true
+        }
+    }
+
+
+    private val collapsingToolbarLayout: CollapsingToolbarLayout by lazy {
+        CollapsingToolbarLayout(context).apply {
+            layoutParams =
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                    scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
+                    setPadding(1.dp, 1.dp, 1.dp, 1.dp)
+                }
+            setContentScrimColor(Color.TRANSPARENT)
+            setExpandedTitleColor(android.R.color.transparent)
+            setCollapsedTitleTextColor(android.R.color.white)
+        }
+    }
     val toolbar: Toolbar by lazy {
         Toolbar(context).apply {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
@@ -41,7 +74,6 @@ class AppBarLayout @JvmOverloads constructor(
             elevation = 0f
         }
     }
-
     private val menuLayout: MenuLayout by lazy {
         MenuLayout(context).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -53,13 +85,14 @@ class AppBarLayout @JvmOverloads constructor(
             elevation = 0f
         }
     }
-
     private val customToolbar: RelativeLayout by lazy {
         RelativeLayout(context).apply {
             layoutParams = CollapsingToolbarLayout.LayoutParams(
-                CollapsingToolbarLayout.LayoutParams.MATCH_PARENT, 100.dp
+                CollapsingToolbarLayout.LayoutParams.MATCH_PARENT,
+                CollapsingToolbarLayout.LayoutParams.WRAP_CONTENT,
             ).apply {
                 collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PIN
+                overScrollMode = OVER_SCROLL_NEVER
             }
 
             addView(toolbar, RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
@@ -71,17 +104,17 @@ class AppBarLayout @JvmOverloads constructor(
             elevation = 0f
         }
     }
-
     private val container: FrameLayout by lazy {
         FrameLayout(context).apply {
             layoutParams = CollapsingToolbarLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                setPadding(0, 45.dp, 0,0)
+                //setPadding(0, 45.dp, 0,0)
+                // collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
                 collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
+                parallaxMultiplier = 0f
             }
             elevation = 0f
         }
     }
-
 
     var title: String
         get() = toolbar.title.toString()
@@ -95,6 +128,54 @@ class AppBarLayout @JvmOverloads constructor(
             toolbar.subtitle = value
         }
 
+    init {
+
+        addView(collapsingToolbarLayout)
+        collapsingToolbarLayout.apply {
+
+            addView(container, CollapsingToolbarLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity      = Gravity.TOP
+                topMargin    = 55.dp
+                collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
+                parallaxMultiplier = 3f
+            })
+
+            addView(progressbar, CollapsingToolbarLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, 2.dp
+            ).apply {
+                gravity      = Gravity.TOP
+            })
+
+            addView(customToolbar, CollapsingToolbarLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity      = Gravity.TOP
+                collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PIN
+            })
+        }
+
+        customToolbar.viewTreeObserver.addOnGlobalLayoutListener(this)
+
+        context.withStyledAttributes(attrs, R.styleable.AppBarLayout) {
+            title    = getString(R.styleable.AppBarLayout_title) ?: ""
+            subtitle = getString(R.styleable.AppBarLayout_subtitle) ?: ""
+        }
+        outlineProvider = null
+
+        post {
+            CollapsingToolbarLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, 2.dp
+            ).apply {
+                gravity      = Gravity.TOP
+                collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PIN
+                progressbar.layoutParams = this
+            }
+        }
+    }
+
+
     fun addMenu(@DrawableRes icon: Int, @ColorInt color: Int, onClick: (View) -> Unit) : MenuLayout.MenuItem {
         TransitionManager.beginDelayedTransition(menuLayout, ChangeBounds())
         return menuLayout.addMenu(icon, color).apply {
@@ -107,6 +188,7 @@ class AppBarLayout @JvmOverloads constructor(
     fun removeAllMenus() {
         TransitionManager.beginDelayedTransition(menuLayout, ChangeBounds())
         menuLayout.removeAllViews()
+        setExpanded(true, true)
     }
 
     fun addContentView(view: View?) {
@@ -161,40 +243,7 @@ class AppBarLayout @JvmOverloads constructor(
             .start()
     }
 
-    init {
-
-        addView(CollapsingToolbarLayout(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
-                setPadding(1.dp, 1.dp, 1.dp, 1.dp)
-                minimumHeight = customToolbar.height
-            }
-            setContentScrimColor(Color.TRANSPARENT)
-            setExpandedTitleColor(android.R.color.transparent)
-            setCollapsedTitleTextColor(android.R.color.white)
-
-            addView(customToolbar, CollapsingToolbarLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
-            ).apply {
-                setPadding(0, 15.dp, 0, 15.dp)
-                collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PIN
-            })
-
-            addView(container, CollapsingToolbarLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = 25.dp
-                setPadding(0, 15.dp, 0, 15.dp)
-                collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
-            })
-        })
-
-        minimumHeight = customToolbar.height
-
-        context.withStyledAttributes(attrs, R.styleable.AppBarLayout) {
-            title = getString(R.styleable.AppBarLayout_title) ?: ""
-            subtitle = getString(R.styleable.AppBarLayout_subtitle) ?: ""
-        }
-        outlineProvider = null
+    override fun onGlobalLayout() {
+        collapsingToolbarLayout.minimumHeight = customToolbar.height
     }
 }

@@ -29,6 +29,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.components.AppContextWrapper
 import com.il4mb.edudoexam.components.NetworkStatusHelper
@@ -41,7 +42,6 @@ import com.il4mb.edudoexam.ui.LoadingHandler
 import com.il4mb.edudoexam.ui.dashboard.histories.student.StudentResultViewModel
 import com.il4mb.edudoexam.ui.exam.ExamActivity
 import com.il4mb.edudoexam.ui.exam.ExamActivity.Companion.EXAM_ID
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, LoadingHandler {
@@ -134,12 +134,7 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
 
         _binding.apply {
             noConnectionLayout.setOnTouchListener{ _, _ -> true }
-            appBarLayout.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-                val appBarHeight = _binding.appBarLayout.height
-                sharedViewModel.updateTopMargin(appBarHeight)
-            }
-
-            // setLoading(true)
+            // appBarLayout.inflateMenu(R.menu.add_menu)
         }
         sharedViewModel.fetchUser(this) {}
 

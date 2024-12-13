@@ -62,7 +62,7 @@
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
-    <style name="Theme.EduDOExam.AppBarLayout" parent="Widget.Design.AppBarLayout">
+    <style name="Theme.EduDOExam.AppBarLayout">
         <item name="android:background">@drawable/rounded_bottom_corner</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:elevation">0dp</item>

@@ -2,6 +2,7 @@ package com.il4mb.edudoexam.ui.dashboard.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -69,6 +70,14 @@ class HomeFragment :
         super.onCreate(savedInstanceState)
         isBottomNavigationVisible = true
         ViewCompat.setTransitionName(profileMenuItem[0], "user-photo")
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

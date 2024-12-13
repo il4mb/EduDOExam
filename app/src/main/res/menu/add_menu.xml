@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_create_exam"
         android:icon="@drawable/file_circle_plus_solid"
         android:title="Create Exam"
-        android:actionLayout="@layout/view_menu_item"/>
+        android:visible="true"
+        android:actionLayout="@layout/view_menu_item"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/menu_join_exam"
         android:icon="@drawable/join_exam"
+        android:visible="true"
         android:title="Join Exam"
-        android:actionLayout="@layout/view_menu_item"/>
+        android:actionLayout="@layout/view_menu_item"
+        app:showAsAction="always"/>
 </menu>
