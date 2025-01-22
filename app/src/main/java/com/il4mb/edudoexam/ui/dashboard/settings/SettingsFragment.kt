@@ -89,29 +89,4 @@ class SettingsFragment : PreferenceFragmentCompat() {
             onChange(newValue)
         }
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onStart(owner: LifecycleOwner) {
-                super.onStart(owner)
-                (requireActivity() as? DashboardActivity)?.apply {
-                    showNavBottom()
-                    configureAppBar()
-                    setLoading(false)
-                }
-            }
-        })
-        sharedViewModel.topMargin.observe(viewLifecycleOwner) { marginTop ->
-            (view.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                topMargin = marginTop
-                view.layoutParams = this
-            }
-        }
-    }
-    private fun DashboardActivity.configureAppBar() {
-        getAppbar().apply {
-            removeAllMenus()
-            removeAllContentViews()
-        }
-    }
 }

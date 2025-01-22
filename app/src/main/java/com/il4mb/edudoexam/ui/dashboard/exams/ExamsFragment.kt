@@ -25,17 +25,17 @@ import com.il4mb.edudoexam.api.Client
 import com.il4mb.edudoexam.api.ExamsEndpoints
 import com.il4mb.edudoexam.api.payloads.ExamPayload
 import com.il4mb.edudoexam.api.response.Response
-import com.il4mb.edudoexam.components.ExamDiffCallback
+import com.il4mb.edudoexam.tools.ExamDiffCallback
 import com.il4mb.edudoexam.components.GenericListAdapter
-import com.il4mb.edudoexam.components.Utils
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
-import com.il4mb.edudoexam.components.Utils.Companion.hideKeyboard
-import com.il4mb.edudoexam.components.Utils.Companion.toDate
+import com.il4mb.edudoexam.tools.Utils
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.hideKeyboard
+import com.il4mb.edudoexam.tools.Utils.Companion.toDate
 import com.il4mb.edudoexam.components.dialog.DialogBottom
 import com.il4mb.edudoexam.components.dialog.InfoDialog
 import com.il4mb.edudoexam.components.input.InputTextEdit
 import com.il4mb.edudoexam.components.ui.BaseFragment
+import com.il4mb.edudoexam.components.ui.MenuLayout
 import com.il4mb.edudoexam.components.ui.UiHelper
 import com.il4mb.edudoexam.databinding.FragmentExamsBinding
 import com.il4mb.edudoexam.databinding.ViewItemExamBinding
@@ -46,7 +46,6 @@ import com.il4mb.edudoexam.ui.dashboard.SharedViewModel
 import com.il4mb.edudoexam.ui.dashboard.exams.detail.DetailExamViewModel
 import com.il4mb.edudoexam.ui.dashboard.histories.student.StudentResultViewModel
 import com.il4mb.edudoexam.ui.exam.ExamActivity
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -106,15 +105,17 @@ class ExamsFragment :
         }
 
         lifecycleScope.launch {
-            delay(300)
-            getParentActivity().apply {
-                addMenu(
-                    R.drawable.baseline_add_24,
-                    getAttr(requireContext(), android.R.attr.textColor)
-                ) { toggleAddMenu(it) }
-            }
             fetchExams()
         }
+    }
+
+    override fun onCreateMenuItems(): MutableList<MenuLayout.MenuItem> {
+        return mutableListOf(
+            MenuLayout.MenuItem(requireContext()).apply {
+                setImageDrawable(R.drawable.ui_plus)
+                setOnClickListener { toggleAddMenu(it) }
+            }
+        )
     }
 
     @SuppressLint("SetTextI18n")

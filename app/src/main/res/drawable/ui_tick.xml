@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="@dimen/icon_size"
+        android:height="@dimen/icon_size"
+        android:gravity="center">
+        <inset
+            android:drawable="@drawable/img_tick"
+            android:insetLeft="-8%"
+            android:insetTop="-8%"
+            android:insetRight="-8%"
+            android:insetBottom="-8%" />
+    </item>
+</layer-list>

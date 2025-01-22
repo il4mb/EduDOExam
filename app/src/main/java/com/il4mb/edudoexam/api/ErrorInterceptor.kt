@@ -1,7 +1,7 @@
 package com.il4mb.edudoexam.api
 
 import androidx.fragment.app.FragmentActivity
-import com.il4mb.edudoexam.components.Utils.Companion.isInternetAvailable
+import com.il4mb.edudoexam.tools.Utils.Companion.isInternetAvailable
 import com.il4mb.edudoexam.components.dialog.InfoDialog
 import com.il4mb.edudoexam.ui.LoadingHandler
 import okhttp3.Interceptor

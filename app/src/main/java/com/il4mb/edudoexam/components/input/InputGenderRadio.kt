@@ -7,7 +7,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
+import com.il4mb.edudoexam.tools.Utils.Companion.getAttr
 
 class InputGenderRadio @JvmOverloads constructor(
     context: Context,

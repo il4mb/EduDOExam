@@ -11,9 +11,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.withStyledAttributes
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
+import com.il4mb.edudoexam.tools.Utils
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.getAttr
 
 class OptionNode  @JvmOverloads constructor(
     context: Context,

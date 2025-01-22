@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/svg_outline"
+        android:width="@dimen/icon_size"
+        android:height="@dimen/icon_size"/>
+    <item android:drawable="@drawable/baseline_add_24"
+        android:width="@dimen/icon_inner_size"
+        android:height="@dimen/icon_inner_size"
+        android:gravity="center"/>
+</layer-list>

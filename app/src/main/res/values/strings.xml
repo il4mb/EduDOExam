@@ -176,4 +176,9 @@
     <string name="quota_will_cost_you">Quota %1$s will cost you <b>%2$s</b></string>
     <string name="your_quota_limit_has_been_reached">Your quota limit has been reached</string>
     <string name="go_back">Go Back</string>
+    <string name="is_there_an_exam_today">is there an exam today?</string>
+    <string name="hallo_">Hallo,</string>
+    <string name="description">Description</string>
+    <string name="my_exams">My Exams</string>
+    <string name="my_package">My Package</string>
 </resources>

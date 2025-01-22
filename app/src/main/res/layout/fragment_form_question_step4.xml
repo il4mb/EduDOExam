@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.dashboard.exams.detail.questions.FormQuestionFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingHorizontal="15dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="200dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Summry of Question"
+                android:textSize="@dimen/text_lg"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Please check first before sending new questions"
+                android:textSize="@dimen/text_base" />
+
+            <LinearLayout
+                android:layout_marginTop="35dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_frame"
+                android:padding="8dp"
+                android:layout_marginBottom="14dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/question"
+                    android:textSize="@dimen/text_md"
+                    android:layout_marginBottom="8dp"/>
+                <TextView
+                    android:id="@+id/question_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@drawable/baseline_image_24"
+                android:id="@+id/question_image"
+                app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+                android:background="@color/white"
+                android:layout_marginBottom="14dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_frame"
+                android:padding="8dp"
+                android:layout_marginBottom="14dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Options:"
+                    android:textSize="@dimen/text_md"
+                    android:layout_marginBottom="8dp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:overScrollMode="never"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recycler_option"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_frame"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:text="Duration :"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/duration_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="15dp"
+                    android:text="3:00 Minute"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/duration_picker_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:alpha="0.75"
+                    android:padding="12dp"
+                    android:src="@drawable/baseline_access_time_filled_24"
+                    app:tint="?android:textColor" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_marginTop="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="50dp"
+                android:layout_gravity="center"
+                android:text="submit"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

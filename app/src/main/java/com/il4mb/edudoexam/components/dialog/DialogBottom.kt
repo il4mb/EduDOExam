@@ -22,10 +22,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.viewbinding.ViewBinding
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
-import com.il4mb.edudoexam.components.Utils.Companion.getColorLuminance
+import com.il4mb.edudoexam.tools.Utils
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.getAttr
+import com.il4mb.edudoexam.tools.Utils.Companion.getColorLuminance
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import java.lang.reflect.Method

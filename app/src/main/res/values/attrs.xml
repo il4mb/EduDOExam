@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <declare-styleable name="AutoWrapLayout">
+        <attr name="horizontalGap" format="dimension" />
+        <attr name="verticalGap" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="StepsIndicator">
+        <attr name="step" format="integer" />
+        <attr name="currentStep" format="integer" />
+    </declare-styleable>
+
     <declare-styleable name="OptionNode">
         <attr name="optionLabel" format="string" />
         <attr name="optionText" format="string" />

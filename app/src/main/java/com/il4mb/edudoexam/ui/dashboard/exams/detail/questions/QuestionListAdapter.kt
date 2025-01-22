@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.il4mb.edudoexam.components.GenericListAdapter
-import com.il4mb.edudoexam.components.QuestionDiffCallback
+import com.il4mb.edudoexam.tools.QuestionDiffCallback
 import com.il4mb.edudoexam.databinding.ViewItemQuestionBinding
 import com.il4mb.edudoexam.models.Question
 

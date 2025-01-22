@@ -24,9 +24,9 @@ import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.api.payloads.QuestionsOrderPayload
 import com.il4mb.edudoexam.api.response.ResponseError
 import com.il4mb.edudoexam.components.GenericListAdapter
-import com.il4mb.edudoexam.components.Snackbar
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getColor
+import com.il4mb.edudoexam.tools.Snackbar
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.getColor
 import com.il4mb.edudoexam.components.dialog.DialogBottom
 import com.il4mb.edudoexam.components.dialog.InfoDialog
 import com.il4mb.edudoexam.components.ui.FloatingMenu

@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +24,15 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.components.dialog.DialogBottom
 import com.il4mb.edudoexam.databinding.ViewModalPickImageBinding
 import com.il4mb.edudoexam.ui.dashboard.DashboardActivity
 import com.il4mb.edudoexam.ui.dashboard.SharedViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.reflect.Method
 
@@ -174,14 +178,8 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = getInflateBinding()(null, inflater, container, false) as T
-        sharedViewModel.topMargin.observe(viewLifecycleOwner) { margin ->
-            val layoutParams = binding.root.layoutParams as ViewGroup.MarginLayoutParams
-            // layoutParams.topMargin = margin
-            // binding.root.layoutParams = layoutParams
-        }
-
         return binding.root
     }
 
@@ -190,9 +188,6 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
         viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStart(owner: LifecycleOwner) {
                 super.onStart(owner)
-                getParentActivity().getAppbar().apply {
-                    addContentView(onAppbarContentView())
-                }
                 if(isBottomNavigationVisible) {
                     getParentActivity().showNavBottom()
                 } else {
@@ -200,6 +195,10 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
                 }
             }
         })
+        lifecycleScope.launch {
+            delay(400)
+            getParentActivity().addMenu(onCreateMenuItems())
+        }
     }
 
     private fun getInflateBinding(): Method {
@@ -224,11 +223,20 @@ abstract class BaseFragment<T : ViewBinding>(private val viewBindingClass: Class
         return null
     }
 
+    internal open fun onCreateMenuItems(): MutableList<MenuLayout.MenuItem> {
+        return mutableListOf()
+    }
+
     internal fun setLoading(isLoading: Boolean) {
         try {
             getParentActivity().setLoading(isLoading)
         } catch (t: Throwable) {
             t.printStackTrace()
         }
+    }
+
+    override fun onInflate(context: Context, attrs: AttributeSet, savedInstanceState: Bundle?) {
+        super.onInflate(context, attrs, savedInstanceState)
+
     }
 }

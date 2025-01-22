@@ -9,8 +9,8 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.getAttr
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 

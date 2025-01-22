@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.dashboard.profile.EditProfileFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/user_photo_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_person_24"
+            android:background="@color/gray"
+            app:shapeAppearanceOverlay="@style/ImageView.RoundedSquare"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_18"/>
+
+        <com.il4mb.edudoexam.components.input.InputTextEdit
+            android:id="@+id/input_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintTop_toBottomOf="@id/pacake_summary"
+            app:hint="Email Address"
+            app:editable="false"/>
+
+        <com.il4mb.edudoexam.components.input.InputTextEdit
+            android:id="@+id/input_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_18"
+            app:hint="Full Name"
+            app:layout_constraintTop_toBottomOf="@id/input_email"/>
+
+        <com.il4mb.edudoexam.components.input.InputGenderRadio
+            android:id="@+id/gender_radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintTop_toBottomOf="@+id/input_name" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

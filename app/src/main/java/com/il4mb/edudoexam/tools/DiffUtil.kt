@@ -1,4 +1,4 @@
-package com.il4mb.edudoexam.components
+package com.il4mb.edudoexam.tools
 
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil

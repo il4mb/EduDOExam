@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -14,13 +15,11 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -33,19 +32,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.components.AppContextWrapper
 import com.il4mb.edudoexam.components.NetworkStatusHelper
-import com.il4mb.edudoexam.components.Utils
+import com.il4mb.edudoexam.tools.Utils
 import com.il4mb.edudoexam.components.dialog.InfoDialog
-import com.il4mb.edudoexam.components.ui.AppBarLayout
 import com.il4mb.edudoexam.components.ui.MenuLayout
-import com.il4mb.edudoexam.databinding.ActivityDashboard2Binding
+import com.il4mb.edudoexam.databinding.ActivityDashboardBinding
 import com.il4mb.edudoexam.ui.LoadingHandler
 import com.il4mb.edudoexam.ui.dashboard.histories.student.StudentResultViewModel
 import com.il4mb.edudoexam.ui.exam.ExamActivity
 import com.il4mb.edudoexam.ui.exam.ExamActivity.Companion.EXAM_ID
 
 
+@SuppressLint("UseCompatLoadingForDrawables", "ResourceAsColor")
 class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, LoadingHandler {
 
+    private val appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_exams, R.id.nav_histories, R.id.nav_settings))
     private val examResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val navigateResult = result.data?.getStringExtra(ARGS_NAVIGATE_RESULT)
@@ -61,8 +61,13 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
         examResultLauncher.launch(intent)
     }
 
-    private val _binding: ActivityDashboard2Binding by lazy {
-        ActivityDashboard2Binding.inflate(layoutInflater)
+    private val navigationIcon: Drawable by lazy {
+        val icon = resources.getDrawable(R.drawable.ui_arrow_left, theme)
+        DrawableCompat.setTint(icon, getColor(R.color.white))
+        icon
+    }
+    private val _binding: ActivityDashboardBinding by lazy {
+        ActivityDashboardBinding.inflate(layoutInflater)
     }
     private val sharedViewModel: SharedViewModel by viewModels()
     private val networkStatusHelper: NetworkStatusHelper by lazy {
@@ -125,9 +130,7 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
 
         val navView: BottomNavigationView = _binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_dashboard)
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_exams, R.id.nav_histories, R.id.nav_settings)
-        )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener(this)
@@ -173,9 +176,27 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
 
     override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
 
+        Utils.hideKeyboard(this)
+
         _binding.apply {
-            resetUI()
-            appBarLayout.removeAllMenus()
+            appBarLayout.apply {
+                removeAllMenus()
+                removeAllContentView()
+
+                toolbar.setNavigationIcon(if(!appBarConfiguration.isTopLevelDestination(destination)) {
+                    toolbar.apply {
+                        setPadding(0, paddingTop, paddingRight, paddingBottom)
+                    }
+                    hideNavBottom()
+                    navigationIcon
+                } else {
+                    toolbar.apply {
+                        setPadding(paddingRight, paddingTop, paddingRight, paddingBottom)
+                    }
+                    showNavBottom()
+                    null
+                })
+            }
             when (destination.id) {
                 R.id.nav_home -> {
                     appBarLayout.title    = getString(R.string.app_name)
@@ -189,17 +210,13 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
         }
     }
 
-    private fun resetUI() {
-       _binding.apply {
-           if (!navView.isVisible) showNavBottom()
-       }
-    }
-
-    fun addMenu(@DrawableRes icon: Int, @ColorInt color: Int = 0, onClick: (View) -> Unit): MenuLayout.MenuItem {
-        return _binding.appBarLayout.addMenu(icon, color, onClick)
-    }
     fun addMenu(menuItem: MenuLayout.MenuItem) {
         _binding.appBarLayout.addMenu(menuItem)
+    }
+    fun addMenu(menuItems: MutableList<MenuLayout.MenuItem>) {
+        menuItems.forEach {
+            _binding.appBarLayout.addMenu(it)
+        }
     }
 
     fun hideNavBottom() {
@@ -241,71 +258,45 @@ class DashboardActivity : AppCompatActivity(), NavController.OnDestinationChange
 
     @SuppressLint("ClickableViewAccessibility")
     override fun setLoading(isLoading: Boolean) {
-        // Block touch events when loading
-        _binding.loadingLayout.root.setOnTouchListener { _, _ -> isLoading }
 
-        // Check if the current visibility is the same as the desired state, return early if true
-        if (isLoading && _binding.loadingLayout.root.visibility == View.VISIBLE) return
-        if (!isLoading && _binding.loadingLayout.root.visibility == View.GONE) return
+        val progressbar = _binding.appBarLayout.progressbar
 
-        // Declare a flag to prevent hiding the loading indicator if it is shown again
+        if (isLoading && progressbar.visibility == View.VISIBLE) return
+        if (!isLoading && progressbar.visibility == View.GONE) return
+
         val hideRunnable = Runnable {
             // Only hide if the loading state is false and the view is still visible
-            if (!isLoading && _binding.loadingLayout.root.visibility == View.VISIBLE) {
+            if (!isLoading && progressbar.visibility == View.VISIBLE) {
                 // Animate out with a delay
-                _binding.loadingLayout.loadingIndicatorContainer.apply {
+                progressbar.apply {
                     animate()
-                        .setDuration(200)
+                        .setDuration(400)
                         .alpha(0f)
-                        .scaleX(2f)
-                        .scaleY(2f)
-                        .translationX(0.5f)
-                        .translationY(0.5f)
                         .setInterpolator(AccelerateDecelerateInterpolator())
                         .withEndAction {
-                            // Set visibility to GONE after animation and ensure no redundant animations
-                            _binding.loadingLayout.root.visibility = View.GONE
+                            progressbar.visibility = View.GONE
                         }
                         .start()
                 }
             }
         }
 
-        if (isLoading && _binding.loadingLayout.root.visibility != View.VISIBLE) {
-            _binding.loadingLayout.root.visibility = View.VISIBLE
-            _binding.loadingLayout.loadingIndicatorContainer.apply {
+        if (isLoading && progressbar.visibility != View.VISIBLE) {
+            progressbar.visibility = View.VISIBLE
+            progressbar.apply {
                 alpha = 0f
-                scaleX = 2f
-                scaleY = 2f
-                translationX = 0.5f
-                translationY = 0.5f
-
                 animate()
-                    .setDuration(200)
+                    .setDuration(400)
                     .alpha(1f)
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .translationX(0f)
-                    .translationY(0f)
                     .setInterpolator(AccelerateDecelerateInterpolator())
-                    .withStartAction {
-                        _binding.loadingLayout.root.isClickable = false
-                    }
-                    .withEndAction {
-                        _binding.loadingLayout.root.isClickable = true
-                    }
                     .start()
             }
 
             Handler(Looper.getMainLooper()).removeCallbacks(hideRunnable)
 
-        } else if (!isLoading && _binding.loadingLayout.root.visibility == View.VISIBLE) {
+        } else if (!isLoading && progressbar.visibility == View.VISIBLE) {
             Handler(Looper.getMainLooper()).postDelayed(hideRunnable, 400)
         }
-    }
-
-    fun getAppbar() : AppBarLayout {
-        return _binding.appBarLayout
     }
 
     override fun attachBaseContext(newBase: Context?) {

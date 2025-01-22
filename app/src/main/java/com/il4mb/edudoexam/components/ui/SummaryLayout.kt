@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
 
 
 class SummaryLayout @JvmOverloads constructor(

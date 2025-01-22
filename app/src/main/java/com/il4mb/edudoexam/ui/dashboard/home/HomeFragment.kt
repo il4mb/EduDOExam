@@ -2,7 +2,6 @@ package com.il4mb.edudoexam.ui.dashboard.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.ContextMenu
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -17,11 +16,11 @@ import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.api.Client
 import com.il4mb.edudoexam.api.ExamsEndpoints
 import com.il4mb.edudoexam.api.response.Response
-import com.il4mb.edudoexam.components.ExamDiffCallback
+import com.il4mb.edudoexam.tools.ExamDiffCallback
 import com.il4mb.edudoexam.components.GenericListAdapter
-import com.il4mb.edudoexam.components.Utils
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.hideKeyboard
+import com.il4mb.edudoexam.tools.Utils
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.hideKeyboard
 import com.il4mb.edudoexam.components.dialog.InfoDialog
 import com.il4mb.edudoexam.components.ui.BaseFragment
 import com.il4mb.edudoexam.components.ui.MenuLayout
@@ -63,6 +62,7 @@ class HomeFragment :
                 sharedViewModel.fetchUser(requireActivity())
                 findNavController().navigate(R.id.action_nav_home_to_nav_profile)
             }
+            setColorFilter(0)
         }
     }
 
@@ -70,14 +70,6 @@ class HomeFragment :
         super.onCreate(savedInstanceState)
         isBottomNavigationVisible = true
         ViewCompat.setTransitionName(profileMenuItem[0], "user-photo")
-    }
-
-    override fun onCreateContextMenu(
-        menu: ContextMenu,
-        v: View,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,10 +90,10 @@ class HomeFragment :
 
     private fun setupUI() {
         binding.apply {
-            root.apply {
+            swipeRefreshLayout.apply {
                 setOnRefreshListener {
                     fetchUpcomingOngoingExams()
-                    binding.root.isRefreshing = false
+                    swipeRefreshLayout.isRefreshing = false
                 }
             }
             recyclerViewUpcoming.apply {

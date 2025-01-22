@@ -10,8 +10,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.asEstimateTime
-import com.il4mb.edudoexam.components.Utils.Companion.asLocalDateTime
+import com.il4mb.edudoexam.tools.Utils.Companion.asEstimateTime
+import com.il4mb.edudoexam.tools.Utils.Companion.asLocalDateTime
 import com.il4mb.edudoexam.databinding.ViewItemExamBinding
 import com.il4mb.edudoexam.models.Exam
 import com.il4mb.edudoexam.models.User

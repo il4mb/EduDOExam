@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.bumptech.glide.Glide
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.ShapeAppearanceModel

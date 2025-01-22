@@ -14,7 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
+import com.il4mb.edudoexam.tools.Utils.Companion.getAttr
 import com.il4mb.edudoexam.components.dialog.DialogBottom
 import com.il4mb.edudoexam.database.AppDatabase
 import com.il4mb.edudoexam.databinding.ActivityExamBinding

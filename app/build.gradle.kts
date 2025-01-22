@@ -16,8 +16,8 @@ android {
         applicationId = "com.il4mb.edudoexam"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 1_0_1
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -27,8 +27,11 @@ android {
         buildConfigField("String", "BASE_URL", "\"https://capstone-project-441907.et.r.appspot.com/api/\"")
 
     }
+    signingConfigs {
 
+    }
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -85,6 +88,7 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.androidx.animation.graphics.android)
     ksp(libs.androidx.room.room.compiler)
     annotationProcessor(libs.androidx.room.room.compiler)
 
@@ -106,9 +110,14 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
 
+    implementation("io.noties.markwon:core:4.6.2")
+    implementation("io.noties.markwon:image:4.6.2")
+    implementation("androidx.webkit:webkit:1.12.1")
+
+    implementation("com.android.billingclient:billing-ktx:7.1.1")
+
+
     testImplementation(libs.junit)
-    // androidTestImplementation(libs.androidx.junit)
-    // androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)

@@ -14,10 +14,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.shape.ShapeAppearanceModel
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.getAttr
 
 class MenuLayout @JvmOverloads constructor(
     context: Context,
@@ -27,29 +25,28 @@ class MenuLayout @JvmOverloads constructor(
 
     class MenuItem(context: Context) : CardView(context) {
 
-        private val _imageView: ShapeableImageView by lazy {
-            ShapeableImageView(context).apply {
+        private val _imageView: ImageView by lazy {
+            ImageView(context).apply {
                 layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                shapeAppearanceModel = ShapeAppearanceModel.builder()
-                    .setAllCornerSizes(50f)
-                    .build()
+                scaleType = ImageView.ScaleType.FIT_CENTER
             }
         }
 
         init {
             radius = 50f
-            layoutParams = LayoutParams(40.dp, 40.dp).apply {
+            layoutParams = LayoutParams(46.dp, 46.dp).apply {
                 marginEnd = 8.dp
             }
             background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
-                setColor(getAttr(context, android.R.attr.colorBackground))
+
+                setColor(getAttr(context, R.color.transparent))
             }
             foreground = ContextCompat.getDrawable(context, R.drawable.ripple_effect)
             setPadding(6.dp)
 
             addView(_imageView)
+            setColorFilter(context.getColor(R.color.white))
         }
 
         fun setImageDrawable(@DrawableRes drawable: Int) {
@@ -77,15 +74,6 @@ class MenuLayout @JvmOverloads constructor(
         val menuItem = MenuItem(context).apply {
             setImageDrawable(ContextCompat.getDrawable(context, iconRes))
             setColorFilter(tint)
-        }
-        addView(menuItem)
-        animateIn(menuItem)
-        return menuItem
-    }
-
-    fun addMenu(icon: Drawable): MenuItem {
-        val menuItem = MenuItem(context).apply {
-            setImageDrawable(icon)
         }
         addView(menuItem)
         animateIn(menuItem)

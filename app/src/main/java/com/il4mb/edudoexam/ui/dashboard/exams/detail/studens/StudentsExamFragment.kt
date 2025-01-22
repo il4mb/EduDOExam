@@ -18,10 +18,10 @@ import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.api.payloads.AddStudentPayload
 import com.il4mb.edudoexam.api.response.Response
 import com.il4mb.edudoexam.components.GenericListAdapter
-import com.il4mb.edudoexam.components.ParticipantDiffCallback
-import com.il4mb.edudoexam.components.Utils
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getColor
+import com.il4mb.edudoexam.tools.ParticipantDiffCallback
+import com.il4mb.edudoexam.tools.Utils
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.getColor
 import com.il4mb.edudoexam.components.dialog.DialogBottom
 import com.il4mb.edudoexam.components.dialog.InfoDialog
 import com.il4mb.edudoexam.components.ui.FloatingMenu
@@ -218,8 +218,8 @@ class StudentsExamFragment: Fragment(),
                     .start()
             }
 
-            xOffset = -300
-            yOffset = 80
+            // xOffset = -300
+            // yOffset = 80
 
             addItem(getString(R.string.remove)).apply {
                 icon = ContextCompat.getDrawable(

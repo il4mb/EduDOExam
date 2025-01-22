@@ -1,15 +1,29 @@
 package com.il4mb.edudoexam.ui.dashboard.store
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.google.common.collect.ImmutableList
+import com.google.gson.Gson
 import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.api.BuyPayload
 import com.il4mb.edudoexam.components.GenericListAdapter
@@ -20,29 +34,154 @@ import com.il4mb.edudoexam.components.ui.UiHelper
 import com.il4mb.edudoexam.databinding.FragmentStoreBinding
 import com.il4mb.edudoexam.databinding.ViewItemPackageBinding
 import com.il4mb.edudoexam.models.AccountPackage
+import com.il4mb.edudoexam.models.ProductItem
 import com.il4mb.edudoexam.ui.dashboard.SharedViewModel
-import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-class StoreFragment : BaseFragment<FragmentStoreBinding>(FragmentStoreBinding::class.java),
-    GenericListAdapter.ItemBindListener<AccountPackage, ViewItemPackageBinding> {
 
-    private val listAdapter: GenericListAdapter<AccountPackage, ViewItemPackageBinding> by lazy {
+class StoreFragment : BaseFragment<FragmentStoreBinding>(FragmentStoreBinding::class.java),
+    GenericListAdapter.ItemBindListener<ProductDetails, ViewItemPackageBinding> {
+
+        class ProductDiff: DiffUtil.ItemCallback<ProductDetails>() {
+            override fun areItemsTheSame(oldItem: ProductDetails, newItem: ProductDetails): Boolean {
+                return oldItem.productId == newItem.productId
+            }
+
+            override fun areContentsTheSame(oldItem: ProductDetails, newItem: ProductDetails): Boolean {
+                return oldItem == newItem
+            }
+        }
+
+    private val listAdapter: GenericListAdapter<ProductDetails, ViewItemPackageBinding> by lazy {
         GenericListAdapter(
             viewBindingClass = ViewItemPackageBinding::class.java,
             onItemBindCallback = this,
-            diffCallback = AccountPackage.DiffCallback()
+            diffCallback = ProductDiff()
         )
     }
     override var isBottomNavigationVisible = false
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val storeViewModel: StoreViewModel by activityViewModels()
+    private val billingClient: BillingClient by lazy {
+        BillingClient.newBuilder(requireContext())
+            .enablePendingPurchases()
+            .setListener { p0, p1 ->
+                if (p0.responseCode == BillingClient.BillingResponseCode.OK && p1 != null) {
+                    for (purchase in p1) {
+                        Log.d("PURCHASE", Gson().toJson(purchase))
+                        // verifySubPurchase(purchase)
+                    }
+                }
+            }
+            .build()
+    }
+
+    fun establishConnection() {
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    showProducts()
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to Google Play
+                establishConnection()
+            }
+        })
+    }
+
+    fun showProducts() {
+
+        val productList = listOf(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("small")
+                .setProductType(BillingClient.ProductType.SUBS)
+                .build(),
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("medium")
+                .setProductType(BillingClient.ProductType.SUBS)
+                .build(),
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("large")
+                .setProductType(BillingClient.ProductType.SUBS)
+                .build()
+        )
+
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(productList)
+            .build()
+
+        billingClient.queryProductDetailsAsync(params) { billingResult, prodDetailsList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && prodDetailsList.isNotEmpty()) {
+                listAdapter.submitList(prodDetailsList)
+            } else {
+                // Handle errors
+                println("Error querying product details: ${billingResult.debugMessage}")
+            }
+        }
+    }
+
+
+    fun launchPurchaseFlow(productDetails: ProductDetails) {
+        // Ensure product details and offer token are available
+        checkNotNull(productDetails.subscriptionOfferDetails)
+
+        // Build product details parameters list
+        val productDetailsParamsList =
+            ImmutableList.of(
+                ProductDetailsParams.newBuilder()
+                    .setProductDetails(productDetails)
+                    .setOfferToken(productDetails.subscriptionOfferDetails!![0].offerToken)
+                    .build()
+            )
+
+        // Build billing flow parameters
+        val billingFlowParams = BillingFlowParams.newBuilder()
+            .setProductDetailsParamsList(productDetailsParamsList)
+            .build()
+
+        // Launch the billing flow
+        val billingResult = billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
+    }
+
+    fun verifySubPurchase(purchase: Purchase) {
+        // Acknowledge the purchase
+        val acknowledgePurchaseParams = AcknowledgePurchaseParams
+            .newBuilder()
+            .setPurchaseToken(purchase.purchaseToken)
+            .build()
+
+        billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult: BillingResult ->
+
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                // Subscription activated, update UI or perform necessary actions
+                Toast.makeText(
+                    requireContext(),
+                    "Subscription activated, Enjoy!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                //prefs.setPremium(1) // Set premium status to 1
+                // startActivity(Intent(this, requireActivity()))
+                //finish()
+            }
+        }
+
+        // Log purchase information for reference
+        Log.d("TAG", "Purchase Token: " + purchase.purchaseToken)
+        Log.d("TAG", "Purchase Time: " + purchase.purchaseTime)
+        Log.d("TAG", "Purchase OrderID: " + purchase.orderId)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        establishConnection()
+
         binding.packageRecycle.apply {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(requireContext())
@@ -77,6 +216,8 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(FragmentStoreBinding::c
                 }
             }
         }
+
+
     }
 
     private fun showInfo(message: String) {
@@ -94,10 +235,7 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(FragmentStoreBinding::c
 
     @SuppressLint("SetTextI18n")
     private fun liveCycleObserve() {
-        storeViewModel.priceList.observe(viewLifecycleOwner) {
-            Log.d("PACKAGES", Gson().toJson(it))
-            listAdapter.submitList(it.packages)
-        }
+
         sharedViewModel.user.observe(viewLifecycleOwner) {
             binding.apply {
                 it?.let { user ->
@@ -127,22 +265,20 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(FragmentStoreBinding::c
     private val priceFormat = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
 
     @SuppressLint("SetTextI18n")
-    override fun onViewBind(binding: ViewItemPackageBinding, item: AccountPackage, position: Int) {
+    override fun onViewBind(binding: ViewItemPackageBinding, item: ProductDetails, position: Int) {
         binding.apply {
-            labelTextView.text = item.label
-            maxParticipantValue.text = item.maxParticipant.toString()
-            maxQuestionValue.text = item.maxQuestion.toString()
-            freeQuotaValue.text = "+${item.freeQuota}"
-            priceValue.text = priceFormat.format(item.price) + "/" + getString(R.string.month)
-
-            if(item.id == sharedViewModel.user.value?.currentPackage?.id) {
+            val price = item.subscriptionOfferDetails?.first()?.pricingPhases?.pricingPhaseList?.first()?.formattedPrice
+            labelTextView.text = item.title
+            listProductBenefit.text = item.description
+            priceValue.text = price
+            if(item.productId == sharedViewModel.user.value?.currentPackage?.id) {
                 container.apply {
                     strokeColor = requireContext().getColor(R.color.primary)
                     backgroundTintList = requireContext().getColorStateList(R.color.primary_variant)
                 }
             } else {
                 root.setOnClickListener {
-                    showPurchaseDialog(item)
+                    launchPurchaseFlow(item)
                 }
             }
         }

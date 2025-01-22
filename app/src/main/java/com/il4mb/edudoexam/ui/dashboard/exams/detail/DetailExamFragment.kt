@@ -7,20 +7,17 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.components.ui.BaseFragment
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
 import com.il4mb.edudoexam.components.dialog.InfoDialog
 import com.il4mb.edudoexam.databinding.FragmentExamDetailBinding
 import com.il4mb.edudoexam.ui.dashboard.exams.detail.questions.QuestionsExamFragment
 import com.il4mb.edudoexam.ui.dashboard.exams.detail.studens.StudentsExamFragment
 import com.google.android.material.tabs.TabLayout
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.il4mb.edudoexam.components.ui.MenuLayout
 
 class DetailExamFragment :
     BaseFragment<FragmentExamDetailBinding>(FragmentExamDetailBinding::class.java),
@@ -63,6 +60,7 @@ class DetailExamFragment :
             finishedInfoContainer.visibility = View.VISIBLE
         }
     }
+
     private fun setupOngoingUI() {
         binding.apply {
             ongoingInfoContainer.visibility = View.VISIBLE
@@ -84,17 +82,21 @@ class DetailExamFragment :
             }
             tabLayout.addOnTabSelectedListener(this@DetailExamFragment)
         }
-        lifecycleScope.launch {
-            delay(400)
-            getParentActivity().apply {
-                addMenu(R.drawable.baseline_settings_24, getAttr(requireContext(), android.R.attr.textColor)) {
+    }
+
+    override fun onCreateMenuItems(): MutableList<MenuLayout.MenuItem> {
+
+        return mutableListOf(
+            MenuLayout.MenuItem(requireContext()).apply {
+                setImageDrawable(R.drawable.ui_gear)
+                setOnClickListener {
                     detailViewModel.exam.value?.id?.let { examId ->
                         detailViewModel.fetchBlockedParticipants(
                             activity = requireActivity(),
                             examId = examId,
                             success =  {
                                 findNavController().navigate(R.id.action_nav_exam_detail_to_nav_exam_config)
-                           },
+                            },
                             error = {
                                 showInfo(getString(R.string.something_went_wrong), it.message)
                             })
@@ -102,8 +104,7 @@ class DetailExamFragment :
                         showInfo(getString(R.string.missing_exam_id))
                     }
                 }
-            }
-        }
+            })
     }
 
     private fun showInfo(message: String) {

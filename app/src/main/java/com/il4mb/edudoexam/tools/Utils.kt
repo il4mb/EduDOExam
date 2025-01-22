@@ -1,4 +1,4 @@
-package com.il4mb.edudoexam.components
+package com.il4mb.edudoexam.tools
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -6,12 +6,19 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.text.TextPaint
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -19,8 +26,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.getAttr
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -34,6 +41,14 @@ import com.google.android.material.snackbar.Snackbar as DefaultSnackbar
 class Utils {
 
     companion object {
+
+        @SuppressLint("UseCompatLoadingForDrawables")
+        fun resizeDrawable(context: Context, drawableRes: Int, width: Int, height: Int): Drawable {
+            val drawable = context.getDrawable(drawableRes) ?: return ColorDrawable(Color.TRANSPARENT)
+            val bitmap = (drawable as BitmapDrawable).bitmap
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true)
+            return BitmapDrawable(context.resources, scaledBitmap)
+        }
 
         fun Uri.asAbsoluteFile(context: Context): File? {
             try {
@@ -99,6 +114,13 @@ class Utils {
 
         }
 
+        fun String.measureWidth(fontSize: Float): Float {
+            val textPaint = TextPaint()
+            textPaint.textSize = fontSize
+            textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            return textPaint.measureText(this)
+        }
+
         val String.CountWords: Int get() {
                 val words = this.split("\\s+".toRegex())
                     .filter { it.length >= 3 }
@@ -113,6 +135,19 @@ class Utils {
                 e.printStackTrace()
                 null
             }
+        }
+
+        fun <T : View> ViewGroup.getViewsByType(tClass: Class<T>): List<T> {
+            return mutableListOf<T?>().apply {
+                for (i in 0 until childCount) {
+                    val child = getChildAt(i)
+                    (child as? ViewGroup)?.let {
+                        addAll(child.getViewsByType(tClass))
+                    }
+                    if (tClass.isInstance(child))
+                        add(tClass.cast(child))
+                }
+            }.filterNotNull()
         }
 
 

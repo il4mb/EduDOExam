@@ -5,10 +5,15 @@
 
     <color name="background">#1F1E1E</color>
 
+    <color name="primary_200">#4D4D4D</color>
+    <color name="primary_400">#313131</color>
+    <color name="primary_600">#2A2A2A</color>
     <color name="primary">#1C5883</color>
     <color name="primary_variant">#373737</color>
 
     <color name="gray">#ABABAB</color>
+
+    <color name="colorAccent">#FBC4AF</color>
 
     <color name="bg_danger">#211D1D</color>
     <color name="nav_icon">#FFFFFF</color>

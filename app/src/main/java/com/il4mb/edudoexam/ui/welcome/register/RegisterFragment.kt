@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Snackbar
+import com.il4mb.edudoexam.tools.Snackbar
 import com.il4mb.edudoexam.databinding.FragmentRegisterBinding
 import kotlinx.coroutines.launch
 

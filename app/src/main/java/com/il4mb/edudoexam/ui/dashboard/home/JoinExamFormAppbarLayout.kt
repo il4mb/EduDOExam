@@ -9,7 +9,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
 import com.il4mb.edudoexam.components.input.InputTextEdit
 import com.google.android.material.textfield.TextInputLayout
 

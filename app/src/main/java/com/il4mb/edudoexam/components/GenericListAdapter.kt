@@ -1,5 +1,6 @@
 package com.il4mb.edudoexam.components
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -30,6 +31,24 @@ open class GenericListAdapter<T: Any, V : ViewBinding>(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenericViewHolder<V> {
         val binding = getInflateBinding()(null, LayoutInflater.from(parent.context), parent, false) as V
         return GenericViewHolder(binding)
+    }
+
+    override fun getItemId(position: Int): Long {
+        val item = getItem(position)
+        return item?.hashCode()?.toLong() ?: position.toLong()
+    }
+
+    class GenericDiffCallback<T : Any>(
+        private val idSelector: (T) -> String
+    ) : DiffUtil.ItemCallback<T>() {
+        override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+            return idSelector(oldItem) == idSelector(newItem)
+        }
+
+        @SuppressLint("DiffUtilEquals")
+        override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+            return oldItem == newItem
+        }
     }
 
 

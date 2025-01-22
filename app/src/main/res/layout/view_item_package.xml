@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="8dp"
     android:clipToPadding="false">
 
     <com.google.android.material.card.MaterialCardView
@@ -51,25 +50,10 @@
                     android:textColor="@color/primary"/>
             </LinearLayout>
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/maximum_exam_questions"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/max_question_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary"/>
-            </LinearLayout>
+                android:id="@+id/list_product_benefit"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

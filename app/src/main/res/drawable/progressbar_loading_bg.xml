@@ -3,6 +3,7 @@
     <!-- Background Layer -->
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
+            <size android:height="10dp"/>
             <solid android:color="#E0E0E0" />
             <corners android:radius="12dp" />
         </shape>
@@ -10,23 +11,21 @@
 
     <!-- Secondary Progress Layer -->
     <item android:id="@android:id/secondaryProgress">
-        <clip>
-            <shape android:shape="rectangle">
-                <solid android:color="#B0BEC5" />
-                <corners android:radius="12dp" />
-            </shape>
-        </clip>
+        <shape android:shape="rectangle">
+            <size android:height="10dp"/>
+            <solid android:color="#B0BEC5" />
+            <corners android:radius="12dp" />
+        </shape>
     </item>
 
     <!-- Progress Layer -->
     <item android:id="@android:id/progress">
-        <clip>
-            <shape>
-                <gradient
-                    android:gradientRadius="100dp"
-                    android:startColor="@color/primary_light"
-                    android:endColor="@color/secondary"/>
-            </shape>
-        </clip>
+        <shape>
+            <size android:height="10dp"/>
+            <gradient
+                android:gradientRadius="100dp"
+                android:startColor="@color/primary_light"
+                android:endColor="@color/secondary"/>
+        </shape>
     </item>
 </layer-list>

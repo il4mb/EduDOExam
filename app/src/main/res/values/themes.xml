@@ -2,10 +2,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.EduDOExam" parent="Theme.Material3.Light.NoActionBar">
-
-        <item name="fontFamily">@font/montserrat</item>
-        <item name="android:fontFamily">@font/montserrat</item>
-        <item name="android:fontWeight">500</item>
+        <item name="fontFamily">@font/quicksand</item>
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:fontWeight">400</item>
 
         <item name="colorPrimary">#294368</item>
         <item name="android:textColorHighlight">#BEDFFF</item>
@@ -13,6 +12,7 @@
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorSecondaryVariant">@color/secondary</item>
         <item name="android:textColor">@color/text</item>
+        <item name="android:colorAccent">@color/secondary</item>
 
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
@@ -20,13 +20,19 @@
         <item name="colorControlNormal">@color/secondary</item>
         <item name="textInputStyle">@style/TextInputLayoutStyle</item>
         <item name="toolbarStyle">@style/ToolbarStyle</item>
+        <item name="homeAsUpIndicator">@drawable/image_arrow_left</item>
 
     </style>
 
-    <style name="circleImageView" parent="">
+    <style name="ImageView.Rounded" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+    <style name="ImageView.RoundedSquare" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10%</item>
+    </style>
+
 
     <style name="Theme.EduDOExam.Splash">
         <item name="android:windowBackground">@drawable/splash_icon</item>
@@ -36,16 +42,19 @@
         <item name="strokeColor">@color/primary</item>
         <item name="backgroundTint">@color/primary</item>
     </style>
+
     <style name="Theme.EduDOExam.Button.Outline" parent="Widget.Material3.Button.OutlinedButton">
         <item name="strokeColor">@color/primary</item>
         <item name="android:textColor">@color/primary</item>
         <item name="backgroundTint">@color/primary_variant</item>
     </style>
+
     <style name="Theme.EduDOExam.Button.Secondary.Outline" parent="Widget.Material3.Button.OutlinedButton">
         <item name="strokeColor">@color/secondary</item>
         <item name="android:textColor">@color/secondary</item>
         <item name="backgroundTint">@color/bg_danger</item>
     </style>
+
     <style name="Theme.EduDOExam.Button.Danger" parent="Widget.Material3.Button">
         <item name="strokeColor">@color/danger</item>
         <item name="android:textColor">?android:colorBackground</item>
@@ -62,12 +71,11 @@
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
-    <style name="Theme.EduDOExam.AppBarLayout">
+    <style name="Theme.EduDOExam.AppBarLayout" parent="Widget.Material3.AppBarLayout">
         <item name="android:background">@drawable/rounded_bottom_corner</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:elevation">0dp</item>
-        <item name="android:paddingTop">24dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingTop">26dp</item>
     </style>
 
     <style name="ToolbarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -75,22 +83,26 @@
         <item name="android:paddingEnd">@dimen/dp_18</item>
         <item name="android:paddingTop">@dimen/dp_18</item>
         <item name="android:paddingBottom">@dimen/dp_18</item>
-        <item name="titleTextColor">@color/secondary</item>
+        <item name="titleTextColor">@color/white</item>
         <item name="titleTextAppearance">@style/ToolbarTitleStyle</item>
-        <item name="subtitleTextColor">@color/secondary_light</item>
+        <item name="subtitleTextColor">@color/white</item>
     </style>
+
     <style name="ToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">22sp</item>
         <item name="android:textFontWeight" tools:targetApi="p">600</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidth">2dp</item>
         <item name="boxCornerRadiusBottomEnd">14dp</item>
         <item name="boxCornerRadiusTopEnd">14dp</item>
         <item name="boxCornerRadiusBottomStart">14dp</item>
         <item name="boxCornerRadiusTopStart">14dp</item>
     </style>
+
     <style name="ThemeOverlay.App.TextInputLayout" parent="">
         <item name="colorPrimary">@color/input_box_color</item>
         <item name="colorOnSurface">@color/input_box_outline</item>
@@ -102,14 +114,8 @@
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
 
-    <style name="Theme.EduDOExam.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
     <style name="Theme.EduDOExam.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.EduDOExam.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
 
 </resources>

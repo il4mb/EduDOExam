@@ -3,15 +3,15 @@
 
     <item>
         <shape>
+
             <gradient
                 android:angle="45"
-                android:startColor="@color/primary_600"
-                android:centerColor="@color/primary_400"
-                android:endColor="@color/primary_200"
+                android:startColor="#1E354E"
+                android:endColor="#2C649B"
                 android:type="linear" />
             <corners
-                android:bottomLeftRadius="28dp"
-                android:bottomRightRadius="28dp"
+                android:bottomLeftRadius="24dp"
+                android:bottomRightRadius="24dp"
                 android:topLeftRadius="0dp"
                 android:topRightRadius="0dp" />
         </shape>

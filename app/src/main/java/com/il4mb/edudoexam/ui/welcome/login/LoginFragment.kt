@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.api.AuthInterceptor
 import com.il4mb.edudoexam.api.payloads.Login
-import com.il4mb.edudoexam.components.Snackbar
+import com.il4mb.edudoexam.tools.Snackbar
 import com.il4mb.edudoexam.databinding.FragmentLoginBinding
 import com.il4mb.edudoexam.ui.dashboard.DashboardActivity
 import kotlinx.coroutines.delay

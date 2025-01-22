@@ -3,12 +3,17 @@ package com.il4mb.edudoexam.components.ui
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -16,19 +21,25 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 import com.il4mb.edudoexam.R
-import com.il4mb.edudoexam.components.Utils
-import com.il4mb.edudoexam.components.Utils.Companion.dp
-import com.il4mb.edudoexam.components.Utils.Companion.getAttr
+import com.il4mb.edudoexam.tools.Utils
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.getAttr
+import com.il4mb.edudoexam.tools.Utils.Companion.measureWidth
+import java.util.Timer
+import java.util.TimerTask
+import kotlin.math.max
+
 
 class FloatingMenu(
     private val context: Context,
-    private val anchor: View
+    private val anchor: View,
 ) {
 
     private val items: ArrayList<FloatingMenuItem> = arrayListOf()
     var xOffset = 0
     var yOffset = 0
     var onDismissCallback: (() -> Unit)? = null
+    var onShowCallback: (() -> Unit)? = null
 
     private val roundedBackground: GradientDrawable by lazy {
         GradientDrawable().apply {
@@ -67,9 +78,7 @@ class FloatingMenu(
             animationStyle = R.style.PopupAnimationStyle
             elevation = 4f
 
-            setOnDismissListener {
-                onDismissCallback?.invoke()
-            }
+            setOnDismissListener { onDismissCallback?.invoke() }
             setBackgroundDrawable(ColorDrawable())
         }
     }
@@ -81,20 +90,32 @@ class FloatingMenu(
         }
     }
 
+    private var measuredWith = 0
     private fun renderChildren() {
         container.removeAllViews()
         items.forEach {
+            measuredWith = max(measuredWith, it.measureWidth())
             container.addView(it)
         }
     }
 
     fun show() {
-
         renderChildren()
         val location = IntArray(2)
         anchor.getLocationOnScreen(location)
-        popUp.showAtLocation(container, Gravity.NO_GRAVITY, location[0] + xOffset, location[1] + yOffset)
+
+        Log.d("Width", "$measuredWith")
+
+        popUp.showAtLocation(
+            anchor,
+            Gravity.NO_GRAVITY,
+            (location[0] - measuredWith) + xOffset,
+            location[1]
+        )
+
+        onShowCallback?.invoke()
     }
+
 
     fun hide() {
         container.animate()
@@ -110,8 +131,8 @@ class FloatingMenu(
 
         private val prefixIcon: ImageView by lazy {
             ImageView(context).apply {
-                layoutParams = LayoutParams(25.dp, 25.dp).apply {
-                    setMargins(0,0, 12.dp, 0)
+                layoutParams = LayoutParams(23.dp, 23.dp).apply {
+                    setMargins(0,0, 8.dp, 0)
                 }
                 gravity = Gravity.CENTER_VERTICAL
                 visibility = View.GONE
@@ -141,10 +162,11 @@ class FloatingMenu(
                     LayoutParams.WRAP_CONTENT,
                     1f
                 ).apply {
-                    setPadding(12.dp, 5.dp, 12.dp, 5.dp)
+                    setPadding(8.dp, 5.dp, 8.dp, 5.dp)
                 }
                 gravity = Gravity.CENTER_VERTICAL
                 typeface = resources.getFont(R.font.montserrat_semi_bold)
+                textSize = 12f
             }
         }
         var text: String = ""
@@ -169,7 +191,7 @@ class FloatingMenu(
 
         init {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                setPadding(12.dp, 6.dp, 12.dp, 6.dp)
+                setPadding(8.dp, 5.dp, 8.dp, 5.dp)
             }
             orientation = HORIZONTAL
             addView(prefixIcon)
@@ -195,5 +217,20 @@ class FloatingMenu(
 
             return false
         }
+
+        fun measureWidth(): Int {
+            var width = measureTextWidth() + (8.dp * 3)
+            if(icon != null) width += 23.dp
+            return width
+        }
+
+        private fun measureTextWidth(): Int {
+            textView.measure(
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+            )
+            return textView.measuredWidth
+        }
+
     }
 }

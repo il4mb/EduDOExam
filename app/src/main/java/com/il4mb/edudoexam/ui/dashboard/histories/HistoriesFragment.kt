@@ -11,10 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.il4mb.edudoexam.R
 import com.il4mb.edudoexam.api.response.ResponseError
-import com.il4mb.edudoexam.components.ExamDiffCallback
+import com.il4mb.edudoexam.tools.ExamDiffCallback
 import com.il4mb.edudoexam.components.ui.BaseFragment
 import com.il4mb.edudoexam.components.GenericListAdapter
-import com.il4mb.edudoexam.components.Utils.Companion.dp
+import com.il4mb.edudoexam.tools.Utils.Companion.dp
 import com.il4mb.edudoexam.components.dialog.InfoDialog
 import com.il4mb.edudoexam.components.ui.UiHelper
 import com.il4mb.edudoexam.databinding.FragmentHistoriesBinding
